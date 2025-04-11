@@ -1,0 +1,40 @@
+object dmoBandB: TdmoBandB
+  OldCreateOrder = False
+  Height = 70
+  Width = 217
+  object conBandB: TADOConnection
+    Connected = True
+    ConnectionString = 
+      'Provider=Microsoft.Jet.OLEDB.4.0;User ID=Admin;Data Source=C:\Us' +
+      'ers\stefa\Google Drive\Work\Jobs\Writing\TTRO\Programming\IT Gra' +
+      'de 12 Practical - Stefan\_Exam Preparation\Chapter 3 - Question ' +
+      '1\BandB.mdb;Mode=Share Deny None;Persist Security Info=False;Jet' +
+      ' OLEDB:System database="";Jet OLEDB:Registry Path="";Jet OLEDB:D' +
+      'atabase Password="";Jet OLEDB:Engine Type=5;Jet OLEDB:Database L' +
+      'ocking Mode=1;Jet OLEDB:Global Partial Bulk Ops=2;Jet OLEDB:Glob' +
+      'al Bulk Transactions=1;Jet OLEDB:New Database Password="";Jet OL' +
+      'EDB:Create System Database=False;Jet OLEDB:Encrypt Database=Fals' +
+      'e;Jet OLEDB:Don'#39't Copy Locale on Compact=False;Jet OLEDB:Compact' +
+      ' Without Replica Repair=False;Jet OLEDB:SFP=False'
+    LoginPrompt = False
+    Mode = cmShareDenyNone
+    Provider = 'Microsoft.Jet.OLEDB.4.0'
+    Left = 32
+    Top = 8
+  end
+  object qryQuery: TADOQuery
+    Active = True
+    Connection = conBandB
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT * FROM tblClients')
+    Left = 96
+    Top = 8
+  end
+  object sorQuery: TDataSource
+    DataSet = qryQuery
+    Left = 152
+    Top = 8
+  end
+end

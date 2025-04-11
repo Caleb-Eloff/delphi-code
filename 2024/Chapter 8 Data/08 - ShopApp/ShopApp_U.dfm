@@ -11,9 +11,7 @@ object frmShop: TfrmShop
   Font.Height = -11
   Font.Name = 'Arial'
   Font.Style = [fsBold]
-  OldCreateOrder = False
   OnShow = FormShow
-  PixelsPerInch = 96
   TextHeight = 14
   object Label1: TLabel
     Left = 24

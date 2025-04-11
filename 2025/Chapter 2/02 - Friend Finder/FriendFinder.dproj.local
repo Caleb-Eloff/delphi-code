@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2019/05/19 19:57:26.280.pas,C:\DATA\RAD Studio\DelphiProjects\Unit1.pas=C:\Users\donald\Desktop\Friend Finder\FindFriend.pas</Transaction>
+    <Transaction>2019/05/19 19:57:26.308.dfm,C:\DATA\RAD Studio\DelphiProjects\Unit1.dfm=C:\Users\donald\Desktop\Friend Finder\FindFriend.dfm</Transaction>
+    <Transaction>2019/05/19 19:57:52.505.dproj,C:\DATA\RAD Studio\DelphiProjects\Project1.dproj=C:\Users\donald\Desktop\Friend Finder\FriendFinder.dproj</Transaction>
+    <Transaction>2019/05/21 22:03:08.504.pas,C:\Users\donald\Desktop\Grade12Book\Friend Finder\Unit1.pas=C:\Users\donald\Desktop\Grade12Book\Friend Finder\FriendClass.pas</Transaction>
+  </Transactions>
+</BorlandProject>

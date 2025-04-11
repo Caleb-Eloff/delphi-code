@@ -1,0 +1,79 @@
+// Enter your name here
+
+unit Battery_U;
+
+interface
+
+uses SysUtils, Math;
+
+type
+
+  TBattery = class(TObject)
+
+  private
+  var
+    fModel: String;
+    fType: String;
+    fSize: Integer;
+    fVoltage: Integer;
+    fPrice: real;
+
+  public
+    constructor create; overload;
+    constructor create(sModel, sType: String; iSize, iVoltage: Integer;
+      rPrice: real); overload;
+    function getPrice(): String;
+    procedure setPrice(rPrice: Real);
+    function calcTotalCapacity: Integer;
+
+  end;
+
+implementation
+
+{ TBattery }
+
+{ TBattery }
+
+function TBattery.calcTotalCapacity: Integer;
+var
+  rHouseUsage, rAmpH: Real;
+begin
+
+  rHouseUsage
+
+end;
+
+constructor TBattery.create(sModel, sType: String; iSize, iVoltage: Integer;
+  rPrice: real);
+begin
+
+  fModel := sModel;
+  fType := sType;
+  fSize := iSize;
+  fVoltage := iVoltage;
+  fPrice := rPrice;
+
+end;
+
+function TBattery.getPrice: String;
+begin
+
+  result := FloatToStrF(fPrice, ffCurrency, 8, 2);
+
+end;
+
+procedure TBattery.setPrice(rPrice: real);
+begin
+
+  fPrice := rPrice;
+
+end;
+
+constructor TBattery.create;
+begin
+
+end;
+
+{ TBattery }
+
+end.

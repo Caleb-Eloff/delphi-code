@@ -1,0 +1,41 @@
+// Enter examination number here
+
+unit SmartSwitch_U;
+
+interface
+
+Uses SysUtils;
+
+Type
+  TSmartSwitch = class(TObject)
+  private
+    fSwitchID: String;
+    fDevice: String;
+    fPowerUsage: Integer;
+    fSwitchStatus: Boolean;
+  public
+  //Provided method
+
+  function determineSwitchStatus: String;
+  //=========================================
+
+  end;
+
+implementation
+
+{ TSwitch }
+
+//Provided code
+function TSmartSwitch.determineSwitchStatus: String;
+var
+  sStatus: String;
+begin
+case fSwitchStatus of
+  True: sStatus := 'ON';
+  False: sStatus := 'OFF';
+end;
+ Result := sStatus;
+end;
+//=====================================================================
+
+end.

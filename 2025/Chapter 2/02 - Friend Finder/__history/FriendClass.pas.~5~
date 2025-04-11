@@ -1,0 +1,70 @@
+Unit FriendClass;
+
+Interface
+
+Uses Sysutils, math;
+
+Type
+  TFriend = Class(TObject)
+  Private
+    Name: String;
+    cellNumber: String;
+    birthDate: TDateTime;
+    lastseen: TDateTime;
+    category: integer;
+  Protected
+
+  Public
+    Constructor Create; Overload;
+    Constructor Create(Name, cellNumber: String;
+      birthDate, lastseen: TDateTime; category: integer); Overload;
+    Function findAge: integer;
+    Function getLastseen: TDateTime;
+    Procedure setLastseen(lastseen: TDateTime);
+    Function ToString: String;
+  End;
+
+Implementation
+
+{ TFriend }
+
+Constructor TFriend.Create;
+Begin
+  { default }
+End;
+
+Constructor TFriend.Create(Name, cellNumber: String;
+  birthDate, lastseen: TDateTime; category: integer);
+Begin
+  self.Name := Name;
+  self.cellNumber := cellNumber;
+  self.birthDate := birthDate;
+  self.lastseen := lastseen;
+  self.category := category;
+End;
+
+Function TFriend.findAge: integer;
+Var
+  daysOld: integer;
+Begin
+  daysOld := round(now - birthDate);
+  findAge := daysOld Div 365;
+End;
+
+Function TFriend.getLastseen: TDateTime;
+Begin
+  getLastseen := lastseen;
+End;
+
+Procedure TFriend.setLastseen(lastseen: TDateTime);
+Begin
+  self.lastseen := lastseen;
+End;
+
+Function TFriend.ToString: String;
+Begin
+  result := Format('Name: %1:s%0:s cellNumber: %2:s%0:s birthDate: %3:s,%0:s lastseen: %4:s%0:s, category: %5:d%0:s',
+  [sLineBreak, Name, cellNumber, datetoStr(birthDate), datetostr(lastseen), category]);
+End;
+
+End.

@@ -1,0 +1,91 @@
+object frmWordClock: TfrmWordClock
+  Left = 0
+  Top = 0
+  Caption = 'Word Clock'
+  ClientHeight = 262
+  ClientWidth = 432
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  object shpBackground: TRectangle
+    Fill.Color = claBlack
+    Size.Width = 641.000000000000000000
+    Size.Height = 481.000000000000000000
+    Size.PlatformDefault = False
+  end
+  object lblHeader: TLabel
+    StyledSettings = []
+    Position.X = 16.000000000000000000
+    Position.Y = 24.000000000000000000
+    Size.Width = 385.000000000000000000
+    Size.Height = 57.000000000000000000
+    Size.PlatformDefault = False
+    TextSettings.Font.Family = 'Roboto'
+    TextSettings.Font.Size = 48.000000000000000000
+    TextSettings.Font.StyleExt = {00070000000000000004000000}
+    TextSettings.FontColor = claWhite
+    Text = 'IT IS'
+    TabOrder = 4
+  end
+  object lblSeconds: TLabel
+    StyledSettings = []
+    Position.X = 16.000000000000000000
+    Position.Y = 88.000000000000000000
+    Size.Width = 409.000000000000000000
+    Size.Height = 41.000000000000000000
+    Size.PlatformDefault = False
+    TextSettings.Font.Family = 'Roboto'
+    TextSettings.Font.Size = 36.000000000000000000
+    TextSettings.Font.StyleExt = {00020000000000000004000000}
+    TextSettings.FontColor = claWhite
+    Text = 'FIFTEEN seconds and'
+    TabOrder = 3
+  end
+  object lblMinutes: TLabel
+    StyledSettings = []
+    Position.X = 16.000000000000000000
+    Position.Y = 128.000000000000000000
+    Size.Width = 409.000000000000000000
+    Size.Height = 41.000000000000000000
+    Size.PlatformDefault = False
+    TextSettings.Font.Family = 'Roboto'
+    TextSettings.Font.Size = 36.000000000000000000
+    TextSettings.Font.StyleExt = {00020000000000000004000000}
+    TextSettings.FontColor = claWhite
+    Text = 'THREE minutes past'
+    TabOrder = 2
+  end
+  object lblHours: TLabel
+    StyledSettings = []
+    Position.X = 16.000000000000000000
+    Position.Y = 168.000000000000000000
+    Size.Width = 409.000000000000000000
+    Size.Height = 41.000000000000000000
+    Size.PlatformDefault = False
+    TextSettings.Font.Family = 'Roboto'
+    TextSettings.Font.Size = 36.000000000000000000
+    TextSettings.Font.StyleExt = {00020000000000000004000000}
+    TextSettings.FontColor = claWhite
+    Text = 'EIGHT in the morning'
+    TabOrder = 1
+  end
+  object lblDate: TLabel
+    StyledSettings = []
+    Position.X = 16.000000000000000000
+    Position.Y = 208.000000000000000000
+    Size.Width = 409.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+    TextSettings.Font.Family = 'Roboto'
+    TextSettings.Font.Size = 24.000000000000000000
+    TextSettings.Font.StyleExt = {00020000000000000004000000}
+    TextSettings.FontColor = claWhite
+    Text = 'on THURSDAY, day 8 of JANUARY'
+    TabOrder = 0
+  end
+  object tmrTimer: TTimer
+    Left = 392
+    Top = 176
+  end
+end

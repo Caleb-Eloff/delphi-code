@@ -1,0 +1,172 @@
+unit Question1_U;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Battery_U,
+  Vcl.ComCtrls;
+
+type
+  TForm1 = class(TForm)
+    pnlHeading: TPanel;
+    pnlQ1_2_1: TPanel;
+    rdgBatteryType: TRadioGroup;
+    btnQ1_2_1: TButton;
+    pnlQ1_2_2: TPanel;
+    btnQ1_2_2: TButton;
+    chbInstallationRequired: TCheckBox;
+    redOutput: TRichEdit;
+    pnlQ1_2_3: TPanel;
+    btnQ1_2_3: TButton;
+    lblModel: TLabel;
+    cmbBatteryList: TComboBox;
+    lblSize: TLabel;
+    edtSize: TEdit;
+    lblVoltage: TLabel;
+    edtVoltage: TEdit;
+    lblPrice: TLabel;
+    edtPrice: TEdit;
+    edtUsage: TEdit;
+    lblHouseholdUsage: TLabel;
+    procedure rdgBatteryTypeClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure cmbBatteryListChange(Sender: TObject);
+    procedure btnQ1_2_3Click(Sender: TObject);
+    procedure btnQ1_2_1Click(Sender: TObject);
+    procedure btnQ1_2_2Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+  objBattery : TBattery;
+
+implementation
+
+{$R *.dfm}
+
+{$REGION '<Provided code. Do not delete>'}
+type
+  TAvailableBattery = Record
+    bName : string[25];
+    bType : string[10];
+    bSize : integer;
+    bVoltage : byte;
+    bPrice : integer;
+  end;
+
+var
+  batteries : array[0..10] of TAvailableBattery;
+{$ENDREGION}
+
+procedure TForm1.btnQ1_2_1Click(Sender: TObject);
+begin
+  //Question 1.2.1
+end;
+
+procedure TForm1.btnQ1_2_2Click(Sender: TObject);
+begin
+  //Question 1.2.2
+end;
+
+procedure TForm1.btnQ1_2_3Click(Sender: TObject);
+begin
+  //Question 1.2.3
+end;
+
+{$REGION '<Provided code. Do not delete>'}
+procedure TForm1.cmbBatteryListChange(Sender: TObject);
+var
+  battery : TAvailableBattery;
+begin
+  for battery in batteries do
+  begin
+    if battery.bName = cmbBatteryList.Text then
+    begin
+      edtSize.Text := IntToStr(battery.bSize);
+      edtVoltage.Text := IntToStr(battery.bVoltage);
+      edtPrice.Text := IntToStr(battery.bPrice);
+      Exit;
+    end;
+  end;
+
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  batteries[0].bName := 'Blue Nova BN13V';
+  batteries[0].bType := 'LiFePO4';
+  batteries[0].bSize := 218;
+  batteries[0].bVoltage := 12;
+  batteries[0].bPrice := 24139;
+  batteries[1].bName := 'BSL 48V (51.2V)';
+  batteries[1].bType := 'LiFePO4';
+  batteries[1].bSize := 125;
+  batteries[1].bVoltage := 48;
+  batteries[1].bPrice := 39900;
+  batteries[2].bName := 'Duracell 255F';
+  batteries[2].bType := 'Lead Acid';
+  batteries[2].bSize := 105;
+  batteries[2].bVoltage := 12;
+  batteries[2].bPrice := 2400;
+  batteries[3].bName := 'Discover dry cell EV512A';
+  batteries[3].bType := 'Lead Acid';
+  batteries[3].bSize := 70;
+  batteries[3].bVoltage := 12;
+  batteries[3].bPrice := 4100;
+  batteries[4].bName := 'Freedom Won FW12.200';
+  batteries[4].bType := 'LiFePO4';
+  batteries[4].bSize := 200;
+  batteries[4].bVoltage := 12;
+  batteries[4].bPrice := 14700;
+  batteries[5].bName := 'Leoch AGM Gel';
+  batteries[5].bType := 'Lead Acid';
+  batteries[5].bSize := 100;
+  batteries[5].bVoltage := 12;
+  batteries[5].bPrice := 3400;
+  batteries[6].bName := 'Lithtech 1280Wh';
+  batteries[6].bType := 'LiFePO4';
+  batteries[6].bSize := 100;
+  batteries[6].bVoltage := 12;
+  batteries[6].bPrice := 7690;
+  batteries[7].bName := 'Pylontech US2000C';
+  batteries[7].bType := 'LiFePO4';
+  batteries[7].bSize := 50;
+  batteries[7].bVoltage := 48;
+  batteries[7].bPrice := 16550;
+  batteries[8].bName := 'Raylite M Solar 3';
+  batteries[8].bType := 'Lead Acid';
+  batteries[8].bSize := 470;
+  batteries[8].bVoltage := 6;
+  batteries[8].bPrice := 12950;
+  batteries[9].bName := 'US-2200 XC2';
+  batteries[9].bType := 'Lead Acid';
+  batteries[9].bSize := 232;
+  batteries[9].bVoltage := 6;
+  batteries[9].bPrice := 3300;
+  batteries[10].bName := 'Victron 12/110 Gel';
+  batteries[10].bType := 'Lead Acid';
+  batteries[10].bSize := 110;
+  batteries[10].bVoltage := 12;
+  batteries[10].bPrice := 4900;
+end;
+
+procedure TForm1.rdgBatteryTypeClick(Sender: TObject);
+var
+  battery : TAvailableBattery;
+  sType : String;
+begin
+  cmbBatteryList.Items.Clear;
+  sType := rdgBatteryType.Items[rdgBatteryType.ItemIndex];
+  for battery in batteries do
+  begin
+    if sType = battery.bType then cmbBatteryList.Items.Add(battery.bName);
+  end;
+end;
+{$ENDREGION}
+
+end.

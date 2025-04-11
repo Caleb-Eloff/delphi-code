@@ -1,0 +1,9 @@
+1#Mr G Ferreira#Phone#7.05
+2#Mrs L Honeywell#Drinks#71.95
+3#Ms I Mendes#Kitchen#39.95
+1#Mr G Ferreira#Kitchen#23.95
+1#Mr G Ferreira#Drinks#7.15
+4#Mr B Khoza#Taxi#127.25
+5#Mrs I Freulich#Transport#155.00
+5#Mrs I Freulich#Internet#12.35
+6#Mr J Kowalski#Phone#6.45

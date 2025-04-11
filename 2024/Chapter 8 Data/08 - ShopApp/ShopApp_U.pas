@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Grids, DBGrids, StdCtrls, conShopDB, ComCtrls;
+  Dialogs, Grids, DBGrids, StdCtrls, conShopDB, ComCtrls, Data.DB;
 
 type
   TfrmShop = class(TForm)

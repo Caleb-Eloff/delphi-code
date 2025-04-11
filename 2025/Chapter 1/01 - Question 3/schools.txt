@@ -1,0 +1,10 @@
+Gordon High School;23
+Paul Roos Gymnasium;38
+Parel Vallei High School;42
+Hoërskool Strand;31
+Hoërskool Bloemhof;18
+Khanyolwethu High School;35
+Rhenish Girls' High School;21
+Macassar High School;26
+Hottentots Holland High School;40
+Hoërskool Stellenbosch;34

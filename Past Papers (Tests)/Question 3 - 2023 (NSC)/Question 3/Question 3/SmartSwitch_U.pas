@@ -1,0 +1,90 @@
+// Enter examination number here
+
+unit SmartSwitch_U;
+
+interface
+
+Uses SysUtils;
+
+Type
+  TSmartSwitch = class(TObject)
+  private
+    fSwitchID: String;
+    fDevice: String;
+    fPowerUsage: Integer;
+    fSwitchStatus: Boolean;
+  public
+    // Provided method
+
+    function determineSwitchStatus: String;
+    // =========================================
+    constructor create(sSwitchID, sDevice: String; iPowerUsage: Integer);
+    function getSwitchID: String;
+    function energyUsed(iHours: Integer): Real;
+    procedure setSwitchStatus(bStatus: Boolean);
+    function toString: String;
+
+  end;
+
+implementation
+
+{ TSwitch }
+
+// Provided code
+constructor TSmartSwitch.create(sSwitchID, sDevice: String;
+  iPowerUsage: Integer);
+begin
+
+  fSwitchID := sSwitchID;
+  fDevice := sDevice;
+  fPowerUsage := iPowerUsage;
+  fSwitchStatus := False;
+
+end;
+
+function TSmartSwitch.determineSwitchStatus: String;
+var
+  sStatus: String;
+begin
+  case fSwitchStatus of
+    True:
+      sStatus := 'ON';
+    False:
+      sStatus := 'OFF';
+  end;
+  Result := sStatus;
+end;
+
+function TSmartSwitch.energyUsed(iHours: Integer): Real;
+begin
+
+  Result := fPowerUsage * iHours / 1000
+
+end;
+
+function TSmartSwitch.getSwitchID: String;
+begin
+
+  Result := fSwitchID;
+
+end;
+
+procedure TSmartSwitch.setSwitchStatus(bStatus: Boolean);
+begin
+
+  fSwitchStatus := bStatus;
+
+end;
+
+function TSmartSwitch.toString: String;
+begin
+
+  Result := 'Switch ID: ' + fSwitchID + sLineBreak + 'Device: ' + fDevice +
+    sLineBreak + 'Power Usage: ' + FloatToStr(fPowerUsage) + 'W' + sLineBreak +
+    'Switch status: ' + determineSwitchStatus;
+
+end;
+
+// =====================================================================
+
+end.

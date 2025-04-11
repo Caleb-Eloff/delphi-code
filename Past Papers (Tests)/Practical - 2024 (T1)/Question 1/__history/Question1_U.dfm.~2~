@@ -1,0 +1,184 @@
+object Form1: TForm1
+  Left = 0
+  Top = 0
+  Caption = 'Battery Backup Calculator'
+  ClientHeight = 349
+  ClientWidth = 629
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OnCreate = FormCreate
+  TextHeight = 13
+  object pnlHeading: TPanel
+    Left = 13
+    Top = 8
+    Width = 608
+    Height = 65
+    Caption = 'Battery Backup Calculator'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -21
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 0
+  end
+  object pnlQ3_2_1: TPanel
+    Left = 8
+    Top = 79
+    Width = 305
+    Height = 154
+    TabOrder = 1
+    object lblModel: TLabel
+      Left = 8
+      Top = 58
+      Width = 99
+      Height = 13
+      Caption = 'Select Battery Model'
+    end
+    object lblSize: TLabel
+      Left = 8
+      Top = 95
+      Width = 43
+      Height = 13
+      Caption = 'Size (Ah)'
+    end
+    object lblVoltage: TLabel
+      Left = 110
+      Top = 95
+      Width = 53
+      Height = 13
+      Caption = 'Voltage (V)'
+    end
+    object lblPrice: TLabel
+      Left = 216
+      Top = 95
+      Width = 23
+      Height = 13
+      Caption = 'Price'
+    end
+    object rdgBatteryType: TRadioGroup
+      Left = 8
+      Top = 11
+      Width = 169
+      Height = 41
+      BiDiMode = bdLeftToRight
+      Caption = 'Battery Type'
+      Columns = 2
+      Items.Strings = (
+        'Lead Acid'
+        'LiFePO4')
+      ParentBiDiMode = False
+      TabOrder = 0
+      OnClick = rdgBatteryTypeClick
+    end
+    object btnQ1_2_1: TButton
+      Left = 222
+      Top = 119
+      Width = 75
+      Height = 25
+      Caption = 'Q 1.2.1'
+      TabOrder = 1
+      OnClick = btnQ1_2_1Click
+    end
+    object cmbBatteryList: TComboBox
+      Left = 110
+      Top = 58
+      Width = 168
+      Height = 21
+      TabOrder = 2
+      OnChange = cmbBatteryListChange
+    end
+    object edtSize: TEdit
+      Left = 57
+      Top = 92
+      Width = 32
+      Height = 21
+      TabOrder = 3
+    end
+    object edtVoltage: TEdit
+      Left = 169
+      Top = 92
+      Width = 33
+      Height = 21
+      TabOrder = 4
+    end
+    object edtPrice: TEdit
+      Left = 245
+      Top = 92
+      Width = 52
+      Height = 21
+      TabOrder = 5
+    end
+  end
+  object pnlQ3_2_2: TPanel
+    Left = 8
+    Top = 239
+    Width = 305
+    Height = 49
+    TabOrder = 2
+    object btnQ1_2_2: TButton
+      Left = 222
+      Top = 11
+      Width = 75
+      Height = 25
+      Caption = 'Q 1.2.2'
+      TabOrder = 0
+      OnClick = btnQ1_2_2Click
+    end
+    object chbInstallationRequired: TCheckBox
+      Left = 10
+      Top = 16
+      Width = 127
+      Height = 17
+      Caption = 'Installation Required'
+      TabOrder = 1
+    end
+  end
+  object redOutput: TRichEdit
+    Left = 319
+    Top = 79
+    Width = 305
+    Height = 266
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 3
+  end
+  object pnlQ3_2_3: TPanel
+    Left = 8
+    Top = 294
+    Width = 305
+    Height = 51
+    TabOrder = 4
+    object lblHouseholdUsage: TLabel
+      Left = 8
+      Top = 17
+      Width = 115
+      Height = 13
+      Caption = 'Household Usage (kWh)'
+    end
+    object btnQ1_2_3: TButton
+      Left = 222
+      Top = 17
+      Width = 75
+      Height = 25
+      Caption = 'Q 1.2.3'
+      TabOrder = 0
+      OnClick = btnQ1_2_3Click
+    end
+    object edtUsage: TEdit
+      Left = 129
+      Top = 14
+      Width = 81
+      Height = 21
+      TabOrder = 1
+    end
+  end
+end

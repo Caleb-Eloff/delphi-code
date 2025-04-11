@@ -1,0 +1,234 @@
+Unit FindFriend;
+
+Interface
+
+Uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls, jpeg, Buttons, Generics.Collections, FriendClass,
+  ComCtrls, Menus;
+
+Type
+  TForm1 = Class(TForm)
+    btnFinalSelection: TButton;
+    btnSendInvites: TButton;
+    lbxPotentialGuests: TListBox;
+    Label1: TLabel;
+    memInvitationList: TMemo;
+    Label2: TLabel;
+    Panel1: TPanel;
+    edtFullName: TEdit;
+    Label3: TLabel;
+    Label5: TLabel;
+    edtCellNumber: TEdit;
+    Label7: TLabel;
+    Label8: TLabel;
+    edtBirthDate: TEdit;
+    Label9: TLabel;
+    edtLastSeen: TEdit;
+    ComboBox1: TComboBox;
+    Label10: TLabel;
+    Panel3: TPanel;
+    Label12: TLabel;
+    Label13: TLabel;
+    cmbCategory: TComboBox;
+    cmbVenue: TComboBox;
+    cmbActivity: TComboBox;
+    btnPotentialGuests: TButton;
+    Image1: TImage;
+    btnNewFriend: TSpeedButton;
+    Label4: TLabel;
+    Label6: TLabel;
+    Label11: TLabel;
+    Label14: TLabel;
+    DateTimePicker1: TDateTimePicker;
+    Label15: TLabel;
+    edtTime: TEdit;
+    Procedure btnFinalSelectionClick(Sender: TObject);
+    Procedure btnPotentialGuestsClick(Sender: TObject);
+    Procedure btnSendInvitesClick(Sender: TObject);
+    Procedure btnNewFriendClick(Sender: TObject);
+    Function GetSelectedItems: Tlist<Tfriend>;
+    Procedure FormCreate(Sender: TObject);
+  Private
+    { Private declarations }
+  Public
+    { Public declarations }
+  End;
+
+Var
+  Form1: TForm1;
+
+Implementation
+
+VAR
+  friendslist: Tlist<Tfriend>;
+  selectedList: Tlist<Tfriend>;
+const tab: Char = #09;
+{$R *.dfm}
+
+Procedure TForm1.btnFinalSelectionClick(Sender: TObject);
+Var
+  friend: TObject;
+  frnd: Tfriend;
+  invite: String;
+  guestList: String;
+  activity: String;
+  venue: String;
+  theTime: String;
+  theDate: String;
+
+Begin
+  { ==================
+    user clicks names in list
+    to select final attendees
+    ================== }
+  selectedList := GetSelectedItems; {lbxPotentialGuests}
+  { ==================
+    Generate invites and
+    print to memo
+    ================== }
+  memInvitationList.Clear;
+  activity := cmbActivity.items[cmbActivity.itemindex];
+  venue := cmbVenue.items[cmbVenue.itemindex];
+  theDate := formatdatetime('dddddd', DateTimePicker1.DateTime);
+  theTime := edtTime.Text;
+
+  invite := format('Invitation list for %s at %s on %s at %s%s',
+      [activity, venue, theDate, theTime, slinebreak]);
+     memInvitationList.lines.add(invite);
+     For friend In selectedList Do
+  Begin
+       frnd:= friend as TFriend;
+      guestList := format('%s:'+#09+'%s',
+       [frnd.getFullName, frnd.getCellNumber]);
+        memInvitationList.lines.add(guestList);
+  End;
+
+End;
+
+Procedure TForm1.btnSendInvitesClick(Sender: TObject);
+
+Begin
+//  filename := 'FriendsInvite.txt';
+//  AssignFile(outfile, filename);
+//  rewrite(outfile);
+  memInvitationList.savetofile(“GuestList.txt”);
+  ShowMessagefmt('Invites writen to file: %s', [filename]);
+
+End;
+
+Procedure TForm1.btnPotentialGuestsClick(Sender: TObject);
+Var
+  friend: Tfriend;
+  selectedCategory: String;
+
+Begin
+  { ==================
+    Clear list display
+    get filter information
+    Display filtered list
+    using only one criteria
+    ================== }
+  lbxPotentialGuests.Clear;
+  selectedCategory := cmbCategory.items[cmbCategory.itemindex];
+
+  For friend In friendslist Do
+  Begin
+    If friend.getCategory = selectedCategory Then
+      lbxPotentialGuests.AddItem(friend.getFullName, friend);
+  End;
+
+End;
+
+Procedure TForm1.FormCreate(Sender: TObject);
+Var
+  filename: String;
+  infile: textfile;
+  fullName: String;
+  cellNumber: String;
+  birthDate: TDateTime;
+  lastSeen: TDateTime;
+  category: String;
+  friendCSVlist: TstringList;
+  line: String;
+
+Begin
+  { ==================
+    create Tlist.
+    Read list from csv file
+    tsringList to put csv into obj
+    add obj to Friends list
+    ================== }
+  friendslist := Tlist<Tfriend>.Create;
+  friendCSVlist := TstringList.Create;
+  filename := 'Friends.CSV';
+  AssignFile(infile, filename);
+  If FileExists(filename) Then
+  Begin
+    reset(infile);
+    friendCSVlist.Delimiter := ',';
+    While Not eof(infile) Do
+    Begin
+      { read a line }
+      readln(infile, line);
+      friendCSVlist.DelimitedText := line;
+      { fill the variables }
+      fullName := friendCSVlist[0];
+      cellNumber := friendCSVlist[1];
+      birthDate := strtoDate(friendCSVlist[2]);
+      lastSeen := strtoDate(friendCSVlist[3]);
+      category := friendCSVlist[4];
+      {Add instatiation of FriendClass to list}
+      friendslist.add(Tfriend.Create(fullName, cellNumber, birthDate, lastSeen,
+          category));
+    End;
+  End
+  Else
+    showmessage('file not found ' + filename);
+End;
+
+Function TForm1.GetSelectedItems: Tlist<Tfriend>;
+Var
+  selectedList: Tlist<Tfriend>;
+  i: integer;
+Begin
+  selectedList := Tlist<Tfriend>.Create;
+
+  For i := 0 To lbxPotentialGuests.Count - 1 Do
+    If lbxPotentialGuests.Selected[i] Then
+    Begin
+      selectedList.add(lbxPotentialGuests.items.Objects[i] As Tfriend);
+    End;
+  result := selectedList;
+End;
+
+Procedure TForm1.btnNewFriendClick(Sender: TObject);
+Var
+  friendobj: Tfriend;
+  fullName: String;
+  cellNumber: String;
+  birthDate: TDateTime;
+  lastSeen: TDateTime;
+  category: String;
+Begin
+  { ==================
+    Create object
+    get parameters from edtboxes
+    read data
+    Add to list
+    display new friend on memo with toString.
+    ================= }
+  fullName := edtFullName.Text;
+  cellNumber := edtCellNumber.Text;
+  birthDate := strtoDate(edtBirthDate.Text);
+  lastSeen := strtoDate(edtBirthDate.Text);
+  category := ComboBox1.items[ComboBox1.itemindex];
+  ShowMessageFmt('%s', [category]);
+  friendobj := Tfriend.Create(fullName, cellNumber, birthDate, lastSeen,
+    category);
+  friendslist.add(friendobj);
+  showmessage(friendobj.ToString);
+
+End;
+
+End.

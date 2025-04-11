@@ -1,0 +1,61 @@
+// Enter your name here
+
+unit Battery_U;
+
+interface
+
+uses SysUtils, Math;
+
+type
+
+  TBattery = class(TObject)
+
+  private
+  var
+    fModel: String;
+    fType: String;
+    fSize: Integer;
+    fVoltage: Integer;
+    fPrice: real;
+
+  public
+    constructor create; overload;
+    constructor create(sModel, sType: String; sSize, sVoltage: Integer;
+      sPrice: real); overload;
+    function getPrice(): String;
+
+  end;
+
+implementation
+
+{ TBattery }
+
+{ TBattery }
+
+constructor TBattery.create(sModel, sType: String; sSize, sVoltage: Integer;
+  sPrice: real);
+begin
+
+  fModel := sModel;
+  fType := sType;
+  fSize := sSize;
+  fVoltage := sVoltage;
+  fPrice := sPrice;
+
+end;
+
+function TBattery.getPrice: String;
+begin
+
+  result := FloatToStrF(fPrice, ffCurrency, 8, 2);
+
+end;
+
+constructor TBattery.create;
+begin
+
+end;
+
+{ TBattery }
+
+end.

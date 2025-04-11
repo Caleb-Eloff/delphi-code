@@ -1,0 +1,78 @@
+unit sudoku_u;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Grids;
+
+type
+  TfrmSudoku = class(TForm)
+    grdSudoku: TStringGrid;
+    lblHeader: TLabel;
+    btnCheckSolution: TButton;
+    procedure btnCheckSolutionClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmSudoku: TfrmSudoku;
+
+implementation
+
+{$R *.dfm}
+
+function HasDuplicates(aNumbers : Array of Integer) : Boolean;
+var
+  bHasDuplicates : Boolean;
+  i, j: Integer;
+
+begin
+  bHasDuplicates := False;
+  for i := 0 to 8 do
+    for j := i + 1 to 8 do
+      if (aNumbers[i] = aNumbers[j]) and (aNumbers[j] > 0) then
+        bHasDuplicates := True;
+
+  Result := bHasDuplicates;
+end;
+
+procedure TfrmSudoku.btnCheckSolutionClick(Sender: TObject);
+var
+  aNumbers : Array[0..8, 0..8] of Integer;
+  aToCheck : Array[0..8] of Integer;
+  i, j : Integer;
+  bHasDuplicates : Boolean;
+
+begin
+  for i := 0 to 8 do
+    for j := 0 to 8 do
+      if grdSudoku.Cells[i, j] <> '' then
+        aNumbers[i, j] := StrToInt(grdSudoku.Cells[i, j])
+      else
+        aNumbers[i, j] := 0;
+
+  for i := 0 to 8 do
+  begin
+    for j := 0 to 8 do
+      aToCheck[j] := aNumbers[i, j];
+    bHasDuplicates := HasDuplicates(aToCheck);
+    if bHasDuplicates then
+      ShowMessage('Duplicate found in column ' + IntToStr(i + 1));
+  end;
+
+  for j := 0 to 8 do
+  begin
+    for i := 0 to 8 do
+      aToCheck[i] := aNumbers[i, j];
+    bHasDuplicates := HasDuplicates(aToCheck);
+    if bHasDuplicates then
+      ShowMessage('Duplicate found in row ' + IntToStr(j + 1));
+  end;
+
+end;
+
+end.

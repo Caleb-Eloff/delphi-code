@@ -1,0 +1,30 @@
+4G	Fourth generation of cellular wireless
+5G	Fifth Generation of cellular wireless
+4IR	Fourth Industrial Revolution
+ADSL	Asymmetric Digital Subscriber Line
+AJAX	Asynchronous JavaScript and XML
+ASCII	American Standard Code for Information Interchange
+BIOS	Basic Input Output System
+CPU	Central Processing Unit
+CSS	Cascading Style Sheets
+DBA	Database Administrator
+DBMS	Database Management System
+DIV	Integer division
+DVD	Digital Versatile Disc
+EDP	Event Driven Programming
+ERD	Entity Relationship Diagrams
+FOSS	Free Open Source Software
+FTP	File Transfer Protocol
+GIGO	Garbage-In Garbage-Out
+GPS	Global Positioning System
+GPU	Graphic Processing Unit
+GUI	Graphical User Interface
+HAN	Home Area Network
+HCI	Human Computer Interface
+HDD	Hard Disk Drive
+HDMI	High Definition Multimedia Interface
+HDMI	High-definition Multimedia Interface
+HTML	Hypertext Mark-up Language
+HTTP	Hypertext Transfer Protocol
+HTTPS	Hypertext Transfer Protocol Secure
+I/O	Input-Output
