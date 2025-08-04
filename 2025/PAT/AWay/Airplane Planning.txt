@@ -1,0 +1,25 @@
+`Customers; Staff; Owner
+
+Customers (2 Types):
+Type 1: Airplane flyers, of which there are different classes. Must be able to book seats with different prices and classes and positions.
+Receive extra info: flight time, duration, destination, cost, snacks, etc.
+
+Type 2: Delivery, couriers, must be able to provide weight classes for objects for travel. Cost fee calculated + times + destinations
+
+Staff (4 Types [For now*])
+Pilot: See when they need depart, important details, report issues on flights, with planes, also see salary deductions and such.
+Mechanics: See condition of certain vehicles, see maintenance dates, comment on changes necessary, and also delay flights.
+Air hosts/hostesses: See which flight they are on, what drinks need to be served to which class, custom orders from customers, certain luggage that is fragile, pets, etc.
+Air control: Take note of all planes coming and going, designate departures, delays, and make announcements due to bad weather and such.
+
+Owner: Allocate pay checks, see the costs of repairs and the condition of aircrafts as a percentage. Track flights. See if employees are on flights. See how much money is being made etc.
+
+
+Plan of ACTION:
+
+1. Sign-up + Login + Backgrounds :D
+
+
+Part 2
+Owner / Staff
+2 Customers

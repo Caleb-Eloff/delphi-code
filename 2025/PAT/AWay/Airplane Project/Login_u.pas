@@ -1,0 +1,76 @@
+unit Login_u;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, PNGImage,
+  Register_u, Home_u;
+
+type
+  TfrmLogin = class(TForm)
+    imgLoginBackground: TImage;
+    lblLogin: TLabel;
+    lblLoginEmail: TLabel;
+    edtLoginEmail: TEdit;
+    lblLoginPassword: TLabel;
+    edtLoginPassword: TEdit;
+    btnLogin: TButton;
+    lblRegister: TLabel;
+    procedure FormCreate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure lblRegisterClick(Sender: TObject);
+    procedure btnLoginClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmLogin: TfrmLogin;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmLogin.btnLoginClick(Sender: TObject);
+begin
+
+  frmLogin.Hide;
+
+  frmHome.Left := frmLogin.Left;
+  frmHome.Top := frmLogin.Top;
+
+  frmHome.Show;
+
+end;
+
+procedure TfrmLogin.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+
+  Application.Terminate;
+
+end;
+
+procedure TfrmLogin.FormCreate(Sender: TObject);
+begin
+
+  imgLoginBackground.Picture.LoadFromFile('Background.png');
+
+end;
+
+procedure TfrmLogin.lblRegisterClick(Sender: TObject);
+begin
+
+  frmLogin.Hide;
+
+  frmRegister.Left := frmLogin.Left;
+  frmRegister.Top := frmLogin.Top;
+
+  frmRegister.Show;
+
+end;
+
+end.
