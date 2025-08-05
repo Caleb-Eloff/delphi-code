@@ -35,7 +35,7 @@ begin
   // Maximize to full screen
   WindowState := wsMaximized;
 
-  // Load background image
+  // Load your background image (PNG, JPG, etc.)
   imgBackground.Picture.LoadFromFile('HomePage.png');
 
   // Centre panel

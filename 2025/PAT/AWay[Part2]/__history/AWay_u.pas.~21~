@@ -35,13 +35,18 @@ begin
   // Maximize to full screen
   WindowState := wsMaximized;
 
-  // Load background image
+  // Load your background image (PNG, JPG, etc.)
   imgBackground.Picture.LoadFromFile('HomePage.png');
 
-  // Centre panel
-  Panel1.Left := (ClientWidth - Panel1.Width) DIV 2;
-  Panel1.Top := (ClientHeight - Panel1.Height) DIV 2;
+  // We’ll size it manually so disable align-to-client
+  { imgBackground.Align := alNone;
+    imgBackground.Stretch := True;
+    imgBackground.Proportional := False;
+    imgBackground.Center := True;
 
+    // Perform initial sizing
+
+    imgBackground.Align := alClient; }
 end;
 
 end.

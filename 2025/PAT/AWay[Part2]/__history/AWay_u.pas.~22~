@@ -35,12 +35,12 @@ begin
   // Maximize to full screen
   WindowState := wsMaximized;
 
-  // Load background image
+  // Load your background image (PNG, JPG, etc.)
   imgBackground.Picture.LoadFromFile('HomePage.png');
 
   // Centre panel
   Panel1.Left := (ClientWidth - Panel1.Width) DIV 2;
-  Panel1.Top := (ClientHeight - Panel1.Height) DIV 2;
+  Panel1.Left := (ClientWidth - Panel1.Width) DIV 2;
 
 end;
 

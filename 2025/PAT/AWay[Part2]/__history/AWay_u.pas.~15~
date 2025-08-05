@@ -11,8 +11,6 @@ uses
 type
   TForm1 = class(TForm)
     imgBackground: TImage;
-    Panel1: TPanel;
-    Button1: TButton;
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
@@ -35,13 +33,18 @@ begin
   // Maximize to full screen
   WindowState := wsMaximized;
 
-  // Load background image
-  imgBackground.Picture.LoadFromFile('HomePage.png');
+  // Load your background image (PNG, JPG, etc.)
+  imgBackground.Picture.LoadFromFile('Win32\Debug\HomePage.png');
 
-  // Centre panel
-  Panel1.Left := (ClientWidth - Panel1.Width) DIV 2;
-  Panel1.Top := (ClientHeight - Panel1.Height) DIV 2;
+  // We’ll size it manually so disable align-to-client
+  imgBackground.Align := alNone;
+  imgBackground.Stretch := True;
+  imgBackground.Proportional := False;
+  imgBackground.Center := True;
 
+  // Perform initial sizing
+
+  imgBackground.Align := alClient;
 end;
 
 end.
