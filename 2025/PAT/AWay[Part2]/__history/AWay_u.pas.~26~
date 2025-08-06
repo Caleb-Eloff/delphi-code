@@ -43,6 +43,7 @@ begin
   Panel1.Top := (ClientHeight - Panel1.Height) DIV 2;
 
 
+
 end;
 
 end.

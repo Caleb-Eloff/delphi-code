@@ -209653,14 +209653,23 @@ object Form1: TForm1
     Height = 425
     Anchors = []
     Caption = 'Panel1'
+    Color = clBackground
+    Ctl3D = True
+    ParentBackground = False
+    ParentCtl3D = False
     TabOrder = 0
-    object Button1: TButton
-      Left = 56
-      Top = 40
-      Width = 249
-      Height = 329
-      Caption = 'Button1'
-      TabOrder = 0
+    object shpMenu: TShape
+      Left = 1
+      Top = 1
+      Width = 343
+      Height = 423
+      Align = alClient
+      Brush.Color = -1
+      Pen.Style = psClear
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 345
+      ExplicitHeight = 425
     end
   end
 end
