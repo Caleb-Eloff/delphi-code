@@ -42,6 +42,7 @@ begin
   Panel1.Left := (ClientWidth - Panel1.Width) DIV 2;
   Panel1.Top := (ClientHeight - Panel1.Height) DIV 2;
 
+
 end;
 
 end.

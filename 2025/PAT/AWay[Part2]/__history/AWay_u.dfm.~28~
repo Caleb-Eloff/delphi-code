@@ -12,6 +12,9 @@ object Form1: TForm1
   Font.Style = []
   Position = poDesigned
   OnCreate = FormCreate
+  DesignSize = (
+    1600
+    880)
   TextHeight = 15
   object imgBackground: TImage
     Left = 0
@@ -209644,19 +209647,16 @@ object Form1: TForm1
     ExplicitHeight = 80
   end
   object Panel1: TPanel
-    Left = 632
-    Top = 272
+    Left = 848
+    Top = 256
     Width = 345
     Height = 425
+    Anchors = []
     Caption = 'Panel1'
+    Color = clWhite
+    Ctl3D = True
+    ParentBackground = False
+    ParentCtl3D = False
     TabOrder = 0
-    object Button1: TButton
-      Left = 56
-      Top = 40
-      Width = 249
-      Height = 329
-      Caption = 'Button1'
-      TabOrder = 0
-    end
   end
 end
