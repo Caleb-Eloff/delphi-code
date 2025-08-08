@@ -26,15 +26,6 @@ type
     edtRegisterReEnter: TEdit;
     btnRegister: TButton;
     lblRegisterAccount: TLabel;
-    pnlLogin: TPanel;
-    Image1: TImage;
-    lblLogin: TLabel;
-    Label4: TLabel;
-    Label5: TLabel;
-    Label7: TLabel;
-    Edit3: TEdit;
-    Edit4: TEdit;
-    btnLogin: TButton;
     procedure FormCreate(Sender: TObject);
     procedure lblRegisterAccountClick(Sender: TObject);
 
@@ -79,7 +70,6 @@ procedure TForm1.lblRegisterAccountClick(Sender: TObject);
 begin
 
   pnlRegister.Hide;
-  pnlLogin.Show;
 
 end;
 

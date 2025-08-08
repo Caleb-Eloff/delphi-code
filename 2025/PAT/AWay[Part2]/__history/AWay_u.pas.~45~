@@ -26,17 +26,7 @@ type
     edtRegisterReEnter: TEdit;
     btnRegister: TButton;
     lblRegisterAccount: TLabel;
-    pnlLogin: TPanel;
-    Image1: TImage;
-    lblLogin: TLabel;
-    Label4: TLabel;
-    Label5: TLabel;
-    Label7: TLabel;
-    Edit3: TEdit;
-    Edit4: TEdit;
-    btnLogin: TButton;
     procedure FormCreate(Sender: TObject);
-    procedure lblRegisterAccountClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -72,14 +62,6 @@ begin
   btnRegister.Left := (pnlRegister.Width - btnRegister.Width) DIV 2;
   lblRegisterAccount.Left :=
     (pnlRegister.Width - lblRegisterAccount.Width) DIV 2;
-
-end;
-
-procedure TForm1.lblRegisterAccountClick(Sender: TObject);
-begin
-
-  pnlRegister.Hide;
-  pnlLogin.Show;
 
 end;
 
