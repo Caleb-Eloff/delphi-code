@@ -25,8 +25,19 @@ type
     lblRegisterReEnter: TLabel;
     edtRegisterReEnter: TEdit;
     btnRegister: TButton;
+    lblLoginAccount: TLabel;
+    pnlLogin: TPanel;
+    imgLoginMenu: TImage;
+    lblLogin: TLabel;
+    lblLoginEmail: TLabel;
+    lblLoginPassword: TLabel;
     lblRegisterAccount: TLabel;
+    edtLoginEmail: TEdit;
+    edtLoginPassword: TEdit;
+    btnLogin: TButton;
     procedure FormCreate(Sender: TObject);
+    procedure lblLoginAccountClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
 
   private
     { Private declarations }
@@ -53,14 +64,41 @@ begin
   // Load background image
   imgBackground.Picture.LoadFromFile('HomePage.jpg');
 
-  // Centre Register Panel
+  // Set up Register Panel
   pnlRegister.Left := (ClientWidth - pnlRegister.Width) DIV 2;
   pnlRegister.Top := (ClientHeight - pnlRegister.Height) DIV 2;
+  imgLoginMenu.Picture.LoadFromFile('MenuBackground.png');
+
+  // Set up Login Panel
+  pnlLogin.Left := (ClientWidth - pnlLogin.Width) DIV 2;
+  pnlLogin.Top := (ClientHeight - pnlLogin.Height) DIV 2;
+  imgLoginMenu.Picture.LoadFromFile('MenuBackground.png');
 
   // Align Register Panel's labels and buttons
   lblRegister.Left := (pnlRegister.Width - lblRegister.Width) DIV 2;
   btnRegister.Left := (pnlRegister.Width - btnRegister.Width) DIV 2;
-  blRegisterAccount.Left := (pnlRegister.Width - lblRegisterAccount.Width) DIV 2;
+  lblLoginAccount.Left := (pnlRegister.Width - lblLoginAccount.Width) DIV 2;
+
+  // Align Login Panel's labels and buttons
+  lblLogin.Left := (pnlLogin.Width - lblLogin.Width) DIV 2;
+  btnLogin.Left := (pnlLogin.Width - btnLogin.Width) DIV 2;
+  lblRegisterAccount.Left := (pnlLogin.Width - lblRegisterAccount.Width) DIV 2;
+
+end;
+
+procedure TForm1.FormShow(Sender: TObject);
+begin
+
+  pnlLogin.Hide;
+  pnlRegister.Show;
+
+end;
+
+procedure TForm1.lblLoginAccountClick(Sender: TObject);
+begin
+
+  pnlRegister.Hide;
+  pnlLogin.Show;
 
 end;
 

@@ -109,6 +109,7 @@ begin
   pnlLogin.Hide;
   pnlRegister.Show;
 
+
 end;
 
 end.

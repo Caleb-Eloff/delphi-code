@@ -37,8 +37,6 @@ type
     btnLogin: TButton;
     procedure FormCreate(Sender: TObject);
     procedure lblLoginAccountClick(Sender: TObject);
-    procedure FormShow(Sender: TObject);
-    procedure lblRegisterAccountClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -65,15 +63,13 @@ begin
   // Load background image
   imgBackground.Picture.LoadFromFile('HomePage.jpg');
 
-  // Set up Register Panel
+  // Centre Register Panel
   pnlRegister.Left := (ClientWidth - pnlRegister.Width) DIV 2;
   pnlRegister.Top := (ClientHeight - pnlRegister.Height) DIV 2;
-  imgRegisterMenu.Picture.LoadFromFile('MenuBackground.png');
 
-  // Set up Login Panel
-  pnlLogin.Left := (ClientWidth - pnlLogin.Width) DIV 2;
-  pnlLogin.Top := (ClientHeight - pnlLogin.Height) DIV 2;
-  imgLoginMenu.Picture.LoadFromFile('MenuBackground.png');
+  // Centre Register Panel
+  pnlRegister.Left := (ClientWidth - pnlRegister.Width) DIV 2;
+  pnlRegister.Top := (ClientHeight - pnlRegister.Height) DIV 2;
 
   // Align Register Panel's labels and buttons
   lblRegister.Left := (pnlRegister.Width - lblRegister.Width) DIV 2;
@@ -87,27 +83,11 @@ begin
 
 end;
 
-procedure TForm1.FormShow(Sender: TObject);
-begin
-
-  pnlLogin.Hide;
-  pnlRegister.Show;
-
-end;
-
 procedure TForm1.lblLoginAccountClick(Sender: TObject);
 begin
 
   pnlRegister.Hide;
   pnlLogin.Show;
-
-end;
-
-procedure TForm1.lblRegisterAccountClick(Sender: TObject);
-begin
-
-  pnlLogin.Hide;
-  pnlRegister.Show;
 
 end;
 
