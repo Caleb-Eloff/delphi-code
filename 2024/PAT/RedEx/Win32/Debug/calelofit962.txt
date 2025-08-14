@@ -1,0 +1,11 @@
+.KeepFit
+,Dumbbell Bicep Curls*15
+,Tricep Kickbacks*15
+,Push-Ups*15
+,Lateral Raises*15
+,Front Raises*15
+,Dumbbell Bench Press*15
+,Chest Flys*15
+,Incline Push-Ups*15
+,Cobra*15
+,Decline Push-Ups*15

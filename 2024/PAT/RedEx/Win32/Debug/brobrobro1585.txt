@@ -1,0 +1,16 @@
+.^LoseWeight;
+,Push-Ups*5
+,Bicep Curls*5
+,Tricep Dips*5
+,Hammer Curls*5
+,Planks to Push-Ups*5
+,Wall Push-Ups*5
+,Chest Openers*5
+,Incline Push-Ups*5
+,Arm Crosses*5
+,Lateral Arm Raises*5
+,Crunches*5
+,Seated Leg Lifts*5
+,Torso Twist*5
+,Plank*5
+,Mountain Climbers*5

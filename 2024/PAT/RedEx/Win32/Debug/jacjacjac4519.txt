@@ -1,0 +1,21 @@
+.^BuildMuscle;
+,Dumbbell Curls*15
+,Tricep Dips*15
+,Skull Crushers*15
+,Hammer Curls*15
+,Barbell Curls*15
+,Floor Press*15
+,Chest Flys*15
+,Chest Dips*15
+,1-Arm Push-Ups*15
+,Decline Push-Ups*15
+,Weighted Sit-Ups*15
+,Russian Twists*15
+,V-Ups*15
+,Reverse Crunches*15
+,Flutter Kicks*15
+,Bodyweight Squats*15
+,Bulgarian Squats*15
+,Calf Raises*15
+,Side Lunges*15
+,Jump Squats*15

@@ -1,0 +1,6 @@
+.BuildMuscle
+,Bodyweight Squats*20
+,Bulgarian Split Squats*20
+,Calf Raises*20
+,Side Lunges*20
+,Jump Squats*20

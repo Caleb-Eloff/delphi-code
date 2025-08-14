@@ -1,0 +1,202 @@
+unit Training_u;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Math,
+  GIFImg;
+
+type
+  TfrmTraining = class(TForm)
+    lblExercise: TLabel;
+    lblWorkout: TLabel;
+    lblReps: TLabel;
+    btnNext: TButton;
+    imgMotivation: TImage;
+    imgBackground: TImage;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormShow(Sender: TObject);
+    procedure btnNextClick(Sender: TObject);
+
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    TExercises, TReps: TStringList;
+  end;
+
+var
+  frmTraining: TfrmTraining;
+
+implementation
+
+{$R *.dfm}
+
+uses Home_u, SignUp_u, SignIn_u;
+
+procedure TfrmTraining.btnNextClick(Sender: TObject);
+var
+  sLine: String;
+  FileContents: TStringList;
+  iRandom: Integer;
+
+begin
+  // Load a random motivational image
+  iRandom := RandomRange(1, 11);
+  imgMotivation.Picture.LoadFromFile('img' + IntToStr(iRandom) + '.jpg');
+
+  // Check if there are more exercises to display
+  if TExercises.Count > 0 then
+  begin
+
+    TExercises.Delete(0);
+    TReps.Delete(0);
+
+    // Display the next exercise and reps if available
+    if TExercises.Count > 0 then
+    begin
+      lblExercise.Caption := 'Exercise: ' + TExercises[0];
+      lblReps.Caption := 'Reps: ' + TReps[0];
+    end
+    else
+    begin
+      // No more exercises
+      lblExercise.Caption := 'No more exercises!';
+      lblReps.Caption := '';
+      frmHome.sCompletion := 'Completed';
+      frmTraining.Hide;
+      frmHome.Show;
+
+      // Load the file contents to update the workout completion status
+      FileContents := TStringList.Create;
+      try
+        if iFile1 > 0 then
+          FileContents.LoadFromFile(frmSignUp.sUserID + '.txt')
+        else if iFile2 > 0 then
+          FileContents.LoadFromFile(frmSignIn.sUserID + '.txt');
+
+        // Update the line with the workout name to mark it as completed
+        for var i := 0 to FileContents.Count - 1 do
+        begin
+          sLine := FileContents[i];
+          if sLine = '.' + frmHome.sWorkoutName + ';' then
+          begin
+            FileContents[i] := sLine[1] + '^' + Copy(sLine, 2, Length(sLine));
+            Break;
+          end;
+        end;
+
+        // Save the updated file contents back
+        if iFile1 > 0 then
+          FileContents.SaveToFile(frmSignUp.sUserID + '.txt')
+        else if iFile2 > 0 then
+          FileContents.SaveToFile(frmSignIn.sUserID + '.txt');
+      finally
+        FileContents.Free;
+      end;
+
+    end;
+
+  end
+  else
+  begin
+    // No more exercises
+    lblExercise.Caption := 'No more exercises!';
+    lblReps.Caption := '';
+    frmHome.sCompletion := 'Completed';
+    frmTraining.Hide;
+    frmHome.Show;
+
+  end;
+end;
+
+procedure TfrmTraining.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+
+  Application.Terminate; // Close the application
+
+end;
+
+procedure TfrmTraining.FormShow(Sender: TObject);
+var
+  ExFile: TextFile;
+  sLine: String;
+  iRandom: Integer;
+  bStartReading: Boolean;
+
+begin
+  // Set up a motivational image
+  iRandom := RandomRange(1, 11);
+  imgMotivation.Picture.LoadFromFile('img' + IntToStr(iRandom) + '.jpg');
+
+  // Display the workout name
+  lblWorkout.Caption := frmHome.sWorkoutName;
+
+  // Set exercise and reps lists
+  TExercises := TStringList.Create;
+  TReps := TStringList.Create;
+  bStartReading := False;
+
+  // Open the appropriate file based on the user
+  if iFile1 > 0 then
+  begin
+    AssignFile(ExFile, frmSignUp.sUserID + '.txt');
+  end
+  else if iFile2 > 0 then
+  begin
+    AssignFile(ExFile, frmSignIn.sUserID + '.txt');
+  end
+  else
+  begin
+    Exit;
+  end;
+
+  Reset(ExFile);
+
+  try
+    // Read through the file
+    while not Eof(ExFile) do
+    begin
+      ReadLn(ExFile, sLine);
+
+      // Start reading after finding the workout name
+      if (not bStartReading) and (sLine = '.' + frmHome.sWorkoutName + ';') then
+      begin
+        bStartReading := True;
+        Continue;
+      end;
+
+      // Stop at the new workout indicator (full stop) if already started
+      if bStartReading and (Length(sLine) > 0) and (sLine[1] = '.') then
+        Break;
+
+      // Add exercises and reps to the lists
+      if bStartReading and (Length(sLine) > 0) and (sLine[1] = ',') then
+      begin
+        TExercises.Add(Copy(sLine, 2, Pos('*', sLine) - 2));
+        TReps.Add(Copy(sLine, Pos('*', sLine) + 1, Length(sLine)));
+      end;
+    end;
+  finally
+    CloseFile(ExFile);
+  end;
+
+  // Display the first exercise and reps
+  if TExercises.Count > 0 then
+  begin
+    lblExercise.Caption := 'Exercise: ' + TExercises[0];
+    lblReps.Caption := 'Reps: ' + TReps[0];
+  end
+  else
+  begin
+    lblExercise.Caption := 'No more exercises!';
+    lblReps.Caption := '';
+    frmHome.sCompletion := 'Completed';
+    frmTraining.Hide;
+    frmHome.Show;
+  end;
+end;
+
+end.

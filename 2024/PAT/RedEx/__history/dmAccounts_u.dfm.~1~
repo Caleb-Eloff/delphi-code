@@ -1,0 +1,16 @@
+object dmAccounts: TdmAccounts
+  Height = 480
+  Width = 640
+  object conAccounts: TADOConnection
+    Left = 296
+    Top = 224
+  end
+  object tblAccounts: TADOTable
+    Left = 488
+    Top = 232
+  end
+  object dscAccounts: TDataSource
+    Left = 160
+    Top = 256
+  end
+end

@@ -1,0 +1,57 @@
+unit dmAccounts_u;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Data.DB, Data.Win.ADODB;
+
+type
+  TdmAccounts = class(TDataModule)
+    procedure DataModuleCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    tblAccounts, tblDetails: TADOTable;
+    dscAccounts: TDataSource;
+    conAccounts: TADOConnection;
+  end;
+
+var
+  dmAccounts: TdmAccounts;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+{$R *.dfm}
+
+procedure TdmAccounts.DataModuleCreate(Sender: TObject);
+begin
+
+  conAccounts := TADOConnection.Create(dmAccounts);
+  tblAccounts := TADOTable.Create(dmAccounts);
+  tblDetails := TADOTable.Create(dmAccounts);
+  dscAccounts := TDataSource.Create(dmAccounts);
+
+  conAccounts.Close;
+  conAccounts.ConnectionString :=
+    'Provider=Microsoft.Jet.OLEDB.4.0;Data Source =' +
+    ExtractFilePath(ParamStr(0)) + 'Accounts.mdb' +
+    ';Persist Security Info = False';
+  conAccounts.LoginPrompt := False;
+  conAccounts.Open;
+
+  tblAccounts.Connection := conAccounts;
+  tblAccounts.TableName	:= 'tblAccounts';
+  tblDetails.Connection := conAccounts;
+  tblDetails.TableName := 'tblDetails';
+
+  dscAccounts.DataSet := tblAccounts;
+
+  tblAccounts.Open;
+  tblDetails.Open;
+
+
+end;
+
+end.

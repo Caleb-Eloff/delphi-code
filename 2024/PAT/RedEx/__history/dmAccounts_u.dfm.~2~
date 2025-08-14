@@ -1,0 +1,28 @@
+object dmAccounts: TdmAccounts
+  Height = 480
+  Width = 640
+  object conAccounts: TADOConnection
+    Connected = True
+    ConnectionString = 
+      'Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\Users\cjelo\OneD' +
+      'rive\Desktop\PAT4\Accounts.mdb;Persist Security Info=False'
+    LoginPrompt = False
+    Mode = cmShareDenyNone
+    Provider = 'Microsoft.Jet.OLEDB.4.0'
+    Left = 296
+    Top = 160
+  end
+  object tblAccounts: TADOTable
+    Active = True
+    Connection = conAccounts
+    CursorType = ctStatic
+    TableName = 'tblAccounts'
+    Left = 296
+    Top = 224
+  end
+  object dscAccounts: TDataSource
+    DataSet = tblAccounts
+    Left = 296
+    Top = 288
+  end
+end

@@ -1,0 +1,27 @@
+unit dmAccounts_u;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Data.DB, Data.Win.ADODB;
+
+type
+  TdmAccounts = class(TDataModule)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    tblAccounts, tblDetails: TADOTable;
+    dscAccounts: TDataSource;
+    conAccoumts: TADOConnection;
+  end;
+
+var
+  dmAccounts: TdmAccounts;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+{$R *.dfm}
+
+end.

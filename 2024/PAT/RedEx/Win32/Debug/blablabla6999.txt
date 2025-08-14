@@ -1,0 +1,13 @@
+.Cry
+,Depression*30
+,Heart-Break*20
+.Ex
+,Depression*39
+.Blahz
+,Ex*1
+.^Pain;
+,Pain*30
+.Tada
+,WiiFit*30
+.Love
+,Heart-break*50

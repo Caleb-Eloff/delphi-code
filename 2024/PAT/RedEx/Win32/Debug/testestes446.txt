@@ -1,0 +1,11 @@
+.BuildMuscle
+,Floor Press*20
+,Chest Flys*20
+,Chest Dips*20
+,ingle-Arm Push-Ups*20
+,Decline Push-Ups*20
+,Weighted Sit-Ups*20
+,Russian Twists*20
+,V-Ups*20
+,Reverse Crunches*20
+,Flutter Kicks*20

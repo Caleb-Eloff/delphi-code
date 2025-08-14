@@ -1,0 +1,256 @@
+unit SignUp_u;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, JPEG, Vcl.ComCtrls,
+  Vcl.StdCtrls, Math, SignIn_u, Details_u, dmAccounts_u, Training_u;
+
+type
+  TfrmSignUp = class(TForm)
+    imgBackground: TImage;
+    lblHeading: TLabel;
+    lblFirstName: TLabel;
+    edtFirstName: TEdit;
+    edtLastName: TEdit;
+    lblLastName: TLabel;
+    edtEmail: TEdit;
+    lblEmail: TLabel;
+    lblPassword: TLabel;
+    edtPassword: TEdit;
+    lblReEnter: TLabel;
+    edtReEnter: TEdit;
+    btnRegister: TButton;
+    imgPassword: TImage;
+    imgReEnter: TImage;
+    lblLogin: TLabel;
+    procedure FormCreate(Sender: TObject);
+    procedure lblLoginClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btnRegisterClick(Sender: TObject);
+    procedure edtFirstNameKeyPress(Sender: TObject; var Key: Char);
+    procedure edtLastNameKeyPress(Sender: TObject; var Key: Char);
+    procedure edtPasswordKeyPress(Sender: TObject; var Key: Char);
+    procedure edtReEnterKeyPress(Sender: TObject; var Key: Char);
+    procedure edtEmailKeyPress(Sender: TObject; var Key: Char);
+    procedure imgPasswordClick(Sender: TObject);
+    procedure imgReEnterClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    sUserID: String;
+
+  end;
+
+var
+  frmSignUp: TfrmSignUp;
+
+implementation
+
+{$R *.dfm}
+
+Uses Home_u;
+
+procedure TfrmSignUp.btnRegisterClick(Sender: TObject);
+var
+  sFirstName, sLastName, sEmail, sPassword, sReEnter: String;
+  bFound: Boolean;
+begin
+
+  // Check if the account already exists
+  with dmAccounts do
+  begin
+    bFound := False;
+    tblAccounts.First;
+    while (not tblAccounts.Eof) and (not bFound) do
+    begin
+      if tblAccounts['Email'] = edtEmail.Text then
+      begin
+        bFound := True; // Account found
+      end
+      else
+      begin
+        tblAccounts.Next; // Move to the next record
+      end;
+    end;
+  end;
+
+  // Check for empty inputs
+  if (edtFirstName.Text = '') OR (edtLastName.Text = '') OR (edtEmail.Text = '')
+    OR (edtPassword.Text = '') OR (edtReEnter.Text = '') then
+  begin
+    ShowMessage('Please enter all your details.'); // Show error message
+  end
+  // Check for valid email properties
+  else if (Pos('@', edtEmail.Text) = 0) OR
+    ((Pos('.com', edtEmail.Text) = 0) AND (Pos('.co.za', edtEmail.Text) = 0))
+  then
+  begin
+    ShowMessage('Please enter a valid e-mail.'); // Show error message
+  end
+  // Check if passwords match
+  else if edtPassword.Text <> edtReEnter.Text then
+  begin
+    ShowMessage('Passwords do not match.'); // Show error message
+  end
+  // Check if account already exists
+  else if bFound then
+  begin
+    ShowMessage('Account already exists.'); // Show error message
+  end
+  else
+  begin
+    // Save inputs to variables
+    sFirstName := edtFirstName.Text;
+    sLastName := edtLastName.Text;
+    sEmail := edtEmail.Text;
+    sPassword := edtPassword.Text;
+    sReEnter := edtReEnter.Text;
+
+    // Create a unique UserID
+    sUserID := LowerCase(Copy(sFirstName, 1, 3)) +
+      LowerCase(Copy(sLastName, 1, 3)) + LowerCase(Copy(sEmail, 1, 3)) +
+      IntToStr(RandomRange(1, 101)) + IntToStr(RandomRange(1, 101));
+
+    // Insert newly made account into database
+    with dmAccounts do
+    begin
+      tblAccounts.Insert;
+      tblAccounts['UserID'] := LowerCase(sUserID);
+      tblAccounts['FirstName'] := sFirstName;
+      tblAccounts['LastName'] := sLastName;
+      tblAccounts['Email'] := LowerCase(sEmail);
+      tblAccounts['Password'] := sPassword;
+      tblAccounts['Admin'] := False;
+      tblAccounts.Post; // Save the new record to database
+    end;
+
+    // Show success message and navigate to the details form
+    ShowMessage
+      ('Congratulations! You have successfully registered your account.');
+    frmSignUp.Hide;
+    frmDetails.Left := frmSignUp.Left;
+    frmDetails.Top := frmSignUp.Top;
+    frmDetails.Show;
+  end;
+
+end;
+
+procedure TfrmSignUp.edtEmailKeyPress(Sender: TObject; var Key: Char);
+begin
+  // Allow only letters, numbers, '@', '.', and backspace
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '@', '.', #8]) then
+  begin
+    Key := #0; // Invalid keys removed
+  end;
+end;
+
+procedure TfrmSignUp.edtFirstNameKeyPress(Sender: TObject; var Key: Char);
+begin
+  // Allow only letters and backspace
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', #8]) then
+  begin
+    Key := #0; // Invalid keys removed
+  end;
+end;
+
+procedure TfrmSignUp.edtPasswordKeyPress(Sender: TObject; var Key: Char);
+begin
+  // Allow only letters, numbers, '@', '#', and backspace
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '@', '#', #8]) then
+  begin
+    Key := #0; // Invalid keys removed
+  end;
+end;
+
+procedure TfrmSignUp.edtReEnterKeyPress(Sender: TObject; var Key: Char);
+begin
+  // Allow only letters, numbers, '@', '#', and backspace
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '@', '#', #8]) then
+  begin
+    Key := #0; // Invalid keys removed
+  end;
+end;
+
+procedure TfrmSignUp.edtLastNameKeyPress(Sender: TObject; var Key: Char);
+begin
+  // Allow only letters and backspace
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', #8]) then
+  begin
+    Key := #0; // Invalid keys removed
+  end;
+end;
+
+procedure TfrmSignUp.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+
+  Application.Terminate; // Close the application
+
+end;
+
+procedure TfrmSignUp.FormCreate(Sender: TObject);
+begin
+  imgBackground.Picture.LoadFromFile('Background.jpg');
+  // Load the background image
+end;
+
+procedure TfrmSignUp.FormShow(Sender: TObject);
+begin
+  // Load the images for hiding the passwords and set password characters
+  imgPassword.Picture.LoadFromFile('Hide.jpg');
+  edtPassword.PasswordChar := '*';
+  imgReEnter.Picture.LoadFromFile('Hide.jpg');
+  edtReEnter.PasswordChar := '*';
+
+  // Clear all the input fields
+  edtFirstName.Clear;
+  edtLastName.Clear;
+  edtEmail.Clear;
+  edtPassword.Clear;
+  edtReEnter.Clear;
+end;
+
+procedure TfrmSignUp.imgPasswordClick(Sender: TObject);
+begin
+  // Toggle the password visibility
+  if edtPassword.PasswordChar = '*' then
+  begin
+    imgPassword.Picture.LoadFromFile('Show.jpg'); // Show password
+    edtPassword.PasswordChar := #0;
+  end
+  else if edtPassword.PasswordChar = #0 then
+  begin
+    edtPassword.PasswordChar := '*'; // Hide password
+    imgPassword.Picture.LoadFromFile('Hide.jpg');
+  end;
+end;
+
+procedure TfrmSignUp.imgReEnterClick(Sender: TObject);
+begin
+  // Toggle the re-enter password visibility
+  if edtReEnter.PasswordChar = '*' then
+  begin
+    imgReEnter.Picture.LoadFromFile('Show.jpg'); // Show re-entered password
+    edtReEnter.PasswordChar := #0;
+  end
+  else if edtReEnter.PasswordChar = #0 then
+  begin
+    edtReEnter.PasswordChar := '*'; // Hide re-entered password
+    imgReEnter.Picture.LoadFromFile('Hide.jpg');
+  end;
+end;
+
+procedure TfrmSignUp.lblLoginClick(Sender: TObject);
+begin
+  frmSignUp.Hide; // Hide the sign-up form
+  // Position the sign-in form
+  frmSignIn.Left := frmSignUp.Left;
+  frmSignIn.Top := frmSignUp.Top;
+  frmSignIn.Show; // Show the sign-in form
+end;
+
+end.

@@ -1,0 +1,655 @@
+unit Details_u;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,
+  dmAccounts_u;
+
+type
+  TfrmDetails = class(TForm)
+    pnlGender: TPanel;
+    imgMale: TImage;
+    lblGender: TLabel;
+    lblMale: TLabel;
+    lblFemale: TLabel;
+    btnNext1: TButton;
+    imgFemale: TImage;
+    lblCaption: TLabel;
+    pnlFocuses: TPanel;
+    lblFocuses: TLabel;
+    imgSelected: TImage;
+    btnNext2: TButton;
+    pnlGoals: TPanel;
+    lblGoals: TLabel;
+    btnNext3: TButton;
+    imgKeepFit: TImage;
+    imgBuildMuscle: TImage;
+    imgLoseWeight: TImage;
+    chbArms: TCheckBox;
+    chbChest: TCheckBox;
+    chbAbs: TCheckBox;
+    chbLegs: TCheckBox;
+    chbLoseWeight: TCheckBox;
+    chbBuildMuscle: TCheckBox;
+    chbKeepFit: TCheckBox;
+    rbLoseWeight: TRadioButton;
+    rbBuildMuscle: TRadioButton;
+    rbKeepFit: TRadioButton;
+    pnlWeeklyGoal: TPanel;
+    lblWeekly: TLabel;
+    btnFinish: TButton;
+    btnOne: TButton;
+    btnTwo: TButton;
+    btnThree: TButton;
+    btnFour: TButton;
+    btnFive: TButton;
+    btnSix: TButton;
+    btnSeven: TButton;
+    lblRecommendation: TLabel;
+    lblDays: TLabel;
+    btnBack3: TButton;
+    btnBack1: TButton;
+    btnBack2: TButton;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
+    procedure imgMaleClick(Sender: TObject);
+    procedure imgFemaleClick(Sender: TObject);
+    procedure btnNext1Click(Sender: TObject);
+    procedure btnNext2Click(Sender: TObject);
+    procedure btnBack1Click(Sender: TObject);
+    procedure btnBack2Click(Sender: TObject);
+    procedure btnNext3Click(Sender: TObject);
+    procedure btnBack3Click(Sender: TObject);
+    procedure btnFinishClick(Sender: TObject);
+    procedure btnOneClick(Sender: TObject);
+    procedure btnTwoClick(Sender: TObject);
+    procedure btnThreeClick(Sender: TObject);
+    procedure btnFourClick(Sender: TObject);
+    procedure btnFiveClick(Sender: TObject);
+    procedure btnSixClick(Sender: TObject);
+    procedure btnSevenClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmDetails: TfrmDetails;
+  sGender, sStartingDay: String;
+  iDays: Integer;
+  bArms, bChest, bAbs, bLegs, bLoseWeight, bBuildMuscle, bKeepFit: Boolean;
+
+implementation
+
+uses Home_u;
+
+{$R *.dfm}
+
+procedure TfrmDetails.btnNext2Click(Sender: TObject);
+begin
+  // Set focus areas to False
+  bArms := False;
+  bChest := False;
+  bAbs := False;
+  bLegs := False;
+
+  // Check if no focus area is selected
+  if (chbArms.Checked = False) AND (chbChest.Checked = False) AND
+    (chbAbs.Checked = False) AND (chbLegs.Checked = False) then
+  begin
+    // Ask user to select a focus area
+    ShowMessage('Please select your focus area/s.');
+  end
+  else
+  begin
+    // Hide current panel and show next panel with goals
+    pnlFocuses.Hide;
+    imgLoseWeight.Picture.LoadFromFile('LoseWeight.jpg');
+    imgBuildMuscle.Picture.LoadFromFile('BuildMuscle.jpg');
+    imgKeepFit.Picture.LoadFromFile('KeepFit.jpg');
+    pnlGoals.Show;
+
+    // Set focus areas
+    if chbArms.Checked then
+      bArms := True;
+    if chbChest.Checked then
+      bChest := True;
+    if chbAbs.Checked then
+      bAbs := True;
+    if chbLegs.Checked then
+      bLegs := True;
+  end;
+
+end;
+
+procedure TfrmDetails.btnNext3Click(Sender: TObject);
+begin
+  // Set goal variables to null
+  iDays := 0;
+  bLoseWeight := False;
+  bBuildMuscle := False;
+  bKeepFit := False;
+
+  // Check if no main goal is selected
+  if (rbLoseWeight.Checked = False) AND (rbBuildMuscle.Checked = False) AND
+    (rbKeepFit.Checked = False) then
+  begin
+    // Prompt user to select a main goal
+    ShowMessage('Please select your main goal.');
+  end
+  else
+  begin
+    // Hide current panel and show next panel with weekly goals
+    pnlGoals.Hide;
+    pnlWeeklyGoal.Show;
+
+    // Set main goal
+    if rbLoseWeight.Checked then
+      bLoseWeight := True;
+    if rbBuildMuscle.Checked then
+      bBuildMuscle := True;
+    if rbKeepFit.Checked then
+      bKeepFit := True;
+
+  end;
+
+end;
+
+procedure TfrmDetails.btnOneClick(Sender: TObject);
+begin
+  iDays := 1; // Set number of workout days to 1
+end;
+
+procedure TfrmDetails.btnSevenClick(Sender: TObject);
+begin
+  iDays := 7; // Set number of workout days to 7
+end;
+
+procedure TfrmDetails.btnSixClick(Sender: TObject);
+begin
+  iDays := 6; // Set number of workout days to 6
+end;
+
+procedure TfrmDetails.btnThreeClick(Sender: TObject);
+begin
+  iDays := 3; // Set number of workout days to 3
+end;
+
+procedure TfrmDetails.btnTwoClick(Sender: TObject);
+begin
+  iDays := 2; // Set number of workout days to 2
+end;
+
+procedure TfrmDetails.btnBack1Click(Sender: TObject);
+begin
+
+  // Reset focus areas and show previous panel
+  chbArms.Checked := False;
+  chbChest.Checked := False;
+  chbAbs.Checked := False;
+  chbLegs.Checked := False;
+  pnlFocuses.Hide;
+  pnlGender.Show;
+
+end;
+
+procedure TfrmDetails.btnBack2Click(Sender: TObject);
+begin
+
+  // Reset main goal selection and show previous panel
+  rbLoseWeight.Checked := False;
+  rbBuildMuscle.Checked := False;
+  rbKeepFit.Checked := False;
+  pnlGoals.Hide;
+  pnlFocuses.Show;
+
+end;
+
+procedure TfrmDetails.btnBack3Click(Sender: TObject);
+begin
+
+  pnlWeeklyGoal.Hide; // Hide current panel
+  pnlGoals.Show; // Show previous panel
+
+end;
+
+procedure TfrmDetails.btnFinishClick(Sender: TObject);
+var
+  ExFiles: TextFile;
+
+begin
+  // Insert details into the database
+  with dmAccounts do
+  begin
+    tblDetails.Insert;
+
+    tblDetails['UserID'] := tblAccounts['UserID'];
+    tblDetails['Gender'] := sGender;
+    tblDetails['Arms'] := bArms;
+    tblDetails['Chest'] := bChest;
+    tblDetails['Abs'] := bAbs;
+    tblDetails['Legs'] := bLegs;
+    tblDetails['LoseWeight'] := bLoseWeight;
+    tblDetails['BuildMuscle'] := bBuildMuscle;
+    tblDetails['KeepFit'] := bKeepFit;
+    tblDetails['Days'] := iDays;
+
+    tblDetails.Post;
+  end;
+
+  // Insert details into the database
+  AssignFile(ExFiles, dmAccounts.tblDetails['UserID'] + '.txt');
+  Rewrite(ExFiles);
+
+  // Write exercise routine based on gender and goals
+  if (dmAccounts.tblDetails['Gender'] = 'Male') then
+  begin
+    if (dmAccounts.tblDetails['LoseWeight'] = 'True') then
+    begin
+
+      Writeln(ExFiles, '.LoseWeight'); // Represents activity name
+
+      if (dmAccounts.tblDetails['Arms'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Push-Ups*10'); // , Represents exercise name
+        Writeln(ExFiles, ',Bicep Curls*10'); // * Represents amount of exercise
+        Writeln(ExFiles, ',Tricep Dips*10');
+        Writeln(ExFiles, ',Hammer Curls*10');
+        Writeln(ExFiles, ',Planks to Push-Ups*10');
+
+      end;
+
+      if (dmAccounts.tblDetails['Chest'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Wall Push-Ups*10');
+        Writeln(ExFiles, ',Chest Openers*10');
+        Writeln(ExFiles, ',Incline Push-Ups*10');
+        Writeln(ExFiles, ',Arm Crosses*10');
+        Writeln(ExFiles, ',Lateral Arm Raises*10');
+
+      end;
+
+      if (dmAccounts.tblDetails['Abs'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Crunches*10');
+        Writeln(ExFiles, ',Seated Leg Lifts*10');
+        Writeln(ExFiles, ',Torso Twist*10');
+        Writeln(ExFiles, ',Plank*10');
+        Writeln(ExFiles, ',Mountain Climbers*10');
+
+      end;
+
+      if (dmAccounts.tblDetails['Legs'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Bodyweight Squats*10');
+        Writeln(ExFiles, ',Lateral Leg Raises*10');
+        Writeln(ExFiles, ',Calf Raises*10');
+        Writeln(ExFiles, ',Step-Ups*10');
+        Writeln(ExFiles, ',Wall Sit*10');
+
+      end;
+
+    end;
+
+    if (dmAccounts.tblDetails['KeepFit'] = 'True') then
+    begin
+
+      Writeln(ExFiles, '.KeepFit'); // . Represents activity name
+
+      if (dmAccounts.tblDetails['Arms'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Dumbbell Bicep Curls*15');
+        Writeln(ExFiles, ',Tricep Kickbacks*15');
+        Writeln(ExFiles, ',Push-Ups*15');
+        Writeln(ExFiles, ',Lateral Raises*15');
+        Writeln(ExFiles, ',Front Raises*15');
+
+      end;
+
+      if (dmAccounts.tblDetails['Chest'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Dumbbell Bench Press*15');
+        Writeln(ExFiles, ',Chest Flys*15');
+        Writeln(ExFiles, ',Incline Push-Ups*15');
+        Writeln(ExFiles, ',Cobra*15');
+        Writeln(ExFiles, ',Decline Push-Ups*15');
+
+      end;
+
+      if (dmAccounts.tblDetails['Abs'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Plank*15');
+        Writeln(ExFiles, ',Russian Twists*15');
+        Writeln(ExFiles, ',Bicycle Crunches*15');
+        Writeln(ExFiles, ',Leg Raises*15');
+        Writeln(ExFiles, ',Mountain Climbers*15');
+
+      end;
+
+      if (dmAccounts.tblDetails['Legs'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Bodyweight Squats*15');
+        Writeln(ExFiles, ',Wall Sits*15');
+        Writeln(ExFiles, ',Calf Raises*15');
+        Writeln(ExFiles, ',Lunges*15');
+        Writeln(ExFiles, ',Pilates Leg Lifts*15');
+
+      end;
+
+    end;
+
+    if (dmAccounts.tblDetails['BuildMuscle'] = 'True') then
+    begin
+
+      Writeln(ExFiles, '.BuildMuscle');
+
+      if (dmAccounts.tblDetails['Arms'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Dumbbell Bicep Curls');
+        Writeln(ExFiles, ',Tricep Dips*20');
+        Writeln(ExFiles, ',Skull Crushers*20');
+        Writeln(ExFiles, ',Hammer Curls*20');
+        Writeln(ExFiles, ',Barbell Curls*20');
+
+      end;
+
+      if (dmAccounts.tblDetails['Chest'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Floor Press*20');
+        Writeln(ExFiles, ',Chest Flys*20');
+        Writeln(ExFiles, ',Chest Dips*20');
+        Writeln(ExFiles, ',ingle-Arm Push-Ups*20');
+        Writeln(ExFiles, ',Decline Push-Ups*20');
+
+      end;
+
+      if (dmAccounts.tblDetails['Abs'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Weighted Sit-Ups*20');
+        Writeln(ExFiles, ',Russian Twists*20');
+        Writeln(ExFiles, ',V-Ups*20');
+        Writeln(ExFiles, ',Reverse Crunches*20');
+        Writeln(ExFiles, ',Flutter Kicks*20');
+
+      end;
+
+      if (dmAccounts.tblDetails['Legs'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Bodyweight Squats*20');
+        Writeln(ExFiles, ',Bulgarian Split Squats*20');
+        Writeln(ExFiles, ',Calf Raises*20');
+        Writeln(ExFiles, ',Side Lunges*20');
+        Writeln(ExFiles, ',Jump Squats*20');
+
+      end;
+
+    end;
+
+  end
+  else if (dmAccounts.tblDetails['Gender'] = 'Female') then
+  begin
+    if (dmAccounts.tblDetails['LoseWeight'] = 'True') then
+    begin
+
+      Writeln(ExFiles, '.LoseWeight'); // . Represents activity name
+
+      if (dmAccounts.tblDetails['Arms'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Push-Ups*5');
+        Writeln(ExFiles, ',Bicep Curls*5');
+        Writeln(ExFiles, ',Tricep Dips*5');
+        Writeln(ExFiles, ',Hammer Curls*5');
+        Writeln(ExFiles, ',Planks to Push-Ups*5');
+
+      end;
+
+      if (dmAccounts.tblDetails['Chest'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Wall Push-Ups*5');
+        Writeln(ExFiles, ',Chest Openers*5');
+        Writeln(ExFiles, ',Incline Push-Ups*5');
+        Writeln(ExFiles, ',Arm Crosses*5');
+        Writeln(ExFiles, ',Lateral Arm Raises*5');
+
+      end;
+
+      if (dmAccounts.tblDetails['Abs'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Crunches*5');
+        Writeln(ExFiles, ',Seated Leg Lifts*5');
+        Writeln(ExFiles, ',Torso Twist*5');
+        Writeln(ExFiles, ',Plank*5');
+        Writeln(ExFiles, ',Mountain Climbers*5');
+
+      end;
+
+      if (dmAccounts.tblDetails['Legs'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Bodyweight Squats*5');
+        Writeln(ExFiles, ',Leg Raises*5');
+        Writeln(ExFiles, ',Calf Raises*5');
+        Writeln(ExFiles, ',Step-Ups*5');
+        Writeln(ExFiles, ',Wall Sit*5');
+
+      end;
+
+    end;
+
+    if (dmAccounts.tblDetails['KeepFit'] = 'True') then
+    begin
+
+      Writeln(ExFiles, '.KeepFit'); // . Represents activity name
+
+      if (dmAccounts.tblDetails['Arms'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Dumbbell Curls*10');
+        Writeln(ExFiles, ',Tricep Kickbacks*10');
+        Writeln(ExFiles, ',Push-Ups*10');
+        Writeln(ExFiles, ',Lateral Raises*10');
+        Writeln(ExFiles, ',Front Raises*10');
+
+      end;
+
+      if (dmAccounts.tblDetails['Chest'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Bench Press*10');
+        Writeln(ExFiles, ',Chest Flys*10');
+        Writeln(ExFiles, ',Incline Push-Ups*10');
+        Writeln(ExFiles, ',Cobra*10');
+        Writeln(ExFiles, ',Decline Push-Ups*10');
+
+      end;
+
+      if (dmAccounts.tblDetails['Abs'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Plank*10');
+        Writeln(ExFiles, ',Russian Twists*10');
+        Writeln(ExFiles, ',Bicycle Crunches*10');
+        Writeln(ExFiles, ',Leg Raises*10');
+        Writeln(ExFiles, ',Mountain Climbers*10');
+
+      end;
+
+      if (dmAccounts.tblDetails['Legs'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Bodyweight Squats*10');
+        Writeln(ExFiles, ',Wall Sits*10');
+        Writeln(ExFiles, ',Calf Raises*10');
+        Writeln(ExFiles, ',Lunges*10');
+        Writeln(ExFiles, ',Pilates Leg Lifts*10');
+
+      end;
+
+    end;
+
+    if (dmAccounts.tblDetails['BuildMuscle'] = 'True') then
+    begin
+
+      Writeln(ExFiles, '.BuildMuscle'); // . Represents activity name
+
+      if (dmAccounts.tblDetails['Arms'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Dumbbell Curls*15');
+        Writeln(ExFiles, ',Tricep Dips*15');
+        Writeln(ExFiles, ',Skull Crushers*15');
+        Writeln(ExFiles, ',Hammer Curls*15');
+        Writeln(ExFiles, ',Barbell Curls*15');
+
+      end;
+
+      if (dmAccounts.tblDetails['Chest'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Floor Press*15');
+        Writeln(ExFiles, ',Chest Flys*15');
+        Writeln(ExFiles, ',Chest Dips*15');
+        Writeln(ExFiles, ',1-Arm Push-Ups*15');
+        Writeln(ExFiles, ',Decline Push-Ups*15');
+
+      end;
+
+      if (dmAccounts.tblDetails['Abs'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Weighted Sit-Ups*15');
+        Writeln(ExFiles, ',Russian Twists*15');
+        Writeln(ExFiles, ',V-Ups*15');
+        Writeln(ExFiles, ',Reverse Crunches*15');
+        Writeln(ExFiles, ',Flutter Kicks*15');
+
+      end;
+
+      if (dmAccounts.tblDetails['Legs'] = 'True') then
+      begin
+
+        Writeln(ExFiles, ',Bodyweight Squats*15');
+        Writeln(ExFiles, ',Bulgarian Squats*15');
+        Writeln(ExFiles, ',Calf Raises*15');
+        Writeln(ExFiles, ',Side Lunges*15');
+        Writeln(ExFiles, ',Jump Squats*15');
+
+      end;
+
+    end;
+
+  end;
+
+  CloseFile(ExFiles);
+
+  frmDetails.Hide;
+  frmHome.Left := frmDetails.Left;
+  frmHome.Top := frmDetails.Top;
+  frmHome.Show;
+
+end;
+
+procedure TfrmDetails.btnFiveClick(Sender: TObject);
+begin
+
+  iDays := 5;
+
+end;
+
+procedure TfrmDetails.btnFourClick(Sender: TObject);
+begin
+
+  iDays := 4;
+
+end;
+
+procedure TfrmDetails.btnNext1Click(Sender: TObject);
+begin
+
+  if sGender = '' then
+  begin
+    ShowMessage('Please select a gender.');
+  end
+  else if sGender = 'Male' then
+  begin
+    imgSelected.Picture.LoadFromFile('Male.jpg');
+    sGender := 'Male';
+    pnlGender.Hide;
+    pnlFocuses.Show;
+  end
+  else if sGender = 'Female' then
+  begin
+    imgSelected.Picture.LoadFromFile('Female.jpg');
+    sGender := 'Female';
+    pnlGender.Hide;
+    pnlFocuses.Show;
+  end;
+
+end;
+
+procedure TfrmDetails.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+
+  Application.Terminate;
+
+end;
+
+procedure TfrmDetails.FormCreate(Sender: TObject);
+begin
+
+  pnlGender.Show;
+  pnlFocuses.Hide;
+  pnlGoals.Hide;
+  pnlWeeklyGoal.Hide;
+
+  imgMale.Picture.LoadFromFile('Male.jpg');
+  imgFemale.Picture.LoadFromFile('Female.jpg');
+
+end;
+
+procedure TfrmDetails.imgFemaleClick(Sender: TObject);
+begin
+
+  imgMale.Picture.LoadFromFile('FadedMale.jpg');
+  lblMale.Font.Color := clGray;
+
+  imgFemale.Picture.LoadFromFile('Female.jpg');
+  lblFemale.Font.Color := clBlack;
+
+  sGender := 'Female';
+
+end;
+
+procedure TfrmDetails.imgMaleClick(Sender: TObject);
+begin
+
+  imgFemale.Picture.LoadFromFile('FadedFemale.jpg');
+  lblFemale.Font.Color := clGray;
+
+  imgMale.Picture.LoadFromFile('Male.jpg');
+  lblMale.Font.Color := clBlack;
+
+  sGender := 'Male';
+
+end;
+
+end.

@@ -1,0 +1,21 @@
+.KeepFit
+,Dumbbell Bicep Curls*10
+,Tricep Kickbacks*10
+,Push-Ups*10
+,Lateral Raises*10
+,Front Raises*10
+,Dumbbell Bench Press*10
+,Chest Flys*10
+,Incline Push-Ups*10
+,Cobra*10
+,Decline Push-Ups*10
+,Plank*10
+,Russian Twists*10
+,Bicycle Crunches*10
+,Leg Raises*10
+,Mountain Climbers*10
+,Bodyweight Squats*10
+,Wall Sits*10
+,Calf Raises*10
+,Lunges*10
+,Pilates Leg Lifts*10

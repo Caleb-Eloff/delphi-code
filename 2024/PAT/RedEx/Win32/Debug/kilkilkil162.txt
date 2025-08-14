@@ -1,0 +1,11 @@
+.BuildMuscle;
+,Dumbbell Bicep Curls
+,Tricep Dips*20
+,Skull Crushers*20
+,Hammer Curls*20
+,Barbell Curls*20
+,Weighted Sit-Ups*20
+,Russian Twists*20
+,V-Ups*20
+,Reverse Crunches*20
+,Flutter Kicks*20

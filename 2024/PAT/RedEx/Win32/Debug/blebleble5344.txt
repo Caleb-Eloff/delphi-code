@@ -1,0 +1,11 @@
+.BuildMuscle
+,Dumbbell Bicep Curls
+,Tricep Dips*20
+,Skull Crushers*20
+,Hammer Curls*20
+,Barbell Curls*20
+,Floor Press*20
+,Chest Flys*20
+,Chest Dips*20
+,ingle-Arm Push-Ups*20
+,Decline Push-Ups*20

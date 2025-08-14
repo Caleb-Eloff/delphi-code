@@ -1,0 +1,230 @@
+unit SignIn_u;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls,
+  dmAccounts_u;
+
+type
+  TfrmSignIn = class(TForm)
+    imgBackground: TImage;
+    lblHeading: TLabel;
+    edtEmail: TEdit;
+    lblEmail: TLabel;
+    edtPassword: TEdit;
+    lblPassword: TLabel;
+    lblReEnter: TLabel;
+    edtReEnter: TEdit;
+    imgPassword: TImage;
+    imgReEnter: TImage;
+    btnLogin: TButton;
+    lblRegister: TLabel;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
+    procedure btnLoginClick(Sender: TObject);
+    procedure lblRegisterClick(Sender: TObject);
+    procedure edtEmailKeyPress(Sender: TObject; var Key: Char);
+    procedure edtPasswordKeyPress(Sender: TObject; var Key: Char);
+    procedure edtReEnterKeyPress(Sender: TObject; var Key: Char);
+    procedure FormShow(Sender: TObject);
+    procedure imgPasswordClick(Sender: TObject);
+    procedure imgReEnterClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    sUserID: String;
+    bAdmin: Boolean;
+
+  end;
+
+var
+  frmSignIn: TfrmSignIn;
+
+implementation
+
+{$R *.dfm}
+
+uses SignUp_u, Home_u;
+
+procedure TfrmSignIn.btnLoginClick(Sender: TObject);
+var
+  sEmail, sPassword, sReEnter: String;
+  bFound: Boolean;
+begin
+  // Check if any inputs are empty
+  if (edtEmail.Text = '') OR (edtPassword.Text = '') OR (edtReEnter.Text = '')
+  then
+  begin
+    // Ask user to fill in all details
+    ShowMessage('Please enter all your details.');
+  end
+  // Check for valid email
+  else if (Pos('@', edtEmail.Text) = 0) OR (Pos('.com', edtEmail.Text) = 0) then
+  begin
+    // Ask user to enter a valid email
+    ShowMessage('Please enter a valid e-mail.');
+  end
+  // Check if passwords match
+  else if edtPassword.Text <> edtReEnter.Text then
+  begin
+    // Invalid password error
+    ShowMessage('Passwords do not match.');
+  end
+  else
+  begin
+    // Save inputs to variables
+    sEmail := edtEmail.Text;
+    sPassword := edtPassword.Text;
+    sReEnter := edtReEnter.Text;
+    bFound := False;
+
+    // Check if the account exists in the database
+    with dmAccounts do
+    begin
+      tblAccounts.First;
+      while (not tblAccounts.Eof) and (not bFound) do
+      begin
+        // Check for admin account
+        if (tblAccounts['Email'] = LowerCase(sEmail)) AND
+          (tblAccounts['Password'] = sPassword) AND (tblAccounts['Admin'] = True)
+        then
+        begin
+          bFound := True;
+          sUserID := tblAccounts['UserID'];
+          bAdmin := True;
+        end
+        // Check for regular account
+        else if (tblAccounts['Email'] = LowerCase(sEmail)) AND
+          (tblAccounts['Password'] = sPassword) then
+        begin
+          bFound := True;
+          sUserID := tblAccounts['UserID'];
+        end
+        else
+        begin
+          tblAccounts.Next; // Move to the next record
+        end;
+
+      end;
+
+    end;
+
+    // Show appropriate message based on login result
+    if not bFound then
+    begin
+      ShowMessage('E-mail and/or password is incorrect.'); // Login failed
+    end
+    else if bFound then
+    begin
+      ShowMessage('Successfully logged in!'); // Login successful
+      frmSignIn.Hide; // Hide the login form
+      frmHome.Left := frmSignIn.Left; // Position the home form
+      frmHome.Top := frmSignIn.Top;
+      frmHome.Show; // Show the home form
+    end;
+
+  end;
+
+end;
+
+procedure TfrmSignIn.edtEmailKeyPress(Sender: TObject; var Key: Char);
+begin
+  // Removes invalid keys
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '@', '.', #8]) then
+  begin
+    Key := #0
+  end;
+
+end;
+
+procedure TfrmSignIn.edtPasswordKeyPress(Sender: TObject; var Key: Char);
+begin
+  // Removes invalid keys
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '@', '#', #8]) then
+  begin
+    Key := #0
+  end;
+
+end;
+
+procedure TfrmSignIn.edtReEnterKeyPress(Sender: TObject; var Key: Char);
+begin
+  // Removes invalid keys
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '@', '#', #8]) then
+  begin
+    Key := #0
+  end;
+
+end;
+
+procedure TfrmSignIn.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+
+  Application.Terminate; // Close the application
+
+end;
+
+procedure TfrmSignIn.FormCreate(Sender: TObject);
+begin
+  // Load the background image
+  imgBackground.Picture.LoadFromFile('Background.jpg');
+end;
+
+procedure TfrmSignIn.FormShow(Sender: TObject);
+begin
+  // Load the images for hiding the passwords and set password characters
+  imgPassword.Picture.LoadFromFile('Hide.jpg');
+  edtPassword.PasswordChar := '*';
+  imgReEnter.Picture.LoadFromFile('Hide.jpg');
+  edtReEnter.PasswordChar := '*';
+
+  // Clear the inputs
+  edtEmail.Clear;
+  edtPassword.Clear;
+  edtReEnter.Clear;
+end;
+
+procedure TfrmSignIn.imgPasswordClick(Sender: TObject);
+begin
+  // Toggle the password visibility
+  if edtPassword.PasswordChar = '*' then
+  begin
+    imgPassword.Picture.LoadFromFile('Show.jpg'); // Show password
+    edtPassword.PasswordChar := #0;
+  end
+  else if edtPassword.PasswordChar = #0 then
+  begin
+    edtPassword.PasswordChar := '*'; // Hide password
+    imgPassword.Picture.LoadFromFile('Hide.jpg');
+  end;
+end;
+
+procedure TfrmSignIn.imgReEnterClick(Sender: TObject);
+begin
+  // Toggle the re-enter password visibility
+  if edtReEnter.PasswordChar = '*' then
+  begin
+    imgReEnter.Picture.LoadFromFile('Show.jpg'); // Show re-entered password
+    edtReEnter.PasswordChar := #0;
+  end
+  else if edtReEnter.PasswordChar = #0 then
+  begin
+    edtReEnter.PasswordChar := '*'; // Hide re-entered password
+    imgReEnter.Picture.LoadFromFile('Hide.jpg');
+  end;
+end;
+
+procedure TfrmSignIn.lblRegisterClick(Sender: TObject);
+begin
+  frmSignIn.Hide; // Hide the sign-in form
+  // Position the sign-up form
+  frmSignUp.Left := frmSignIn.Left;
+  frmSignUp.Top := frmSignIn.Top;
+  frmSignUp.Show; // Show the sign-up form
+end;
+
+end.

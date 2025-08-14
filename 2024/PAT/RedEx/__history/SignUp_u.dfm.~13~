@@ -1,0 +1,180 @@
+object frmSignUp: TfrmSignUp
+  Left = 0
+  Top = 0
+  Caption = 'RedEx'
+  ClientHeight = 814
+  ClientWidth = 469
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  Position = poScreenCenter
+  OnClose = FormClose
+  OnCreate = FormCreate
+  TextHeight = 15
+  object imgBackground: TImage
+    Left = -8
+    Top = 0
+    Width = 481
+    Height = 825
+    Stretch = True
+  end
+  object lblHeading: TLabel
+    Left = 162
+    Top = 112
+    Width = 151
+    Height = 50
+    Caption = 'Register'
+    Color = clBtnFace
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWhite
+    Font.Height = -37
+    Font.Name = 'Segoe UI Black'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object lblFirstName: TLabel
+    Left = 120
+    Top = 168
+    Width = 55
+    Height = 15
+    Caption = 'First name'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblSecondName: TLabel
+    Left = 120
+    Top = 218
+    Width = 72
+    Height = 15
+    Caption = 'Second name'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblEmail: TLabel
+    Left = 120
+    Top = 268
+    Width = 34
+    Height = 15
+    Caption = 'E-mail'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblPassword: TLabel
+    Left = 120
+    Top = 318
+    Width = 50
+    Height = 15
+    Caption = 'Password'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblReEnter: TLabel
+    Left = 120
+    Top = 368
+    Width = 98
+    Height = 15
+    Caption = 'Re-enter password'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
+  object imgPassword: TImage
+    Left = 359
+    Top = 339
+    Width = 26
+    Height = 23
+    OnClick = imgPasswordClick
+  end
+  object imgReEnter: TImage
+    Left = 359
+    Top = 389
+    Width = 26
+    Height = 23
+  end
+  object lblLogin: TLabel
+    Left = 146
+    Top = 472
+    Width = 178
+    Height = 15
+    Caption = 'Already haven an account? Login!'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = 16723245
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    OnClick = lblLoginClick
+  end
+  object edtFirstName: TEdit
+    Left = 120
+    Top = 189
+    Width = 225
+    Height = 23
+    TabOrder = 0
+    OnKeyPress = edtFirstNameKeyPress
+  end
+  object edtSecondName: TEdit
+    Left = 120
+    Top = 239
+    Width = 225
+    Height = 23
+    TabOrder = 1
+    OnKeyPress = edtSecondNameKeyPress
+  end
+  object edtEmail: TEdit
+    Left = 120
+    Top = 289
+    Width = 225
+    Height = 23
+    TabOrder = 2
+    OnKeyPress = edtEmailKeyPress
+  end
+  object edtPassword: TEdit
+    Left = 120
+    Top = 339
+    Width = 225
+    Height = 23
+    TabOrder = 3
+    OnKeyPress = edtPasswordKeyPress
+  end
+  object edtReEnter: TEdit
+    Left = 120
+    Top = 389
+    Width = 225
+    Height = 23
+    TabOrder = 4
+    OnKeyPress = edtReEnterKeyPress
+  end
+  object btnRegister: TButton
+    Left = 162
+    Top = 432
+    Width = 151
+    Height = 25
+    Caption = 'Register'
+    TabOrder = 5
+    OnClick = btnRegisterClick
+  end
+end

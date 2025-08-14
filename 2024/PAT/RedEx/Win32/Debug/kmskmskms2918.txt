@@ -1,0 +1,11 @@
+.KeepFit
+,Dumbbell Bench Press*15
+,Chest Flys*15
+,Incline Push-Ups*15
+,Cobra*15
+,Decline Push-Ups*15
+,Bodyweight Squats*15
+,Wall Sits*15
+,Calf Raises*15
+,Lunges*15
+,Pilates Leg Lifts*15
