@@ -75,8 +75,7 @@ procedure TForm1.edtLoginPasswordKeyPress(Sender: TObject; var Key: Char);
 begin
 
   // Allow only letters, numbers, '@', '#', and backspace
-  if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '!', '@', '#', '$', '%',
-    '^', '&', #8]) then
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '@', '#', #8]) then
   begin
     Key := #0; // Invalid keys removed
   end;
@@ -109,20 +108,18 @@ procedure TForm1.edtRegisterPasswordKeyPress(Sender: TObject; var Key: Char);
 begin
 
   // Allow only letters, numbers, '@', '#', and backspace
-  if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '!', '@', '#', '$', '%',
-    '^', '&', #8]) then
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '!', '@', '#', '&' #8])
+  then
   begin
     Key := #0; // Invalid keys removed
   end;
-
 end;
 
 procedure TForm1.edtRegisterReEnterKeyPress(Sender: TObject; var Key: Char);
 begin
 
   // Allow only letters, numbers, '@', '#', and backspace
-  if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '!', '@', '#', '$', '%',
-    '^', '&', #8]) then
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '@', '#', #8]) then
   begin
     Key := #0; // Invalid keys removed
   end;

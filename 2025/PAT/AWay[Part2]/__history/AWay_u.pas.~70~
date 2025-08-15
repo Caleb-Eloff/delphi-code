@@ -39,6 +39,13 @@ type
     procedure lblLoginAccountClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure lblRegisterAccountClick(Sender: TObject);
+    procedure edtLoginEmailKeyPress(Sender: TObject; var Key: Char);
+    procedure edtLoginPasswordKeyPress(Sender: TObject; var Key: Char);
+    procedure edtRegisterEmailKeyPress(Sender: TObject; var Key: Char);
+    procedure edtRegisterNameKeyPress(Sender: TObject; var Key: Char);
+    procedure edtRegisterPasswordKeyPress(Sender: TObject; var Key: Char);
+    procedure edtRegisterReEnterKeyPress(Sender: TObject; var Key: Char);
+    procedure edtRegisterSurnameKeyPress(Sender: TObject; var Key: Char);
 
   private
     { Private declarations }
@@ -52,6 +59,85 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TForm1.edtLoginEmailKeyPress(Sender: TObject; var Key: Char);
+begin
+
+  // Allow only letters, numbers, '@', '.', and backspace
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '@', '.', #8]) then
+  begin
+    Key := #0; // Invalid keys removed
+  end;
+
+end;
+
+procedure TForm1.edtLoginPasswordKeyPress(Sender: TObject; var Key: Char);
+begin
+
+  // Allow only letters, numbers, '@', '#', and backspace
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '!', '@', '#', '$', '%',
+    '^', '&', #8]) then
+  begin
+    Key := #0; // Invalid keys removed
+  end;
+
+end;
+
+procedure TForm1.edtRegisterEmailKeyPress(Sender: TObject; var Key: Char);
+begin
+
+  // Allow only letters, numbers, '@', '.', and backspace
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '@', '.', #8]) then
+  begin
+    Key := #0; // Invalid keys removed
+  end;
+
+end;
+
+procedure TForm1.edtRegisterNameKeyPress(Sender: TObject; var Key: Char);
+begin
+
+  // Allow only letters and backspace
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', #8]) then
+  begin
+    Key := #0; // Invalid keys removed
+  end;
+
+end;
+
+procedure TForm1.edtRegisterPasswordKeyPress(Sender: TObject; var Key: Char);
+begin
+
+  // Allow only letters, numbers, '@', '#', and backspace
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '!', '@', '#', '$', '%',
+    '^', '&', #8]) then
+  begin
+    Key := #0; // Invalid keys removed
+  end;
+
+end;
+
+procedure TForm1.edtRegisterReEnterKeyPress(Sender: TObject; var Key: Char);
+begin
+
+  // Allow only letters, numbers, '@', '#', and backspace
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '@', '#', #8]) then
+  begin
+    Key := #0; // Invalid keys removed
+  end;
+
+end;
+
+procedure TForm1.edtRegisterSurnameKeyPress(Sender: TObject; var Key: Char);
+begin
+
+  // Allow only letters and backspace
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', #8]) then
+  begin
+    Key := #0; // Invalid keys removed
+  end;
+
+end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
@@ -108,7 +194,6 @@ begin
 
   pnlLogin.Hide;
   pnlRegister.Show;
-
 
 end;
 

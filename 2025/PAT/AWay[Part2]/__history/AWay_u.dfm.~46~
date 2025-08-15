@@ -173,6 +173,7 @@ object Form1: TForm1
       Width = 281
       Height = 23
       TabOrder = 2
+      OnKeyPress = edtRegisterEmailKeyPress
     end
     object edtRegisterPassword: TEdit
       Left = 32
@@ -230,7 +231,7 @@ object Form1: TForm1
     end
     object lblLogin: TLabel
       Left = 80
-      Top = 24
+      Top = 40
       Width = 186
       Height = 48
       Alignment = taCenter
@@ -247,7 +248,7 @@ object Form1: TForm1
     end
     object lblLoginEmail: TLabel
       Left = 32
-      Top = 152
+      Top = 131
       Width = 34
       Height = 15
       Caption = 'E-mail'
@@ -260,7 +261,7 @@ object Form1: TForm1
     end
     object lblLoginPassword: TLabel
       Left = 32
-      Top = 216
+      Top = 202
       Width = 50
       Height = 15
       Caption = 'Password'
@@ -273,7 +274,7 @@ object Form1: TForm1
     end
     object lblRegisterAccount: TLabel
       Left = 96
-      Top = 384
+      Top = 330
       Width = 141
       Height = 15
       Caption = 'No account? Register now!'
@@ -283,25 +284,27 @@ object Form1: TForm1
       Font.Name = 'Segoe UI'
       Font.Style = []
       ParentFont = False
-      OnClick = lblLoginAccountClick
+      OnClick = lblRegisterAccountClick
     end
     object edtLoginEmail: TEdit
       Left = 32
-      Top = 173
+      Top = 152
       Width = 281
       Height = 23
       TabOrder = 0
+      OnKeyPress = edtLoginEmailKeyPress
     end
     object edtLoginPassword: TEdit
       Left = 32
-      Top = 237
+      Top = 223
       Width = 281
       Height = 23
       TabOrder = 1
+      OnKeyPress = edtLoginPasswordKeyPress
     end
     object btnLogin: TButton
       Left = 128
-      Top = 344
+      Top = 289
       Width = 75
       Height = 25
       Caption = 'Login'

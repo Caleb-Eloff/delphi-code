@@ -37,6 +37,14 @@ type
     btnLogin: TButton;
     procedure FormCreate(Sender: TObject);
     procedure lblLoginAccountClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure lblRegisterAccountClick(Sender: TObject);
+    procedure edtLoginEmailKeyPress(Sender: TObject; var Key: Char);
+    procedure edtLoginPasswordKeyPress(Sender: TObject; var Key: Char);
+    procedure edtRegisterEmailKeyPress(Sender: TObject; var Key: Char);
+    procedure edtRegisterNameKeyPress(Sender: TObject; var Key: Char);
+    procedure edtRegisterPasswordKeyPress(Sender: TObject; var Key: Char);
+    procedure edtRegisterReEnterKeyPress(Sender: TObject; var Key: Char);
 
   private
     { Private declarations }
@@ -51,6 +59,72 @@ implementation
 
 {$R *.dfm}
 
+procedure TForm1.edtLoginEmailKeyPress(Sender: TObject; var Key: Char);
+begin
+
+  // Allow only letters and backspace
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', #8]) then
+  begin
+    Key := #0; // Invalid keys removed
+  end;
+
+end;
+
+procedure TForm1.edtLoginPasswordKeyPress(Sender: TObject; var Key: Char);
+begin
+
+  // Allow only letters and backspace
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', #8]) then
+  begin
+    Key := #0; // Invalid keys removed
+  end;
+
+end;
+
+procedure TForm1.edtRegisterEmailKeyPress(Sender: TObject; var Key: Char);
+begin
+
+  // Allow only letters and backspace
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', #8]) then
+  begin
+    Key := #0; // Invalid keys removed
+  end;
+
+end;
+
+procedure TForm1.edtRegisterNameKeyPress(Sender: TObject; var Key: Char);
+begin
+
+  // Allow only letters and backspace
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', #8]) then
+  begin
+    Key := #0; // Invalid keys removed
+  end;
+
+end;
+
+procedure TForm1.edtRegisterPasswordKeyPress(Sender: TObject; var Key: Char);
+begin
+
+  // Allow only letters and backspace
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', #8]) then
+  begin
+    Key := #0; // Invalid keys removed
+  end;
+
+end;
+
+procedure TForm1.edtRegisterReEnterKeyPress(Sender: TObject; var Key: Char);
+begin
+
+  // Allow only letters and backspace
+  if not(Key in ['A' .. 'Z', 'a' .. 'z', #8]) then
+  begin
+    Key := #0; // Invalid keys removed
+  end;
+
+end;
+
 procedure TForm1.FormCreate(Sender: TObject);
 begin
 
@@ -63,13 +137,15 @@ begin
   // Load background image
   imgBackground.Picture.LoadFromFile('HomePage.jpg');
 
-  // Centre Register Panel
+  // Set up Register Panel
   pnlRegister.Left := (ClientWidth - pnlRegister.Width) DIV 2;
   pnlRegister.Top := (ClientHeight - pnlRegister.Height) DIV 2;
+  imgRegisterMenu.Picture.LoadFromFile('MenuBackground.png');
 
-  // Centre Login Panel
+  // Set up Login Panel
   pnlLogin.Left := (ClientWidth - pnlLogin.Width) DIV 2;
   pnlLogin.Top := (ClientHeight - pnlLogin.Height) DIV 2;
+  imgLoginMenu.Picture.LoadFromFile('MenuBackground.png');
 
   // Align Register Panel's labels and buttons
   lblRegister.Left := (pnlRegister.Width - lblRegister.Width) DIV 2;
@@ -83,11 +159,27 @@ begin
 
 end;
 
+procedure TForm1.FormShow(Sender: TObject);
+begin
+
+  pnlLogin.Hide;
+  pnlRegister.Show;
+
+end;
+
 procedure TForm1.lblLoginAccountClick(Sender: TObject);
 begin
 
   pnlRegister.Hide;
   pnlLogin.Show;
+
+end;
+
+procedure TForm1.lblRegisterAccountClick(Sender: TObject);
+begin
+
+  pnlLogin.Hide;
+  pnlRegister.Show;
 
 end;
 
