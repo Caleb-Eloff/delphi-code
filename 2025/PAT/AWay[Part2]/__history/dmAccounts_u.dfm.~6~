@@ -1,0 +1,5 @@
+object DataModule2: TDataModule2
+  OnCreate = DataModuleCreate
+  Height = 480
+  Width = 640
+end

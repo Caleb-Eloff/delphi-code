@@ -1,0 +1,95 @@
+object frmHome: TfrmHome
+  Left = 0
+  Top = 0
+  Anchors = []
+  Caption = 'A-Way Airlines'
+  ClientHeight = 880
+  ClientWidth = 1600
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnShow = FormShow
+  TextHeight = 15
+  object imgHomeBackground: TImage
+    Left = 0
+    Top = 0
+    Width = 1600
+    Height = 880
+    Align = alClient
+    Stretch = True
+    ExplicitLeft = 304
+    ExplicitTop = 168
+  end
+  object lblHomeHeading1: TLabel
+    Left = 752
+    Top = 128
+    Width = 903
+    Height = 72
+    Caption = 'Welcome, [Fullname] to'
+    Font.Charset = OEM_CHARSET
+    Font.Color = clWhite
+    Font.Height = -72
+    Font.Name = 'Terminal'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object lblHomeHeading2: TLabel
+    Left = 752
+    Top = 272
+    Width = 766
+    Height = 90
+    Caption = 'A-Way Airlines!'
+    Font.Charset = OEM_CHARSET
+    Font.Color = clWhite
+    Font.Height = -96
+    Font.Name = 'Terminal'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object btnHomeBookFlights: TButton
+    Left = 968
+    Top = 560
+    Width = 129
+    Height = 25
+    Caption = 'Book Flights'
+    TabOrder = 0
+  end
+  object btnHomeMyFlights: TButton
+    Left = 968
+    Top = 616
+    Width = 129
+    Height = 25
+    Caption = 'My Flights'
+    TabOrder = 1
+  end
+  object btnHomeProfile: TButton
+    Left = 968
+    Top = 672
+    Width = 129
+    Height = 25
+    Caption = 'Profile'
+    TabOrder = 2
+  end
+  object btnHomeSupport: TButton
+    Left = 968
+    Top = 728
+    Width = 129
+    Height = 25
+    Caption = 'Support'
+    TabOrder = 3
+  end
+  object btnHomeLogOut: TButton
+    Left = 48
+    Top = 832
+    Width = 73
+    Height = 25
+    Caption = 'Log Out'
+    TabOrder = 4
+    OnClick = btnHomeLogOutClick
+  end
+end

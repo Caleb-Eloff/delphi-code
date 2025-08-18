@@ -12,7 +12,7 @@ type
     { Private declarations }
   public
     { Public declarations }
-    tblAccounts, tblDetails: TADOTable;
+    tblAccounts, tblFlights: TADOTable;
     dscAccounts, dscDetails: TDataSource;
     conAccounts: TADOConnection;
   end;
@@ -27,12 +27,15 @@ implementation
 
 procedure TdmAccounts.DataModuleCreate(Sender: TObject);
 begin
+
   // Create and configure the database connection and tables
   conAccounts := TADOConnection.Create(dmAccounts);
   tblAccounts := TADOTable.Create(dmAccounts);
-  tblDetails := TADOTable.Create(dmAccounts);
+  tblFlights := TADOTable.Create(dmAccounts);
   dscAccounts := TDataSource.Create(dmAccounts);
   dscDetails := TDataSource.Create(dmAccounts);
+
+
 
   conAccounts.Close;
 
@@ -47,16 +50,16 @@ begin
   // Associate tables with the database connection
   tblAccounts.Connection := conAccounts;
   tblAccounts.TableName := 'tblAccounts';
-  tblDetails.Connection := conAccounts;
-  tblDetails.TableName := 'tblDetails';
+  tblFlights.Connection := conAccounts;
+  tblFlights.TableName := 'tblFlights';
 
   // Associate data sources with the tables
   dscAccounts.DataSet := tblAccounts;
-  dscDetails.DataSet := tblDetails;
+  dscDetails.DataSet := tblFlights;
 
   // Open the tables
   tblAccounts.Open;
-  tblDetails.Open;
+  tblFlights.Open;
 
 end;
 

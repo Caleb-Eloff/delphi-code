@@ -1,0 +1,17 @@
+program AWay_p;
+
+uses
+  Vcl.Forms,
+  AWay_u in 'AWay_u.pas' {frmLoginRegister} ,
+  dmAccounts_u in 'dmAccounts_u.pas' {DataModule2: TDataModule};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfrmLoginRegister, frmLoginRegister);
+  Application.CreateForm(TdmAccounts, dmAccounts);
+  Application.Run;
+
+end.

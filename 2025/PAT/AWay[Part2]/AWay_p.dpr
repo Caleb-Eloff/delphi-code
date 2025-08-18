@@ -2,13 +2,20 @@ program AWay_p;
 
 uses
   Vcl.Forms,
-  AWay_u in 'AWay_u.pas' {Form1};
+  LoginRegister_u in 'LoginRegister_u.pas' {frmLoginRegister},
+  dmAccounts_u in 'dmAccounts_u.pas' {dmAccounts: TDataModule},
+  Home_u in 'Home_u.pas' {frmHome},
+  BookFlights_u in 'BookFlights_u.pas' {frmBookFlights};
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TfrmLoginRegister, frmLoginRegister);
+  Application.CreateForm(TdmAccounts, dmAccounts);
+  Application.CreateForm(TfrmHome, frmHome);
+  Application.CreateForm(TfrmBookFlights, frmBookFlights);
   Application.Run;
+
 end.
