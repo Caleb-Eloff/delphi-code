@@ -2,8 +2,8 @@ object frmMyFlights: TfrmMyFlights
   Left = 0
   Top = 0
   Caption = 'A-Way Airlines'
-  ClientHeight = 1061
-  ClientWidth = 1920
+  ClientHeight = 881
+  ClientWidth = 1604
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,8 +17,8 @@ object frmMyFlights: TfrmMyFlights
   object imgMyFlightsBackground: TImage
     Left = 0
     Top = 0
-    Width = 1920
-    Height = 1061
+    Width = 1604
+    Height = 881
     Align = alClient
     Stretch = True
     ExplicitLeft = 344

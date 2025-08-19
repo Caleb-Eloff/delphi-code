@@ -244,34 +244,6 @@ begin
   // Save changes directly into the database
   dmAccounts.tblFlights.Post;
 
-  // Also save booking details into a text file (for reference / backup)
-  TSBookingData := TStringList.Create;
-  try
-    TSBookingData.Add('UserID: ' + frmLoginRegister.sUserID);
-    TSBookingData.Add('From: ' + dmAccounts.tblFlights.FieldByName('FromDest')
-      .AsString);
-    TSBookingData.Add('To: ' + dmAccounts.tblFlights.FieldByName('ToDest')
-      .AsString);
-    TSBookingData.Add('Class: ' + dmAccounts.tblFlights.FieldByName('Class')
-      .AsString);
-    TSBookingData.Add('Seats: ' + dmAccounts.tblFlights.FieldByName('Seats')
-      .AsString);
-    TSBookingData.Add('Total Price: ' + dmAccounts.tblFlights.FieldByName
-      ('TotalPrice').AsString);
-    TSBookingData.Add('Booking Date: ' +
-      DateTimeToStr(dmAccounts.tblFlights.FieldByName('BookingDate')
-      .AsDateTime));
-    TSBookingData.Add('Departure Date: ' +
-      DateToStr(dmAccounts.tblFlights.FieldByName('DepartureDate').AsDateTime));
-
-    TSBookingData.SaveToFile(sBookingFile);
-    // save directly, no temp file needed
-
-  finally
-    TSBookingData.Free;
-
-  end;
-
   ShowMessage('Changes saved successfully to database and file.');
 
 end;
@@ -315,26 +287,44 @@ var
 begin
   iSelectedRow := sgBookedFlights.Row;
 
-  // Ensure a valid row is selected
-  if iSelectedRow <= 0 then
+  // Prevent deletion of header or empty rows
+  if (iSelectedRow = 0) or
+    (Trim(sgBookedFlights.Cells[COL_FLIGHTID, iSelectedRow]) = '') then
   begin
-    ShowMessage('Please select a booking to remove.');
+    ShowMessage('Please select a valid booking row to remove.');
     Exit;
   end;
 
-  // Gather values from the selected grid row
+  // Store deleted row for undo functionality BEFORE removing
+  for i := 0 to 6 do
+    gLastDeletedRowData[i] := sgBookedFlights.Cells[i, iSelectedRow];
+
+  gLastDeletedRowIndex := iSelectedRow;
+  gUndoAvailable := True;
+
+  // Gather values for database update
   sFlightID := sgBookedFlights.Cells[COL_FLIGHTID, iSelectedRow];
   iSeatCount := SafeStrToIntDef(sgBookedFlights.Cells[COL_SEATS,
     iSelectedRow], 0);
-  dPricePerSeat := ParsePriceToFloat(sgBookedFlights.Cells[COL_PRICE_PER,
-    iSelectedRow]);
+  dPricePerSeat := StrToFloat(StringReplace(sgBookedFlights.Cells[COL_PRICE_PER,
+    iSelectedRow], 'R', '', [rfReplaceAll]));
+  ShowMessage(FloatToStr(dPricePerSeat));
   dTotalDeduct := iSeatCount * dPricePerSeat;
+  ShowMessage(FloatToStr(dTotalDeduct));
 
-  // Store deleted row for undo functionality
-  for i := 0 to 6 do
-    gLastDeletedRowData[i] := sgBookedFlights.Cells[i, iSelectedRow];
-  gLastDeletedRowIndex := iSelectedRow;
-  gUndoAvailable := True;
+  // Remove row safely
+  sgBookedFlights.Rows[iSelectedRow].Clear;
+
+  // Shift rows up if not last row
+  if iSelectedRow < sgBookedFlights.RowCount - 1 then
+    sgBookedFlights.Rows[iSelectedRow] := sgBookedFlights.Rows
+      [sgBookedFlights.RowCount - 1];
+
+  sgBookedFlights.RowCount := sgBookedFlights.RowCount - 1;
+
+  // Ensure at least one data row remains
+  if sgBookedFlights.RowCount < 2 then
+    sgBookedFlights.RowCount := 2;
 
   // Remove booking from user's text file
   sUserID := frmLoginRegister.sUserID;
@@ -345,7 +335,6 @@ begin
   // Update user's totals in database
   with dmAccounts do
   begin
-
     qryFlights.Close;
     qryFlights.SQL.Text := 'SELECT * FROM tblFlights WHERE UserID = :UserID';
     qryFlights.Parameters.ParamByName('UserID').Value := sUserID;
@@ -353,25 +342,19 @@ begin
 
     if not qryFlights.Eof then
     begin
-
       qryFlights.Edit;
       qryFlights.FieldByName('NOFlights').AsInteger :=
         Max(0, qryFlights.FieldByName('NOFlights').AsInteger - 1);
-
       qryFlights.FieldByName('NOSeats').AsInteger :=
         Max(0, qryFlights.FieldByName('NOSeats').AsInteger - iSeatCount);
-
       qryFlights.FieldByName('TotalPrice').AsFloat :=
         qryFlights.FieldByName('TotalPrice').AsFloat - dTotalDeduct;
-
       qryFlights.Post;
-
     end;
   end;
 
   // Refresh screen to reflect changes
   FormShow(Self);
-
 end;
 
 procedure TfrmMyFlights.btnUndoClick(Sender: TObject);
@@ -457,12 +440,12 @@ var
 begin
 
   // Prepare grid for fresh data
-  ClearGridData;
   SetupGridHeaders;
+  ClearGridData;
 
   // Load bookings from user's file
   if FileExists(frmLoginRegister.sUserID + '_Booking.txt') then
-    LoadBookingsFromFile(frmLoginRegister.sUserID + '.txt')
+    LoadBookingsFromFile(frmLoginRegister.sUserID + '_Booking.txt')
   else
     ShowMessage('No bookings found for this user.');
 
@@ -589,6 +572,7 @@ begin
         sTemp[COL_PRICE_PER] := ExtractValueAfterColon(sLine)
       else if StartsWith(sLine, 'Departure Date:') then
       begin
+
         sTemp[COL_DEPARTUREDATE] := ExtractValueAfterColon(sLine);
         Inc(iRow);
         sgBookedFlights.RowCount := iRow + 1;
@@ -602,11 +586,13 @@ begin
           sTemp[COL_DEPARTUREDATE];
         FillChar(sTemp, SizeOf(sTemp), 0);
         bHasData := False;
+
       end;
     end;
 
     if bHasData then
     begin
+
       Inc(iRow);
       sgBookedFlights.RowCount := iRow + 1;
       sgBookedFlights.Cells[COL_FLIGHTID, iRow] := sTemp[COL_FLIGHTID];
@@ -617,12 +603,14 @@ begin
       sgBookedFlights.Cells[COL_PRICE_PER, iRow] := sTemp[COL_PRICE_PER];
       sgBookedFlights.Cells[COL_DEPARTUREDATE, iRow] :=
         sTemp[COL_DEPARTUREDATE];
+
     end;
 
     if sgBookedFlights.RowCount < 2 then
       sgBookedFlights.RowCount := 2;
 
     FormatGridColumns;
+
     if (sgBookedFlights.RowCount > 1) and
       (Trim(sgBookedFlights.Cells[COL_FLIGHTID, sgBookedFlights.RowCount - 1])
       = '') then
@@ -630,6 +618,7 @@ begin
 
   finally
     slLines.Free;
+
   end;
 end;
 

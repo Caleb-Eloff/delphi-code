@@ -1,12 +1,5 @@
 ==============================
 Booking for: calelof@g8313
-FlightID: FLJK7423
-From: Finland
-To: France
-Class: First Class
-Seats: 4
-Price per seat: R3155.61
-Departure Date: 8/20/2025
 Booking Date: 8/19/2025
 ==============================
 
@@ -18,3 +11,10 @@ Class:
 Seats: 
 Price per seat: 
 Departure Date: 
+FlightID: FLJK7423
+From: Finland
+To: France
+Class: First Class
+Seats: 4
+Price per seat: R3155.61
+Departure Date: 8/20/2025

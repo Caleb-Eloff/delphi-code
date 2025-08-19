@@ -107,21 +107,36 @@ begin
 
 end;
 
-function TfrmMyFlights.ParsePriceToFloat(const sPriceText: string): Double;
+uses SysUtils;
+
+function ParsePriceToFloat(const sPriceText: string): Double;
 var
   CleanText: string;
-
+  FS: TFormatSettings;
 begin
-
-  // Accepts "R123.45" or "123.45" or "R 123,45" (common variants)
-  CleanText := sPriceText;
-  CleanText := StringReplace(CleanText, 'R', '', [rfReplaceAll, rfIgnoreCase]);
+  // Remove currency symbols and spaces
+  CleanText := StringReplace(sPriceText, 'R', '', [rfReplaceAll, rfIgnoreCase]);
   CleanText := StringReplace(CleanText, ' ', '', [rfReplaceAll]);
-  CleanText := StringReplace(CleanText, ',', '.', [rfReplaceAll]);
 
-  if not TryStrToFloat(CleanText, Result) then
+  // Detect which decimal separator is used
+  if (Pos(',', CleanText) > 0) and (Pos('.', CleanText) = 0) then
+  begin
+    // Comma used as decimal separator
+    FS := FormatSettings;
+    FS.DecimalSeparator := ',';
+  end
+  else
+  begin
+    // Default to dot
+    CleanText := StringReplace(CleanText, ',', '', [rfReplaceAll]);
+    // Remove thousand separator
+    FS := FormatSettings;
+    FS.DecimalSeparator := '.';
+  end;
+
+  // Try to convert
+  if not TryStrToFloat(CleanText, Result, FS) then
     Result := 0.0;
-
 end;
 
 function TfrmMyFlights.SafeStrToIntDef(const S: string;
@@ -233,43 +248,16 @@ end;
 
 procedure TfrmMyFlights.btnFlightDetailsSaveClick(Sender: TObject);
 var
-  BookingFile: string;
-  BookingData: TStringList;
+  sBookingFile: string;
+  TSBookingData: TStringList;
 
 begin
 
   // The final booking file for the logged-in user
-  BookingFile := frmLoginRegister.sUserID + '_Booking.txt';
+  sBookingFile := frmLoginRegister.sUserID + '_Booking.txt';
 
   // Save changes directly into the database
   dmAccounts.tblFlights.Post;
-
-  // Also save booking details into a text file (for reference / backup)
-  BookingData := TStringList.Create;
-  try
-    BookingData.Add('UserID: ' + frmLoginRegister.sUserID);
-    BookingData.Add('From: ' + dmAccounts.tblFlights.FieldByName('FromDest')
-      .AsString);
-    BookingData.Add('To: ' + dmAccounts.tblFlights.FieldByName('ToDest')
-      .AsString);
-    BookingData.Add('Class: ' + dmAccounts.tblFlights.FieldByName('Class')
-      .AsString);
-    BookingData.Add('Seats: ' + dmAccounts.tblFlights.FieldByName('Seats')
-      .AsString);
-    BookingData.Add('Total Price: ' + dmAccounts.tblFlights.FieldByName
-      ('TotalPrice').AsString);
-    BookingData.Add('Booking Date: ' +
-      DateTimeToStr(dmAccounts.tblFlights.FieldByName('BookingDate')
-      .AsDateTime));
-    BookingData.Add('Departure Date: ' +
-      DateToStr(dmAccounts.tblFlights.FieldByName('DepartureDate').AsDateTime));
-
-    BookingData.SaveToFile(BookingFile); // save directly, no temp file needed
-
-  finally
-    BookingData.Free;
-
-  end;
 
   ShowMessage('Changes saved successfully to database and file.');
 
@@ -314,26 +302,44 @@ var
 begin
   iSelectedRow := sgBookedFlights.Row;
 
-  // Ensure a valid row is selected
-  if iSelectedRow <= 0 then
+  // Prevent deletion of header or empty rows
+  if (iSelectedRow = 0) or
+    (Trim(sgBookedFlights.Cells[COL_FLIGHTID, iSelectedRow]) = '') then
   begin
-    ShowMessage('Please select a booking to remove.');
+    ShowMessage('Please select a valid booking row to remove.');
     Exit;
   end;
 
-  // Gather values from the selected grid row
+  // Store deleted row for undo functionality BEFORE removing
+  for i := 0 to 6 do
+    gLastDeletedRowData[i] := sgBookedFlights.Cells[i, iSelectedRow];
+
+  gLastDeletedRowIndex := iSelectedRow;
+  gUndoAvailable := True;
+
+  // Gather values for database update
   sFlightID := sgBookedFlights.Cells[COL_FLIGHTID, iSelectedRow];
   iSeatCount := SafeStrToIntDef(sgBookedFlights.Cells[COL_SEATS,
     iSelectedRow], 0);
-  dPricePerSeat := ParsePriceToFloat(sgBookedFlights.Cells[COL_PRICE_PER,
-    iSelectedRow]);
+  dPricePerSeat := StrToFloat(StringReplace(sgBookedFlights.Cells[COL_PRICE_PER,
+    iSelectedRow], 'R', '', [rfReplaceAll]));
+  ShowMessage(FloatToStr(dPricePerSeat));
   dTotalDeduct := iSeatCount * dPricePerSeat;
+  ShowMessage(FloatToStr(dTotalDeduct));
 
-  // Store deleted row for undo functionality
-  for i := 0 to 6 do
-    gLastDeletedRowData[i] := sgBookedFlights.Cells[i, iSelectedRow];
-  gLastDeletedRowIndex := iSelectedRow;
-  gUndoAvailable := True;
+  // Remove row safely
+  sgBookedFlights.Rows[iSelectedRow].Clear;
+
+  // Shift rows up if not last row
+  if iSelectedRow < sgBookedFlights.RowCount - 1 then
+    sgBookedFlights.Rows[iSelectedRow] := sgBookedFlights.Rows
+      [sgBookedFlights.RowCount - 1];
+
+  sgBookedFlights.RowCount := sgBookedFlights.RowCount - 1;
+
+  // Ensure at least one data row remains
+  if sgBookedFlights.RowCount < 2 then
+    sgBookedFlights.RowCount := 2;
 
   // Remove booking from user's text file
   sUserID := frmLoginRegister.sUserID;
@@ -344,7 +350,6 @@ begin
   // Update user's totals in database
   with dmAccounts do
   begin
-
     qryFlights.Close;
     qryFlights.SQL.Text := 'SELECT * FROM tblFlights WHERE UserID = :UserID';
     qryFlights.Parameters.ParamByName('UserID').Value := sUserID;
@@ -352,32 +357,25 @@ begin
 
     if not qryFlights.Eof then
     begin
-
       qryFlights.Edit;
       qryFlights.FieldByName('NOFlights').AsInteger :=
         Max(0, qryFlights.FieldByName('NOFlights').AsInteger - 1);
-
       qryFlights.FieldByName('NOSeats').AsInteger :=
         Max(0, qryFlights.FieldByName('NOSeats').AsInteger - iSeatCount);
-
       qryFlights.FieldByName('TotalPrice').AsFloat :=
         qryFlights.FieldByName('TotalPrice').AsFloat - dTotalDeduct;
-
       qryFlights.Post;
-
     end;
   end;
 
   // Refresh screen to reflect changes
   FormShow(Self);
-
 end;
 
 procedure TfrmMyFlights.btnUndoClick(Sender: TObject);
 var
   iCol, i, iSeatCount: Integer;
-  UserID: string;
-  PricePerSeat: Double;
+  dPricePerSeat: Double;
 
 begin
 
@@ -402,16 +400,16 @@ begin
       gLastDeletedRowData[iCol];
 
   // Update database totals to reflect restored booking
-  UserID := frmLoginRegister.sUserID;
   iSeatCount := SafeStrToIntDef(gLastDeletedRowData[COL_SEATS], 0);
-  PricePerSeat := ParsePriceToFloat(gLastDeletedRowData[COL_PRICE_PER]);
+  dPricePerSeat := ParsePriceToFloat(gLastDeletedRowData[COL_PRICE_PER]);
 
   with dmAccounts do
   begin
 
     qryFlights.Close;
     qryFlights.SQL.Text := 'SELECT * FROM tblFlights WHERE UserID = :UserID';
-    qryFlights.Parameters.ParamByName('UserID').Value := UserID;
+    qryFlights.Parameters.ParamByName('UserID').Value :=
+      frmLoginRegister.sUserID;
     qryFlights.Open;
 
     if not qryFlights.Eof then
@@ -426,7 +424,7 @@ begin
 
       qryFlights.FieldByName('TotalPrice').AsFloat :=
         qryFlights.FieldByName('TotalPrice').AsFloat +
-        (iSeatCount * PricePerSeat);
+        (iSeatCount * dPricePerSeat);
 
       qryFlights.Post;
 
@@ -434,11 +432,11 @@ begin
   end;
 
   // Restore booking to file in expected format
-  RestoreBookingToFile(UserID);
+  RestoreBookingToFile(frmLoginRegister.sUserID);
 
   // Reload grid and summary from file
-  LoadBookingsFromFile(UserID + '_Booking.txt');
-  RefreshSummaryMemo(UserID);
+  LoadBookingsFromFile(frmLoginRegister.sUserID + '_Booking.txt');
+  RefreshSummaryMemo(frmLoginRegister.sUserID);
 
   // Reset undo state
   gUndoAvailable := False;
@@ -452,7 +450,7 @@ end;
 
 procedure TfrmMyFlights.FormShow(Sender: TObject);
 var
-  sUserID, sFullName: string;
+  sFullName: string;
 
 begin
 
@@ -462,7 +460,7 @@ begin
 
   // Load bookings from user's file
   if FileExists(frmLoginRegister.sUserID + '_Booking.txt') then
-    LoadBookingsFromFile(frmLoginRegister.sUserID + '.txt')
+    LoadBookingsFromFile(frmLoginRegister.sUserID + '_Booking.txt')
   else
     ShowMessage('No bookings found for this user.');
 
@@ -473,7 +471,8 @@ begin
     qryAccounts.Close;
     qryAccounts.SQL.Text :=
       'SELECT Firstname, Lastname FROM tblAccounts WHERE UserID = :UserID';
-    qryAccounts.Parameters.ParamByName('UserID').Value := sUserID;
+    qryAccounts.Parameters.ParamByName('UserID').Value :=
+      frmLoginRegister.sUserID;
     qryAccounts.Open;
 
     if not qryAccounts.Eof then
@@ -528,55 +527,38 @@ begin
 end;
 
 procedure TfrmMyFlights.LoadBookingsFromFile(const sFileName: string);
-{
-  Expects a 7-line block per booking:
-  FlightID: XXXXX
-  From: Cape Town
-  To: Johannesburg
-  Class: Economy
-  Seats: 2
-  Price per seat: R1234.56
-  Departure Date: 8/17/2025
-}
 var
   slLines: TStringList;
   iLine, iRow: Integer;
   sLine: string;
-  sTemp: array [0 .. 6] of string;
+  sTemp: array [0 .. 6] of string; // Only 7 fields used
   bHasData: Boolean;
-
 begin
-
-  // Exit if file doesn't exist
   if not FileExists(sFileName) then
     Exit;
 
   slLines := TStringList.Create;
-
   try
-
     slLines.LoadFromFile(sFileName);
 
-    // Reset grid (keep header row)
     sgBookedFlights.RowCount := 1;
     iRow := 0;
     FillChar(sTemp, SizeOf(sTemp), 0);
     bHasData := False;
 
-    // Loop through each line in the file
     for iLine := 0 to slLines.Count - 1 do
     begin
-
       sLine := Trim(slLines[iLine]);
 
-      // Start of a new booking block
+      // Skip non-grid fields
+      if StartsWith(sLine, 'Booking for:') or StartsWith(sLine, 'Booking Date:')
+      then
+        Continue;
+
       if StartsWith(sLine, 'FlightID:') then
       begin
-
-        // If previous block had data, commit it to grid
         if bHasData then
         begin
-
           Inc(iRow);
           sgBookedFlights.RowCount := iRow + 1;
           sgBookedFlights.Cells[COL_FLIGHTID, iRow] := sTemp[COL_FLIGHTID];
@@ -588,32 +570,24 @@ begin
           sgBookedFlights.Cells[COL_DEPARTUREDATE, iRow] :=
             sTemp[COL_DEPARTUREDATE];
           FillChar(sTemp, SizeOf(sTemp), 0);
-
         end;
 
         sTemp[COL_FLIGHTID] := ExtractValueAfterColon(sLine);
         bHasData := True;
-
       end
       else if StartsWith(sLine, 'From:') then
         sTemp[COL_FROM] := ExtractValueAfterColon(sLine)
-
       else if StartsWith(sLine, 'To:') then
         sTemp[COL_TO] := ExtractValueAfterColon(sLine)
-
       else if StartsWith(sLine, 'Class:') then
         sTemp[COL_CLASS] := ExtractValueAfterColon(sLine)
-
       else if StartsWith(sLine, 'Seats:') then
         sTemp[COL_SEATS] := ExtractValueAfterColon(sLine)
-
       else if StartsWith(sLine, 'Price per seat:') then
         sTemp[COL_PRICE_PER] := ExtractValueAfterColon(sLine)
-
       else if StartsWith(sLine, 'Departure Date:') then
       begin
 
-        // Final line of booking block — commit to grid
         sTemp[COL_DEPARTUREDATE] := ExtractValueAfterColon(sLine);
         Inc(iRow);
         sgBookedFlights.RowCount := iRow + 1;
@@ -631,7 +605,6 @@ begin
       end;
     end;
 
-    // Commit any last incomplete record
     if bHasData then
     begin
 
@@ -648,11 +621,15 @@ begin
 
     end;
 
-    // Ensure at least one data row exists
     if sgBookedFlights.RowCount < 2 then
       sgBookedFlights.RowCount := 2;
 
     FormatGridColumns;
+
+    if (sgBookedFlights.RowCount > 1) and
+      (Trim(sgBookedFlights.Cells[COL_FLIGHTID, sgBookedFlights.RowCount - 1])
+      = '') then
+      sgBookedFlights.RowCount := sgBookedFlights.RowCount - 1;
 
   finally
     slLines.Free;

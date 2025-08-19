@@ -1,0 +1,13 @@
+==============================
+Booking for: fabbilcat7152
+Booking Date: 2025/08/19
+==============================
+
+
+FlightID: FLYH5860
+From: Canada
+To: United States
+Class: Business
+Seats: 555
+Price per seat: R2225,03
+Departure Date: 2025/08/20

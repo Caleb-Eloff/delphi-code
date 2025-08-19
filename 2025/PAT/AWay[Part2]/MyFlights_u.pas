@@ -110,18 +110,31 @@ end;
 function TfrmMyFlights.ParsePriceToFloat(const sPriceText: string): Double;
 var
   CleanText: string;
-
+  FS: TFormatSettings;
 begin
-
-  // Accepts "R123.45" or "123.45" or "R 123,45" (common variants)
-  CleanText := sPriceText;
-  CleanText := StringReplace(CleanText, 'R', '', [rfReplaceAll, rfIgnoreCase]);
+  // Remove currency symbols and spaces
+  CleanText := StringReplace(sPriceText, 'R', '', [rfReplaceAll, rfIgnoreCase]);
   CleanText := StringReplace(CleanText, ' ', '', [rfReplaceAll]);
-  CleanText := StringReplace(CleanText, ',', '.', [rfReplaceAll]);
 
-  if not TryStrToFloat(CleanText, Result) then
+  // Detect which decimal separator is used
+  if (Pos(',', CleanText) > 0) and (Pos('.', CleanText) = 0) then
+  begin
+    // Comma used as decimal separator
+    FS := FormatSettings;
+    FS.DecimalSeparator := ',';
+  end
+  else
+  begin
+    // Default to dot
+    CleanText := StringReplace(CleanText, ',', '', [rfReplaceAll]);
+    // Remove thousand separator
+    FS := FormatSettings;
+    FS.DecimalSeparator := '.';
+  end;
+
+  // Try to convert
+  if not TryStrToFloat(CleanText, Result, FS) then
     Result := 0.0;
-
 end;
 
 function TfrmMyFlights.SafeStrToIntDef(const S: string;
@@ -244,34 +257,6 @@ begin
   // Save changes directly into the database
   dmAccounts.tblFlights.Post;
 
-  // Also save booking details into a text file (for reference / backup)
-  TSBookingData := TStringList.Create;
-  try
-    TSBookingData.Add('UserID: ' + frmLoginRegister.sUserID);
-    TSBookingData.Add('From: ' + dmAccounts.tblFlights.FieldByName('FromDest')
-      .AsString);
-    TSBookingData.Add('To: ' + dmAccounts.tblFlights.FieldByName('ToDest')
-      .AsString);
-    TSBookingData.Add('Class: ' + dmAccounts.tblFlights.FieldByName('Class')
-      .AsString);
-    TSBookingData.Add('Seats: ' + dmAccounts.tblFlights.FieldByName('Seats')
-      .AsString);
-    TSBookingData.Add('Total Price: ' + dmAccounts.tblFlights.FieldByName
-      ('TotalPrice').AsString);
-    TSBookingData.Add('Booking Date: ' +
-      DateTimeToStr(dmAccounts.tblFlights.FieldByName('BookingDate')
-      .AsDateTime));
-    TSBookingData.Add('Departure Date: ' +
-      DateToStr(dmAccounts.tblFlights.FieldByName('DepartureDate').AsDateTime));
-
-    TSBookingData.SaveToFile(sBookingFile);
-    // save directly, no temp file needed
-
-  finally
-    TSBookingData.Free;
-
-  end;
-
   ShowMessage('Changes saved successfully to database and file.');
 
 end;
@@ -311,6 +296,7 @@ var
   sFlightID, sUserID, sFileName: string;
   iSeatCount, i, iSelectedRow: Integer;
   dPricePerSeat, dTotalDeduct: Double;
+
 begin
   iSelectedRow := sgBookedFlights.Row;
 
@@ -325,6 +311,7 @@ begin
   // Store deleted row for undo functionality BEFORE removing
   for i := 0 to 6 do
     gLastDeletedRowData[i] := sgBookedFlights.Cells[i, iSelectedRow];
+
   gLastDeletedRowIndex := iSelectedRow;
   gUndoAvailable := True;
 
@@ -332,8 +319,9 @@ begin
   sFlightID := sgBookedFlights.Cells[COL_FLIGHTID, iSelectedRow];
   iSeatCount := SafeStrToIntDef(sgBookedFlights.Cells[COL_SEATS,
     iSelectedRow], 0);
-  dPricePerSeat := ParsePriceToFloat(sgBookedFlights.Cells[COL_PRICE_PER,
-    iSelectedRow]);
+  dPricePerSeat := ParsePriceToFloat
+    (StringReplace(sgBookedFlights.Cells[COL_PRICE_PER, iSelectedRow], 'R', '',
+    [rfReplaceAll]));
   dTotalDeduct := iSeatCount * dPricePerSeat;
 
   // Remove row safely
@@ -464,12 +452,12 @@ var
 begin
 
   // Prepare grid for fresh data
-  ClearGridData;
   SetupGridHeaders;
+  ClearGridData;
 
   // Load bookings from user's file
   if FileExists(frmLoginRegister.sUserID + '_Booking.txt') then
-    LoadBookingsFromFile(frmLoginRegister.sUserID + '.txt')
+    LoadBookingsFromFile(frmLoginRegister.sUserID + '_Booking.txt')
   else
     ShowMessage('No bookings found for this user.');
 
@@ -596,6 +584,7 @@ begin
         sTemp[COL_PRICE_PER] := ExtractValueAfterColon(sLine)
       else if StartsWith(sLine, 'Departure Date:') then
       begin
+
         sTemp[COL_DEPARTUREDATE] := ExtractValueAfterColon(sLine);
         Inc(iRow);
         sgBookedFlights.RowCount := iRow + 1;
@@ -609,11 +598,13 @@ begin
           sTemp[COL_DEPARTUREDATE];
         FillChar(sTemp, SizeOf(sTemp), 0);
         bHasData := False;
+
       end;
     end;
 
     if bHasData then
     begin
+
       Inc(iRow);
       sgBookedFlights.RowCount := iRow + 1;
       sgBookedFlights.Cells[COL_FLIGHTID, iRow] := sTemp[COL_FLIGHTID];
@@ -624,6 +615,7 @@ begin
       sgBookedFlights.Cells[COL_PRICE_PER, iRow] := sTemp[COL_PRICE_PER];
       sgBookedFlights.Cells[COL_DEPARTUREDATE, iRow] :=
         sTemp[COL_DEPARTUREDATE];
+
     end;
 
     if sgBookedFlights.RowCount < 2 then
@@ -638,6 +630,7 @@ begin
 
   finally
     slLines.Free;
+
   end;
 end;
 
