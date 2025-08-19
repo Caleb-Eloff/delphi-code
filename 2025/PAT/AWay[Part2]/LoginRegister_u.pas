@@ -6,8 +6,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,
-  Vcl.Imaging.pngimage, jpeg, Vcl.Buttons, Math, Home_u, BookFlights_u,
-  dmAccounts_u;
+  Vcl.Imaging.pngimage, jpeg, Vcl.Buttons, Math, BookFlights_u, Home_u,
+  MyFlights_u, Profile_u, dmAccounts_u, Admin_u;
 
 type
   TfrmLoginRegister = class(TForm)
@@ -61,9 +61,8 @@ type
     { Private declarations }
   public
     { Public declarations }
-    sUserID, sUsername: String;
-    bAdmin: Boolean;
-
+    sUserID, sUsername: String; // Stores user details after login/register
+    bAdmin: Boolean; // Tracks whether logged in user is admin
   end;
 
 var
@@ -73,40 +72,37 @@ implementation
 
 {$R *.dfm}
 
+{ -------------------- LOGIN LOGIC -------------------- }
 procedure TfrmLoginRegister.btnLoginClick(Sender: TObject);
 var
   sLoginEmail, sLoginPassword: String;
   bLoginFound: Boolean;
-
 begin
-
-  // Check if any inputs are empty
+  // Validate that required fields are filled
   if (edtLoginEmail.Text = '') OR (edtLoginPassword.Text = '') then
   begin
-    // Ask user to fill in all details
     ShowMessage('Please enter all your details.');
   end
-  // Check for valid email
+  // Validate email format (basic check for @ and .com)
   else if (Pos('@', edtLoginEmail.Text) = 0) OR
     (Pos('.com', edtLoginEmail.Text) = 0) then
   begin
-    // Ask user to enter a valid email
     ShowMessage('Please enter a valid e-mail.');
   end
   else
   begin
-    // Save inputs to variables
+    // Store user inputs
     sLoginEmail := edtLoginEmail.Text;
     sLoginPassword := edtLoginPassword.Text;
     bLoginFound := False;
 
-    // Check if the account exists in the database
+    // Search the accounts table for matching credentials
     with dmAccounts do
     begin
       tblAccounts.First;
       while (not tblAccounts.Eof) and (not bLoginFound) do
       begin
-        // Check for admin account
+        // Admin account login
         if (tblAccounts['Email'] = LowerCase(sLoginEmail)) AND
           (tblAccounts['Password'] = sLoginPassword) AND
           (tblAccounts['Admin'] = True) then
@@ -116,7 +112,7 @@ begin
           sUsername := tblAccounts['FirstName'] + ' ' + tblAccounts['LastName'];
           bAdmin := True;
         end
-        // Check for regular account
+        // Regular account login
         else if (tblAccounts['Email'] = LowerCase(sLoginEmail)) AND
           (tblAccounts['Password'] = sLoginPassword) then
         begin
@@ -125,37 +121,35 @@ begin
           sUsername := tblAccounts['FirstName'] + ' ' + tblAccounts['LastName'];
         end
         else
-        begin
-          tblAccounts.Next; // Move to the next record
-        end;
-
+          tblAccounts.Next; // Move to next record if no match
       end;
-
     end;
 
-    // Show appropriate message based on login result
+    // Handle login result
     if not bLoginFound then
+      ShowMessage('E-mail and/or password is incorrect.')
+    else if bAdmin then
     begin
-      ShowMessage('E-mail and/or password is incorrect.'); // Login failed
+      ShowMessage('Welcome admin account!');
+      frmLoginRegister.Hide;
+      frmAdmin.Show;
     end
     else if bLoginFound then
     begin
-      ShowMessage('Successfully logged in!'); // Login successful
-      frmLoginRegister.Hide; // Hide the register/login form
-      frmHome.Show; // Show the home form
+      ShowMessage('Successfully logged in!');
+      frmLoginRegister.Hide;
+      frmHome.Show;
     end;
-
   end;
-
 end;
 
+{ -------------------- REGISTER LOGIC -------------------- }
 procedure TfrmLoginRegister.btnRegisterClick(Sender: TObject);
 var
   sFirstName, sLastName, sEmail, sPassword, sReEnter: String;
   bRegisterFound: Boolean;
 begin
-
-  // Check if the account already exists
+  // Check if email already exists
   with dmAccounts do
   begin
     bRegisterFound := False;
@@ -163,57 +157,43 @@ begin
     while (not tblAccounts.Eof) and (not bRegisterFound) do
     begin
       if tblAccounts['Email'] = edtRegisterEmail.Text then
-      begin
-        bRegisterFound := True; // Account found
-      end
+        bRegisterFound := True
       else
-      begin
-        tblAccounts.Next; // Move to the next record
-      end;
-
+        tblAccounts.Next;
     end;
-
   end;
 
-  // Check for empty inputs
+  // Validate input fields
   if (edtRegisterName.Text = '') OR (edtRegisterSurname.Text = '') OR
     (edtRegisterEmail.Text = '') OR (edtRegisterPassword.Text = '') OR
     (edtRegisterReEnter.Text = '') then
-  begin
-    ShowMessage('Please enter all your details.'); // Show error message
-  end
-  // Check for valid email properties
+    ShowMessage('Please enter all your details.')
+    // Check email validity (.com or .co.za only)
   else if (Pos('@', edtRegisterEmail.Text) = 0) OR
     ((Pos('.com', edtRegisterEmail.Text) = 0) AND
     (Pos('.co.za', edtRegisterEmail.Text) = 0)) then
-  begin
-    ShowMessage('Please enter a valid e-mail.'); // Show error message
-  end
-  // Check if passwords match
+    ShowMessage('Please enter a valid e-mail.')
+    // Password confirmation check
   else if edtRegisterPassword.Text <> edtRegisterReEnter.Text then
-  begin
-    ShowMessage('Passwords do not match.'); // Show error message
-  end
-  // Check if account already exists
+    ShowMessage('Passwords do not match.')
+    // Prevent duplicate accounts
   else if bRegisterFound then
-  begin
-    ShowMessage('Account already exists.'); // Show error message
-  end
+    ShowMessage('Account already exists.')
   else
   begin
-    // Save inputs to variables
+    // Save user details
     sFirstName := edtRegisterName.Text;
     sLastName := edtRegisterSurname.Text;
     sEmail := edtRegisterEmail.Text;
     sPassword := edtRegisterPassword.Text;
     sReEnter := edtRegisterReEnter.Text;
 
-    // Create a unique UserID
+    // Generate unique UserID using parts of name/email + random numbers
     sUserID := LowerCase(Copy(sFirstName, 1, 3)) +
       LowerCase(Copy(sLastName, 1, 3)) + LowerCase(Copy(sEmail, 1, 3)) +
       IntToStr(RandomRange(1, 101)) + IntToStr(RandomRange(1, 101));
 
-    // Insert newly made account into database
+    // Insert new account into database
     with dmAccounts do
     begin
       tblAccounts.Insert;
@@ -223,160 +203,118 @@ begin
       tblAccounts['Email'] := LowerCase(sEmail);
       tblAccounts['Password'] := sPassword;
       tblAccounts['Admin'] := False;
-      tblAccounts.Post; // Save the new record to database
+      tblAccounts.Post;
 
       sUsername := tblAccounts['FirstName'] + ' ' + tblAccounts['LastName'];
     end;
 
-    // Show success message and navigate to the home form
     ShowMessage
       ('Congratulations! You have successfully registered your account.');
-    frmLoginRegister.Hide; // Hide the register/login form
-    frmHome.Show; // Show the home form
-
+    frmLoginRegister.Hide;
+    frmHome.Show;
   end;
-
 end;
 
+{ -------------------- INPUT VALIDATION -------------------- }
 procedure TfrmLoginRegister.edtLoginEmailKeyPress(Sender: TObject;
   var Key: Char);
 begin
-
-  // Allow only letters, numbers, '@', '.', and backspace
+  // Allow only alphanumerics + @ . and backspace
   if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '@', '.', #8]) then
-  begin
-    Key := #0; // Invalid keys removed
-  end;
-
+    Key := #0;
 end;
 
 procedure TfrmLoginRegister.edtLoginPasswordKeyPress(Sender: TObject;
   var Key: Char);
 begin
-
-  // Allow only letters, numbers, '@', '#', and backspace
+  // Allow alphanumerics and basic symbols
   if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '!', '@', '#', '$', '%',
     '^', '&', #8]) then
-  begin
-    Key := #0; // Invalid keys removed
-  end;
-
+    Key := #0;
 end;
 
 procedure TfrmLoginRegister.edtRegisterEmailKeyPress(Sender: TObject;
   var Key: Char);
 begin
-
-  // Allow only letters, numbers, '@', '.', and backspace
   if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '@', '.', #8]) then
-  begin
-    Key := #0; // Invalid keys removed
-  end;
-
+    Key := #0;
 end;
 
 procedure TfrmLoginRegister.edtRegisterNameKeyPress(Sender: TObject;
   var Key: Char);
 begin
-
-  // Allow only letters and backspace
+  // Only letters allowed for first name
   if not(Key in ['A' .. 'Z', 'a' .. 'z', #8]) then
-  begin
-    Key := #0; // Invalid keys removed
-  end;
-
+    Key := #0;
 end;
 
 procedure TfrmLoginRegister.edtRegisterPasswordKeyPress(Sender: TObject;
   var Key: Char);
 begin
-
-  // Allow only letters, numbers, '@', '#', and backspace
   if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '!', '@', '#', '$', '%',
     '^', '&', #8]) then
-  begin
-    Key := #0; // Invalid keys removed
-  end;
-
+    Key := #0;
 end;
 
 procedure TfrmLoginRegister.edtRegisterReEnterKeyPress(Sender: TObject;
   var Key: Char);
 begin
-
-  // Allow only letters, numbers, '@', '#', and backspace
   if not(Key in ['A' .. 'Z', 'a' .. 'z', '0' .. '9', '!', '@', '#', '$', '%',
     '^', '&', #8]) then
-  begin
-    Key := #0; // Invalid keys removed
-  end;
-
+    Key := #0;
 end;
 
 procedure TfrmLoginRegister.edtRegisterSurnameKeyPress(Sender: TObject;
   var Key: Char);
 begin
-
-  // Allow only letters and backspace
   if not(Key in ['A' .. 'Z', 'a' .. 'z', #8]) then
-  begin
-    Key := #0; // Invalid keys removed
-  end;
-
+    Key := #0;
 end;
 
+{ -------------------- FORM EVENTS -------------------- }
 procedure TfrmLoginRegister.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
-
-  Application.Terminate;
-
+  Application.Terminate; // Ensure app fully exits when form is closed
 end;
 
 procedure TfrmLoginRegister.FormCreate(Sender: TObject);
 begin
-
-  // Remove title bar and borders
+  // Remove title bar and maximize to full screen
   BorderStyle := bsNone;
-
-  // Maximize to full screen
   SetBounds(0, 0, Screen.Width, Screen.Height);
-  // Set Boundaries for screen dimensions
   WindowState := wsMaximized;
 
-  // Load background image
+  // Load form background image
   imgRegisterLoginBackground.Picture.LoadFromFile('MenuBackground.jpg');
 
-  // Set up Register Panel
+  // Center Register panel
   pnlRegister.Left := (ClientWidth - pnlRegister.Width) DIV 2;
   pnlRegister.Top := (ClientHeight - pnlRegister.Height) DIV 2;
   imgRegisterMenu.Picture.LoadFromFile('Menu.png');
 
-  // Set up Login Panel
+  // Center Login panel
   pnlLogin.Left := (ClientWidth - pnlLogin.Width) DIV 2;
   pnlLogin.Top := (ClientHeight - pnlLogin.Height) DIV 2;
   imgLoginMenu.Picture.LoadFromFile('Menu.png');
 
-  // Align Register Panel's labels and buttons
+  // Center align text/buttons within panels
   lblRegister.Left := (pnlRegister.Width - lblRegister.Width) DIV 2;
   btnRegister.Left := (pnlRegister.Width - btnRegister.Width) DIV 2;
   lblLoginAccount.Left := (pnlRegister.Width - lblLoginAccount.Width) DIV 2;
 
-  // Align Login Panel's labels and buttons
   lblLogin.Left := (pnlLogin.Width - lblLogin.Width) DIV 2;
   btnLogin.Left := (pnlLogin.Width - btnLogin.Width) DIV 2;
   lblRegisterAccount.Left := (pnlLogin.Width - lblRegisterAccount.Width) DIV 2;
-
 end;
 
 procedure TfrmLoginRegister.FormShow(Sender: TObject);
 begin
-
-  // Show Register Panel and hide Login Panel
+  // Show Register panel first by default
   pnlLogin.Hide;
   pnlRegister.Show;
 
-  // Load Register Panel's default settings
+  // Reset Register form inputs
   imgRegisterPassword.Picture.LoadFromFile('Hide.jpg');
   edtRegisterPassword.PasswordChar := '*';
   imgRegisterReEnter.Picture.LoadFromFile('Hide.jpg');
@@ -388,81 +326,67 @@ begin
   edtRegisterPassword.Clear;
   edtRegisterReEnter.Clear;
 
-  // Load Login Panel's default settings
+  // Reset Login form inputs
   imgLoginPassword.Picture.LoadFromFile('Hide.jpg');
   edtLoginPassword.PasswordChar := '*';
-
   edtLoginEmail.Clear;
   edtLoginPassword.Clear;
-
 end;
 
+{ -------------------- PASSWORD VISIBILITY TOGGLE -------------------- }
 procedure TfrmLoginRegister.imgLoginPasswordClick(Sender: TObject);
 begin
-
-  // Toggle the password visibility
   if edtLoginPassword.PasswordChar = '*' then
   begin
-    imgLoginPassword.Picture.LoadFromFile('Show.jpg'); // Show password
+    imgLoginPassword.Picture.LoadFromFile('Show.jpg'); // Reveal password
     edtLoginPassword.PasswordChar := #0;
   end
-  else if edtLoginPassword.PasswordChar = #0 then
+  else
   begin
-    imgLoginPassword.Picture.LoadFromFile('Hide.jpg'); // Show password
+    imgLoginPassword.Picture.LoadFromFile('Hide.jpg'); // Mask password
     edtLoginPassword.PasswordChar := '*';
   end;
-
 end;
 
 procedure TfrmLoginRegister.imgRegisterPasswordClick(Sender: TObject);
 begin
-
-  // Toggle the password visibility
   if edtRegisterPassword.PasswordChar = '*' then
   begin
-    imgRegisterPassword.Picture.LoadFromFile('Show.jpg'); // Show password
+    imgRegisterPassword.Picture.LoadFromFile('Show.jpg');
     edtRegisterPassword.PasswordChar := #0;
   end
-  else if edtRegisterPassword.PasswordChar = #0 then
+  else
   begin
-    edtRegisterPassword.PasswordChar := '*'; // Hide password
+    edtRegisterPassword.PasswordChar := '*';
     imgRegisterPassword.Picture.LoadFromFile('Hide.jpg');
   end;
-
 end;
 
 procedure TfrmLoginRegister.imgRegisterReEnterClick(Sender: TObject);
 begin
-
-  // Toggle the re-enter password visibility
   if edtRegisterReEnter.PasswordChar = '*' then
   begin
     imgRegisterReEnter.Picture.LoadFromFile('Show.jpg');
-    // Show re-entered password
     edtRegisterReEnter.PasswordChar := #0;
   end
-  else if edtRegisterReEnter.PasswordChar = #0 then
+  else
   begin
-    edtRegisterReEnter.PasswordChar := '*'; // Hide re-entered password
+    edtRegisterReEnter.PasswordChar := '*';
     imgRegisterReEnter.Picture.LoadFromFile('Hide.jpg');
   end;
-
 end;
 
+{ -------------------- SWITCHING PANELS -------------------- }
 procedure TfrmLoginRegister.lblLoginAccountClick(Sender: TObject);
 begin
-
   pnlRegister.Hide;
   pnlLogin.Show;
-
 end;
 
 procedure TfrmLoginRegister.lblRegisterAccountClick(Sender: TObject);
 begin
-
   pnlLogin.Hide;
   pnlRegister.Show;
-
 end;
 
 end.

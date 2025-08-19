@@ -26,57 +26,6 @@ object frmBookFlights: TfrmBookFlights
     ExplicitTop = -48
     ExplicitWidth = 1920
   end
-  object pnlNorthAmerica: TPanel
-    Left = 32
-    Top = 33
-    Width = 1257
-    Height = 816
-    TabOrder = 1
-    object imgNorthAmerica: TImage
-      Left = 1
-      Top = 1
-      Width = 1255
-      Height = 814
-      Align = alClient
-      Stretch = True
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 105
-      ExplicitHeight = 105
-    end
-    object lblUS: TLabel
-      Left = 224
-      Top = 168
-      Width = 14
-      Height = 15
-      Caption = 'US'
-      OnClick = lblUSClick
-    end
-    object lblCanada: TLabel
-      Left = 488
-      Top = 240
-      Width = 40
-      Height = 15
-      Caption = 'Canada'
-      OnClick = lblCanadaClick
-    end
-    object lblUnitedStates: TLabel
-      Left = 384
-      Top = 456
-      Width = 69
-      Height = 15
-      Caption = 'United States'
-      OnClick = lblUnitedStatesClick
-    end
-    object lblMexico: TLabel
-      Left = 328
-      Top = 664
-      Width = 38
-      Height = 15
-      Caption = 'Mexico'
-      OnClick = lblMexicoClick
-    end
-  end
   object pnlSouthAmerica: TPanel
     Left = 33
     Top = 34
@@ -201,8 +150,8 @@ object frmBookFlights: TfrmBookFlights
     end
   end
   object btnBookFlightsBack: TButton
-    Left = 120
-    Top = 944
+    Left = 35
+    Top = 1000
     Width = 75
     Height = 25
     Caption = 'Back'
@@ -231,7 +180,6 @@ object frmBookFlights: TfrmBookFlights
       Width = 37
       Height = 15
       Caption = 'Algeria'
-      OnClick = lblAlgeriaClick
     end
     object lblMauritania: TLabel
       Left = 236
@@ -239,7 +187,6 @@ object frmBookFlights: TfrmBookFlights
       Width = 57
       Height = 15
       Caption = 'Mauritania'
-      OnClick = lblMauritaniaClick
     end
     object lblSenegal: TLabel
       Left = 176
@@ -367,7 +314,6 @@ object frmBookFlights: TfrmBookFlights
       Width = 163
       Height = 15
       Caption = 'Democratic Republic of Congo'
-      OnClick = lblDemocraticRepublicCongoClick
     end
     object lblTanzania: TLabel
       Left = 887
@@ -432,72 +378,6 @@ object frmBookFlights: TfrmBookFlights
       Height = 15
       Caption = 'South Africa'
       OnClick = lblSouthAfricaClick
-    end
-  end
-  object pnlContinents: TPanel
-    Left = 32
-    Top = 32
-    Width = 1257
-    Height = 817
-    TabOrder = 0
-    object imgContinents: TImage
-      Left = 1
-      Top = 1
-      Width = 1255
-      Height = 815
-      Align = alClient
-      Anchors = []
-      Stretch = True
-      ExplicitLeft = 0
-      ExplicitTop = 2
-    end
-    object lblNorthAmerica: TLabel
-      Left = 256
-      Top = 296
-      Width = 78
-      Height = 15
-      Caption = 'North America'
-      OnClick = lblNorthAmericaClick
-    end
-    object lblSouthAmerica: TLabel
-      Left = 384
-      Top = 528
-      Width = 78
-      Height = 15
-      Caption = 'South America'
-      OnClick = lblSouthAmericaClick
-    end
-    object lblAfrica: TLabel
-      Left = 672
-      Top = 480
-      Width = 31
-      Height = 15
-      Caption = 'Africa'
-      OnClick = lblAfricaClick
-    end
-    object lblAsia: TLabel
-      Left = 880
-      Top = 304
-      Width = 22
-      Height = 15
-      Caption = 'Asia'
-      OnClick = lblAsiaClick
-    end
-    object lblAustralia: TLabel
-      Left = 1024
-      Top = 584
-      Width = 46
-      Height = 15
-      Caption = 'Australia'
-      OnClick = lblAustraliaClick
-    end
-    object lblEurope: TLabel
-      Left = 704
-      Top = 304
-      Width = 37
-      Height = 15
-      Caption = 'Europe'
-      OnClick = lblEuropeClick
     end
   end
   object pnlEurope: TPanel
@@ -811,6 +691,123 @@ object frmBookFlights: TfrmBookFlights
       OnClick = lblAustralia2Click
     end
   end
+  object pnlNorthAmerica: TPanel
+    Left = 32
+    Top = 33
+    Width = 1257
+    Height = 816
+    TabOrder = 1
+    object imgNorthAmerica: TImage
+      Left = 1
+      Top = 1
+      Width = 1255
+      Height = 814
+      Align = alClient
+      Stretch = True
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 105
+      ExplicitHeight = 105
+    end
+    object lblUS: TLabel
+      Left = 224
+      Top = 168
+      Width = 14
+      Height = 15
+      Caption = 'US'
+      OnClick = lblUSClick
+    end
+    object lblCanada: TLabel
+      Left = 488
+      Top = 240
+      Width = 40
+      Height = 15
+      Caption = 'Canada'
+      OnClick = lblCanadaClick
+    end
+    object lblUnitedStates: TLabel
+      Left = 384
+      Top = 456
+      Width = 69
+      Height = 15
+      Caption = 'United States'
+      OnClick = lblUnitedStatesClick
+    end
+    object lblMexico: TLabel
+      Left = 328
+      Top = 664
+      Width = 38
+      Height = 15
+      Caption = 'Mexico'
+      OnClick = lblMexicoClick
+    end
+  end
+  object pnlContinents: TPanel
+    Left = 32
+    Top = 32
+    Width = 1257
+    Height = 817
+    TabOrder = 0
+    object imgContinents: TImage
+      Left = 1
+      Top = 1
+      Width = 1255
+      Height = 815
+      Align = alClient
+      Anchors = []
+      Stretch = True
+      ExplicitLeft = 0
+      ExplicitTop = 2
+    end
+    object lblNorthAmerica: TLabel
+      Left = 256
+      Top = 296
+      Width = 78
+      Height = 15
+      Caption = 'North America'
+      OnClick = lblNorthAmericaClick
+    end
+    object lblSouthAmerica: TLabel
+      Left = 384
+      Top = 528
+      Width = 78
+      Height = 15
+      Caption = 'South America'
+      OnClick = lblSouthAmericaClick
+    end
+    object lblAfrica: TLabel
+      Left = 672
+      Top = 480
+      Width = 31
+      Height = 15
+      Caption = 'Africa'
+      OnClick = lblAfricaClick
+    end
+    object lblAsia: TLabel
+      Left = 880
+      Top = 304
+      Width = 22
+      Height = 15
+      Caption = 'Asia'
+      OnClick = lblAsiaClick
+    end
+    object lblAustralia: TLabel
+      Left = 1024
+      Top = 584
+      Width = 46
+      Height = 15
+      Caption = 'Australia'
+      OnClick = lblAustraliaClick
+    end
+    object lblEurope: TLabel
+      Left = 704
+      Top = 304
+      Width = 37
+      Height = 15
+      Caption = 'Europe'
+      OnClick = lblEuropeClick
+    end
+  end
   object pnlFlightDetails: TPanel
     Left = 1337
     Top = 53
@@ -848,13 +845,6 @@ object frmBookFlights: TfrmBookFlights
       Height = 15
       Caption = 'Number of Seats'
     end
-    object memFlightDetails: TMemo
-      Left = 84
-      Top = 148
-      Width = 365
-      Height = 188
-      TabOrder = 0
-    end
     object rgClasses: TRadioGroup
       Left = 80
       Top = 363
@@ -865,7 +855,7 @@ object frmBookFlights: TfrmBookFlights
         'First Class'
         'Business'
         'Economy')
-      TabOrder = 1
+      TabOrder = 0
       OnClick = rgClassesClick
     end
     object spnSeats: TSpinEdit
@@ -875,7 +865,7 @@ object frmBookFlights: TfrmBookFlights
       Height = 24
       MaxValue = 0
       MinValue = 0
-      TabOrder = 2
+      TabOrder = 1
       Value = 0
     end
     object btnFlightDetailsConfirm: TButton
@@ -884,15 +874,8 @@ object frmBookFlights: TfrmBookFlights
       Width = 75
       Height = 25
       Caption = 'Confirm'
-      TabOrder = 3
+      TabOrder = 2
       OnClick = btnFlightDetailsConfirmClick
-    end
-    object memFlightDetailsFinal: TMemo
-      Left = 88
-      Top = 489
-      Width = 361
-      Height = 209
-      TabOrder = 4
     end
     object btnFlightDetailsFinalize: TButton
       Left = 232
@@ -900,8 +883,34 @@ object frmBookFlights: TfrmBookFlights
       Width = 75
       Height = 25
       Caption = 'Finalize'
-      TabOrder = 5
+      TabOrder = 3
       OnClick = btnFlightDetailsFinalizeClick
+    end
+    object redFlightDetails: TRichEdit
+      Left = 84
+      Top = 145
+      Width = 365
+      Height = 191
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 4
+    end
+    object redFlightDetailsFinal: TRichEdit
+      Left = 84
+      Top = 489
+      Width = 365
+      Height = 209
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 5
     end
   end
   object pnlDestination: TPanel

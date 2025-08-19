@@ -139,6 +139,19 @@
         <DCCReference Include="BookFlights_u.pas">
             <Form>frmBookFlights</Form>
         </DCCReference>
+        <DCCReference Include="MyFlights_u.pas">
+            <Form>frmMyFlights</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="Profile_u.pas">
+            <Form>frmProfile</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="Admin_u.pas">
+            <Form>frmAdmin</Form>
+        </DCCReference>
+        <DCCReference Include="AccountManager_u.pas"/>
+        <DCCReference Include="ProfileManager_u.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

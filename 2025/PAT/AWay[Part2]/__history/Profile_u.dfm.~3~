@@ -1,0 +1,27 @@
+object frmProfile: TfrmProfile
+  Left = 0
+  Top = 0
+  Caption = 'A-Way Airlines'
+  ClientHeight = 880
+  ClientWidth = 1600
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  OnClose = FormClose
+  OnCreate = FormCreate
+  TextHeight = 15
+  object imgProfileBackground: TImage
+    Left = 0
+    Top = 0
+    Width = 1600
+    Height = 880
+    Align = alClient
+    ExplicitLeft = 576
+    ExplicitTop = 288
+    ExplicitWidth = 105
+    ExplicitHeight = 105
+  end
+end

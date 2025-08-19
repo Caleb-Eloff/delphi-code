@@ -5,7 +5,12 @@ uses
   LoginRegister_u in 'LoginRegister_u.pas' {frmLoginRegister},
   dmAccounts_u in 'dmAccounts_u.pas' {dmAccounts: TDataModule},
   Home_u in 'Home_u.pas' {frmHome},
-  BookFlights_u in 'BookFlights_u.pas' {frmBookFlights};
+  BookFlights_u in 'BookFlights_u.pas' {frmBookFlights},
+  MyFlights_u in 'MyFlights_u.pas' {frmMyFlights},
+  Profile_u in 'Profile_u.pas' {frmProfile},
+  Admin_u in 'Admin_u.pas' {frmAdmin},
+  AccountManager_u in 'AccountManager_u.pas',
+  ProfileManager_u in 'ProfileManager_u.pas';
 
 {$R *.res}
 
@@ -16,6 +21,9 @@ begin
   Application.CreateForm(TdmAccounts, dmAccounts);
   Application.CreateForm(TfrmHome, frmHome);
   Application.CreateForm(TfrmBookFlights, frmBookFlights);
+  Application.CreateForm(TfrmMyFlights, frmMyFlights);
+  Application.CreateForm(TfrmProfile, frmProfile);
+  Application.CreateForm(TfrmAdmin, frmAdmin);
   Application.Run;
 
 end.

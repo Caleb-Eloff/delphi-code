@@ -2,11 +2,10 @@
 
 interface
 
-uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls,
-  Vcl.ComCtrls, Math, Vcl.Grids, Vcl.Samples.Spin, dmAccounts_u;
+uses Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
+  Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Math, Vcl.Grids, Vcl.Samples.Spin,
+  dmAccounts_u;
 
 type
   TfrmBookFlights = class(TForm)
@@ -121,14 +120,14 @@ type
     sgAvailableFlights: TStringGrid;
     pnlFlightDetails: TPanel;
     lblFlightDetailsHeading: TLabel;
-    memFlightDetails: TMemo;
     imgFlightDetailsBackground: TImage;
     rgClasses: TRadioGroup;
     spnSeats: TSpinEdit;
     lblNumberOfSeats: TLabel;
     btnFlightDetailsConfirm: TButton;
-    memFlightDetailsFinal: TMemo;
     btnFlightDetailsFinalize: TButton;
+    redFlightDetails: TRichEdit;
+    redFlightDetailsFinal: TRichEdit;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure lblNorthAmericaClick(Sender: TObject);
@@ -224,12 +223,14 @@ type
     procedure rgClassesClick(Sender: TObject);
     procedure btnFlightDetailsConfirmClick(Sender: TObject);
     procedure btnFlightDetailsFinalizeClick(Sender: TObject);
+    function GenerateUnqiueFlightNumber(existingList: TStringList): string;
   private
     dBasePrice: Double;
     dMultiplier: Double;
-
-  public
-    { Public declarations }
+    bBookingConfirmed: Boolean;
+    gridFlightNum: String;
+  public { Public declarations }
+    pricePerPixel: Real;
   end;
 
 var
@@ -239,7 +240,7 @@ implementation
 
 {$R *.dfm}
 
-uses Home_u, LoginRegister_u;
+uses LoginRegister_u, Home_u;
 
 procedure TfrmBookFlights.btnBookFlightsBackClick(Sender: TObject);
 begin
@@ -257,23 +258,24 @@ begin
     pnlContinents.Show;
 
   end
+
   else if (pnlContinents.Visible = True) then
   begin
-
     frmBookFlights.Hide;
     frmHome.Show;
-
   end;
 
 end;
 
 procedure TfrmBookFlights.btnDestinationChooseFlightClick(Sender: TObject);
 var
-  flightNumInput, gridFlightNum, airline, price: string;
+  flightNumInput, airline, price: string;
   row: Integer;
   found: Boolean;
 
 begin
+
+  // Prompt user to enter a flight number
   flightNumInput := Trim(InputBox('Choose Flight', 'Enter Flight Number:', ''));
 
   // Basic validation
@@ -289,52 +291,66 @@ begin
     Exit;
   end;
 
+  // Search for matching flight in grid
   found := False;
-
   for row := 1 to sgAvailableFlights.RowCount - 1 do
   begin
-    gridFlightNum := sgAvailableFlights.Cells[1, row]; // Column 1 = FlightNo
 
+    gridFlightNum := sgAvailableFlights.Cells[1, row]; // Column 1 = FlightNo
     if SameText(gridFlightNum, flightNumInput) then
     begin
+
       airline := sgAvailableFlights.Cells[0, row];
       price := sgAvailableFlights.Cells[2, row];
 
-      // Format memo output
-      memFlightDetails.Clear;
-      memFlightDetails.Lines.Add('==============================');
-      memFlightDetails.Lines.Add('        FLIGHT DETAILS        ');
-      memFlightDetails.Lines.Add('==============================');
-      memFlightDetails.Lines.Add(Format('%-15s %s', ['Airline:', airline]));
-      memFlightDetails.Lines.Add(Format('%-15s %s', ['Flight Number:',
-        gridFlightNum]));
-      memFlightDetails.Lines.Add(Format('%-15s %s', ['Price:', price]));
-      memFlightDetails.Lines.Add('==============================');
+      // Configure tab stops for clean alignment
+      with redFlightDetails.Paragraph do
+      begin
+        TabCount := 2;
+        Tab[0] := 100; // Label column
+        Tab[1] := 250; // Value column
+      end;
 
+      // Format rich text output
+      redFlightDetails.Clear;
+      redFlightDetails.Lines.Add('==============================');
+      redFlightDetails.Lines.Add('        FLIGHT DETAILS        ');
+      redFlightDetails.Lines.Add('==============================');
+      redFlightDetails.Lines.Add('Airline:' + #9 + airline);
+      redFlightDetails.Lines.Add('Flight Number:' + #9 + gridFlightNum);
+      redFlightDetails.Lines.Add('Price:' + #9 + price);
+      redFlightDetails.Lines.Add('==============================');
+
+      // Show flight details panel
       SetupAvailableFlightsGrid;
-
       pnlFlightDetails.Show;
       pnlDestination.Hide;
+
       found := True;
       Break;
+
     end;
   end;
 
+  // If no match found, show error
   if not found then
     ShowMessage('Flight number "' + flightNumInput + '" not found.');
+
 end;
 
 procedure TfrmBookFlights.btnDestinationDetailsConfirmClick(Sender: TObject);
 var
   lblFrom, lblTo: TLabel;
-  distance, pricePerPixel, totalPrice: Double;
+  distance, totalPrice: Double;
   flightList: TStringList;
   parts: TArray<string>;
   airline, flightNum, price: string;
   i: Integer;
 
 begin
+
   // Basic validation
+
   if (cmbDestinationFrom.ItemIndex = -1) or (cmbDestinationTo.ItemIndex = -1)
   then
   begin
@@ -349,6 +365,7 @@ begin
   end;
 
   // Date validation
+
   if dtpDate.Date < Date then
   begin
     ShowMessage('Departure date cannot be in the past.');
@@ -356,6 +373,7 @@ begin
   end;
 
   // Get labels
+
   lblFrom := GetLabelByDestination(cmbDestinationFrom.Text);
   lblTo := GetLabelByDestination(cmbDestinationTo.Text);
   if (lblFrom = nil) or (lblTo = nil) then
@@ -365,47 +383,49 @@ begin
   end;
 
   // Calculate price
-  distance := CalculateDistance(lblFrom, lblTo);
-  pricePerPixel := 7.5;
-  totalPrice := distance * pricePerPixel;
 
+  distance := CalculateDistance(lblFrom, lblTo);
+  totalPrice := distance * pricePerPixel;
   ShowMessage(Format('Estimated flight cost from %s to %s is R%.2f',
     [cmbDestinationFrom.Text, cmbDestinationTo.Text, totalPrice]));
 
+
   // Generate and load flights
+
   GenerateFlightOptions(totalPrice);
-
   flightList := TStringList.Create;
+
   try
+
     flightList.LoadFromFile('tempFlights.txt');
-
     sgAvailableFlights.RowCount := Max(2, flightList.Count + 1);
-
     sgAvailableFlights.Cells[0, 0] := 'Airline';
     sgAvailableFlights.Cells[1, 0] := 'FlightNo';
     sgAvailableFlights.Cells[2, 0] := 'Price';
-
     for i := 0 to flightList.Count - 1 do
     begin
       parts := flightList[i].Split(['%']);
       if Length(parts) = 2 then
       begin
+
         airline := Trim(Copy(parts[0], 1, Pos('FL', parts[0]) - 1));
         flightNum := Trim(Copy(parts[0], Pos('FL', parts[0]), MaxInt));
         price := parts[1];
-
         sgAvailableFlights.Cells[0, i + 1] := airline;
         sgAvailableFlights.Cells[1, i + 1] := flightNum;
         sgAvailableFlights.Cells[2, i + 1] := 'R' + price;
+
       end;
     end;
+
   finally
     flightList.Free;
+
   end;
 
   SetupAvailableFlightsGrid;
-
   dBasePrice := StrToFloat(price);
+
 end;
 
 procedure TfrmBookFlights.btnFlightDetailsConfirmClick(Sender: TObject);
@@ -413,7 +433,9 @@ var
   seatCount: Integer;
   finalPrice: Double;
   selectedClass: string;
+
 begin
+
   // Validate destinations
   if (cmbDestinationFrom.ItemIndex = -1) or (cmbDestinationTo.ItemIndex = -1)
   then
@@ -443,7 +465,7 @@ begin
     Exit;
   end;
 
-  // Optional: Validate pricing inputs
+  // Validate pricing inputs
   if (dBasePrice <= 0) or (dMultiplier <= 0) then
   begin
     ShowMessage('Invalid pricing data. Please reselect your flight.');
@@ -454,97 +476,155 @@ begin
   finalPrice := dBasePrice * dMultiplier * seatCount;
   selectedClass := rgClasses.Items[rgClasses.ItemIndex];
 
-  // Format memo output
-  memFlightDetailsFinal.Lines.Clear;
-  memFlightDetailsFinal.Lines.Add('==============================');
-  memFlightDetailsFinal.Lines.Add('      CONFIRMED BOOKING       ');
-  memFlightDetailsFinal.Lines.Add('==============================');
-  memFlightDetailsFinal.Lines.Add(Format('%-15s %s',
-    ['From:', cmbDestinationFrom.Text]));
-  memFlightDetailsFinal.Lines.Add(Format('%-15s %s',
-    ['To:', cmbDestinationTo.Text]));
-  memFlightDetailsFinal.Lines.Add(Format('%-15s %s',
-    ['Class:', selectedClass]));
-  memFlightDetailsFinal.Lines.Add(Format('%-15s %d', ['Seats:', seatCount]));
-  memFlightDetailsFinal.Lines.Add(Format('%-15s R%.2f',
-    ['Total Price:', finalPrice]));
-  memFlightDetailsFinal.Lines.Add('==============================');
+  // Configure tab stops for memo formatting
+  with redFlightDetailsFinal.Paragraph do
+  begin
+    TabCount := 2;
+    Tab[0] := 100; // Label column
+    Tab[1] := 250; // Value column
+  end;
+
+  // Format memo output with tab alignment
+  redFlightDetailsFinal.Lines.Clear;
+  redFlightDetailsFinal.Lines.Add('==============================');
+  redFlightDetailsFinal.Lines.Add('      CONFIRMED BOOKING       ');
+  redFlightDetailsFinal.Lines.Add('==============================');
+  redFlightDetailsFinal.Lines.Add('From:' + #9 + cmbDestinationFrom.Text);
+  redFlightDetailsFinal.Lines.Add('To:' + #9 + cmbDestinationTo.Text);
+  redFlightDetailsFinal.Lines.Add('Class:' + #9 + selectedClass);
+  redFlightDetailsFinal.Lines.Add('Seats:' + #9 + IntToStr(seatCount));
+  redFlightDetailsFinal.Lines.Add('Total Price:' + #9 + 'R' +
+    FormatFloat('0.00', finalPrice));
+  redFlightDetailsFinal.Lines.Add('==============================');
+
+  // Mark booking as confirmed
+  bBookingConfirmed := True;
+
 end;
 
 procedure TfrmBookFlights.btnFlightDetailsFinalizeClick(Sender: TObject);
 var
-  seatCount: Integer;
-  finalPrice: Double;
-  selectedClass: string;
-  bookingDetails: TStringList;
-  filePath: string;
+  numberOfSeats: Integer;
+  priceEachSeat, totalCost: Double;
+  flightClass, fileName, userName, bookingInfo: string;
+  todayDate, flightDate: TDateTime;
+  bookingFile: TextFile;
 
 begin
-  // Validate destinations
+
+  // Check if the user picked places to fly from and to
   if (cmbDestinationFrom.ItemIndex = -1) or (cmbDestinationTo.ItemIndex = -1)
   then
   begin
-    ShowMessage('Please select both "From" and "To" destinations.');
+    ShowMessage('Please choose where you are flying from and to.');
     Exit;
   end;
 
+  // Make sure the user isn’t flying to the same place they’re leaving from
   if cmbDestinationFrom.Text = cmbDestinationTo.Text then
   begin
-    ShowMessage('"From" and "To" destinations cannot be the same.');
+    ShowMessage('You can’t fly to the same place you’re leaving from.');
     Exit;
   end;
 
-  // Validate class selection
+  // Check if the user picked a flight class
   if rgClasses.ItemIndex = -1 then
   begin
-    ShowMessage('Please select a flight class.');
+    ShowMessage('Please choose a flight class.');
     Exit;
   end;
 
-  // Validate seat count
-  seatCount := spnSeats.Value;
-  if seatCount < 1 then
+  // Get how many seats the user wants
+  numberOfSeats := spnSeats.Value;
+  if numberOfSeats < 1 then
   begin
-    ShowMessage('Please select at least one seat.');
+    ShowMessage('You need to book at least one seat.');
     Exit;
   end;
 
-  // Optional: Validate pricing inputs
-  if (dBasePrice <= 0) or (dMultiplier <= 0) then
+  // Make sure the user clicked “Confirm Booking” before finalizing
+  if not bBookingConfirmed then
   begin
-    ShowMessage('Invalid pricing data. Please reselect your flight.');
+    ShowMessage('Please confirm your booking first.');
     Exit;
   end;
 
-  // Calculate final price
-  finalPrice := dBasePrice * dMultiplier * seatCount;
-  selectedClass := rgClasses.Items[rgClasses.ItemIndex];
+  // Calculate the cost
+  priceEachSeat := dBasePrice * dMultiplier;
+  totalCost := priceEachSeat * numberOfSeats;
+  flightClass := rgClasses.Items[rgClasses.ItemIndex];
+  todayDate := Now;
+  flightDate := dtpDate.Date;
+  userName := frmLoginRegister.sUserID;
 
-  // Prepare booking details
-  bookingDetails := TStringList.Create;
-  try
-    bookingDetails.Add('==============================');
-    bookingDetails.Add('      CONFIRMED BOOKING       ');
-    bookingDetails.Add('==============================');
-    bookingDetails.Add(Format('%-15s %s', ['From:', cmbDestinationFrom.Text]));
-    bookingDetails.Add(Format('%-15s %s', ['To:', cmbDestinationTo.Text]));
-    bookingDetails.Add(Format('%-15s %s', ['Class:', selectedClass]));
-    bookingDetails.Add(Format('%-15s %d', ['Seats:', seatCount]));
-    bookingDetails.Add(Format('%-15s R%.2f', ['Total Price:', finalPrice]));
-    bookingDetails.Add(Format('%-15s %s',
-      ['Date:', FormatDateTime('yyyy-mm-dd hh:nn:ss', Now)]));
-    bookingDetails.Add('==============================');
-    bookingDetails.Add(''); // Blank line between entries
 
-    // Save to file
-    filePath := 'ConfirmedBookings.txt';
-    if FileExists(filePath) then
-      bookingDetails.SaveToFile(filePath);
+  // Update the database with the new booking with dmAccounts do begin
 
-    ShowMessage('Booking saved successfully.');
-  finally
-    bookingDetails.Free;
+  with dmAccounts do
+  begin
+    qryFlights.Close;
+    qryFlights.SQL.Text := 'SELECT * FROM tblFlights WHERE UserID = :UserID';
+    qryFlights.Parameters.ParamByName('UserID').Value := userName;
+    qryFlights.Open;
+    if not qryFlights.Eof then
+    begin
+
+      // Add to the user's totals
+      qryFlights.Edit;
+      qryFlights.FieldByName('NOFlights').AsInteger :=
+        qryFlights.FieldByName('NOFlights').AsInteger + 1;
+      qryFlights.FieldByName('NOSeats').AsInteger :=
+        qryFlights.FieldByName('NOSeats').AsInteger + numberOfSeats;
+      qryFlights.FieldByName('TotalPrice').AsFloat :=
+        qryFlights.FieldByName('TotalPrice').AsFloat + totalCost;
+      qryFlights.Post;
+
+    end
+    else
+    begin
+
+      // Add a new record for this user
+      qryFlights.Close;
+      qryFlights.SQL.Text :=
+        'INSERT INTO tblFlights (UserID, NOFlights, NOSeats, TotalPrice) ' +
+        'VALUES (:UserID, :NOFlights, :NOSeats, :TotalPrice)';
+      qryFlights.Parameters.ParamByName('UserID').Value := userName;
+      qryFlights.Parameters.ParamByName('NOFlights').Value := 1;
+      qryFlights.Parameters.ParamByName('NOSeats').Value := numberOfSeats;
+      qryFlights.Parameters.ParamByName('TotalPrice').Value := totalCost;
+      qryFlights.ExecSQL;
+
+    end;
   end;
+
+  // Prepare the booking info
+
+  fileName := userName + '_Booking.txt';
+  bookingInfo := '==============================' + sLineBreak + 'Booking for: '
+    + userName + sLineBreak + 'FlightID: ' + gridFlightNum + sLineBreak +
+    'From: ' + cmbDestinationFrom.Text + sLineBreak + 'To: ' +
+    cmbDestinationTo.Text + sLineBreak + 'Class: ' + flightClass + sLineBreak +
+    'Seats: ' + IntToStr(numberOfSeats) + sLineBreak + 'Price per seat: R' +
+    FormatFloat('0.00', priceEachSeat) + sLineBreak + 'Departure Date: ' +
+    DateToStr(flightDate) + sLineBreak + 'Booking Date: ' + DateToStr(todayDate)
+    + sLineBreak + '==============================' + sLineBreak + sLineBreak;
+
+  // Write the booking info into a text file
+
+  AssignFile(bookingFile, fileName);
+  if FileExists(fileName) then
+    Append(bookingFile)
+  else
+    Rewrite(bookingFile);
+  WriteLn(bookingFile, bookingInfo);
+  CloseFile(bookingFile);
+
+  // Show a message and go back to the home screen
+
+  ShowMessage('Your flight is booked and saved!');
+  frmBookFlights.Hide;
+  frmHome.Show;
+
 end;
 
 function TfrmBookFlights.CalculateDistance(lbl1, lbl2: TLabel): Double;
@@ -552,11 +632,10 @@ var
   iDistanceX, iDistanceY: Integer;
 
 begin
-
   iDistanceX := lbl2.Left - lbl1.Left;
   iDistanceY := lbl2.Top - lbl1.Top;
-  Result := Sqrt(Sqr(iDistanceX) + Sqr(iDistanceY)); // It's Pythagoras!!!
-
+  Result := Sqrt(Sqr(iDistanceX) + Sqr(iDistanceY));
+  // It's Pythagoras!!!
 end;
 
 procedure TfrmBookFlights.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -569,24 +648,31 @@ end;
 procedure TfrmBookFlights.FormCreate(Sender: TObject);
 var
   CountriesFile: TextFile;
-  i, iColWidth: Integer;
 
 begin
 
+  pricePerPixel := 7.5;
+
   // Remove title bar and borders
+
   BorderStyle := bsNone;
 
   // Maximize to full screen
+
   SetBounds(0, 0, Screen.Width, Screen.Height);
+
   // Set Boundaries for screen dimensions
+
   WindowState := wsMaximized;
 
   // Load background image
+
   imgBookFlightsBackground.Picture.LoadFromFile('Background.png');
   imgDestinationBackground.Picture.LoadFromFile('DestinationBackground.png');
   imgFlightDetailsBackground.Picture.LoadFromFile('DestinationBackground.png');
 
   // Panels
+
   imgContinents.Picture.LoadFromFile('Continents.png');
   imgNorthAmerica.Picture.LoadFromFile('NorthAmerica.png');
   imgSouthAmerica.Picture.LoadFromFile('SouthAmerica.png');
@@ -596,8 +682,8 @@ begin
   imgAustralia.Picture.LoadFromFile('Australia.png');
 
   // Load combo boxes
-  AssignFile(CountriesFile, 'Countries.txt');
 
+  AssignFile(CountriesFile, 'Countries.txt');
   if FileExists('Countries.txt') then
   begin
     cmbDestinationFrom.Items.LoadFromFile('Countries.txt');
@@ -607,6 +693,7 @@ begin
     ShowMessage('Countries.txt not found.');
 
   // Setup TStringGrid
+
   SetupAvailableFlightsGrid;
 
 end;
@@ -614,9 +701,10 @@ end;
 procedure TfrmBookFlights.FormShow(Sender: TObject);
 begin
 
+  Randomize;
+  bBookingConfirmed := False;
   pnlContinents.Show;
   pnlDestination.Show;
-
   pnlNorthAmerica.Hide;
   pnlSouthAmerica.Hide;
   pnlAfrica.Hide;
@@ -625,6 +713,27 @@ begin
   pnlAustralia.Hide;
   pnlFlightDetails.Hide;
 
+  redFlightDetails.Clear;
+  redFlightDetailsFinal.Clear;
+  cmbDestinationFrom.ItemIndex := -1;
+  cmbDestinationTo.ItemIndex := -1;
+  sgAvailableFlights.Rows[0];
+  sgAvailableFlights.Cols[0];
+  rgClasses.ItemIndex := -1;
+  spnSeats.Value := 0;
+
+end;
+
+function GenerateUniqueFlightCode(existing: TStringList): string;
+var
+  code: string;
+begin
+  repeat
+    code := 'FL' + Chr(65 + Random(26)) + Chr(65 + Random(26)) +
+      IntToStr(1000 + Random(9000));
+  until existing.IndexOf(code) = -1;
+  existing.Add(code);
+  Result := code;
 end;
 
 procedure TfrmBookFlights.GenerateFlightOptions(basePrice: Double);
@@ -637,31 +746,58 @@ const
     'AeroLink', 'StarJet', 'BlueNova', 'SunBird', 'FalconX');
 var
   TempFile: TextFile;
-  i, flightNum, numToDisplay: Integer;
+  i: Integer;
   dVariedPrice: Double;
-  tempFileName, line: string;
-  Lines: TStringList;
+  tempFileName, line, flightCode: string;
+  usedCodes: TStringList;
 
 begin
 
   Randomize;
-
-  // Create temp file
   tempFileName := 'tempFlights.txt';
   AssignFile(TempFile, tempFileName);
   Rewrite(TempFile);
+  usedCodes := TStringList.Create;
 
-  for i := 0 to High(AirplaneNames) do
-  begin
-    flightNum := 1000 + i; // Unique flight number
-    // Random variation between -15% and +15%
-    dVariedPrice := basePrice * (1 + ((Random(31) - 15) / 100));
-    line := Format('%s FL%d%%%.2f', [AirplaneNames[i], flightNum,
-      dVariedPrice]);
-    WriteLn(TempFile, line);
+  try
+
+    for i := 0 to High(AirplaneNames) do
+    begin
+
+      flightCode := GenerateUniqueFlightCode(usedCodes);
+      dVariedPrice := basePrice * (1 + ((Random(31) - 15) / 100)); // ±15%
+      line := Format('%s %s%%%.2f', [AirplaneNames[i], flightCode,
+        dVariedPrice]);
+      WriteLn(TempFile, line);
+
+    end;
+
+  finally
+    usedCodes.Free;
+    CloseFile(TempFile);
+
   end;
+end;
 
-  CloseFile(TempFile);
+function TfrmBookFlights.GenerateUnqiueFlightNumber(existingList
+  : TStringList): string;
+var
+  airlineCode: string;
+  flightNum: string;
+
+begin
+
+  repeat // Random 3-letter airline code
+
+    airlineCode := Chr(65 + Random(26)) + Chr(65 + Random(26)) +
+      Chr(65 + Random(26));
+    // Random 4-digit number
+    flightNum := Format('%s%d', [airlineCode, 1000 + Random(9000)]);
+
+  until existingList.IndexOf(flightNum) = -1;
+
+  // Ensure uniqueness
+  Result := flightNum;
 
 end;
 
@@ -670,17 +806,20 @@ function TfrmBookFlights.GetLabelByDestination(const destination
 var
   i: Integer;
   ctrlName: string;
+
 begin
 
   ctrlName := 'lbl' + StringReplace(destination, ' ', '', [rfReplaceAll]);
   for i := 0 to ComponentCount - 1 do
   begin
+
     if (Components[i] is TLabel) and
       (CompareText(Components[i].Name, ctrlName) = 0) then
     begin
       Result := TLabel(Components[i]);
       Exit;
     end;
+
   end;
 
   Result := nil;
@@ -1135,6 +1274,7 @@ procedure TfrmBookFlights.lblSenegalClick(Sender: TObject);
 begin
 
   SelectCountryFromLabel(lblSenegal);
+
 end;
 
 procedure TfrmBookFlights.lblSingaporeClick(Sender: TObject);
@@ -1269,17 +1409,14 @@ procedure TfrmBookFlights.rgClassesClick(Sender: TObject);
 begin
 
   case rgClasses.ItemIndex of
-
     0:
       dMultiplier := 1.0;
     1:
       dMultiplier := 1.25;
     2:
       dMultiplier := 1.5;
-
   else
     dMultiplier := 1.0;
-
   end;
 
 end;
@@ -1288,46 +1425,44 @@ procedure TfrmBookFlights.SelectCountryFromLabel(Sender: TObject);
 var
   sInput, sDecision: String;
   iIndex: Integer;
+
 begin
 
   sInput := TLabel(Sender).Caption;
-
   sDecision := LowerCase(InputBox('A-Way Airlines',
     'Please enter "From" or "To": ', ''));
 
   if sDecision = 'from' then
   begin
-
     iIndex := cmbDestinationFrom.Items.IndexOf(sInput);
     if iIndex <> -1 then
       cmbDestinationFrom.ItemIndex := iIndex;
-
   end
   else if sDecision = 'to' then
   begin
-
     iIndex := cmbDestinationTo.Items.IndexOf(sInput);
     if iIndex <> -1 then
       cmbDestinationTo.ItemIndex := iIndex;
-
   end;
+
 end;
 
 procedure TfrmBookFlights.SetupAvailableFlightsGrid;
 var
   iColWidth: Integer;
+
 begin
+
   sgAvailableFlights.ColCount := 3;
   sgAvailableFlights.FixedRows := 1;
-
   sgAvailableFlights.Cells[0, 0] := 'Airline';
   sgAvailableFlights.Cells[1, 0] := 'FlightNo';
   sgAvailableFlights.Cells[2, 0] := 'Price';
-
   iColWidth := sgAvailableFlights.ClientWidth div 3;
   sgAvailableFlights.ColWidths[0] := iColWidth;
   sgAvailableFlights.ColWidths[1] := iColWidth;
   sgAvailableFlights.ColWidths[2] := iColWidth;
+
 end;
 
 end.

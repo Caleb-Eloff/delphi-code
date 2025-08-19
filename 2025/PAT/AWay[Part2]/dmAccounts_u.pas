@@ -15,6 +15,7 @@ type
     tblAccounts, tblFlights: TADOTable;
     dscAccounts, dscDetails: TDataSource;
     conAccounts: TADOConnection;
+    qryAccounts, qryFlights: TADOQuery;
   end;
 
 var
@@ -34,8 +35,6 @@ begin
   tblFlights := TADOTable.Create(dmAccounts);
   dscAccounts := TDataSource.Create(dmAccounts);
   dscDetails := TDataSource.Create(dmAccounts);
-
-
 
   conAccounts.Close;
 
@@ -60,6 +59,13 @@ begin
   // Open the tables
   tblAccounts.Open;
   tblFlights.Open;
+
+  // Query set up
+  qryAccounts := TADOQuery.Create(dmAccounts);
+  qryAccounts.Connection := conAccounts;
+
+  qryFlights := TADOQuery.Create(dmAccounts);
+  qryFlights.Connection := conAccounts;
 
 end;
 

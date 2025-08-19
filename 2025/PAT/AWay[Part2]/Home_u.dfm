@@ -67,6 +67,7 @@ object frmHome: TfrmHome
     Height = 25
     Caption = 'My Flights'
     TabOrder = 1
+    OnClick = btnHomeMyFlightsClick
   end
   object btnHomeProfile: TButton
     Left = 968
@@ -75,14 +76,7 @@ object frmHome: TfrmHome
     Height = 25
     Caption = 'Profile'
     TabOrder = 2
-  end
-  object btnHomeSupport: TButton
-    Left = 968
-    Top = 728
-    Width = 129
-    Height = 25
-    Caption = 'Support'
-    TabOrder = 3
+    OnClick = btnHomeProfileClick
   end
   object btnHomeLogOut: TButton
     Left = 48
@@ -90,7 +84,7 @@ object frmHome: TfrmHome
     Width = 73
     Height = 25
     Caption = 'Log Out'
-    TabOrder = 4
+    TabOrder = 3
     OnClick = btnHomeLogOutClick
   end
 end

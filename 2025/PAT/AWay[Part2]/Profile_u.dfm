@@ -1,0 +1,68 @@
+object frmProfile: TfrmProfile
+  Left = 0
+  Top = 0
+  Caption = 'A-Way Airlines'
+  ClientHeight = 1061
+  ClientWidth = 1920
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnShow = FormShow
+  TextHeight = 15
+  object imgProfileBackground: TImage
+    Left = 0
+    Top = 0
+    Width = 1920
+    Height = 1061
+    Align = alClient
+    Stretch = True
+    ExplicitLeft = 576
+    ExplicitTop = 288
+    ExplicitWidth = 105
+    ExplicitHeight = 105
+  end
+  object lblProfileHeading: TLabel
+    Left = 600
+    Top = 121
+    Width = 428
+    Height = 80
+    Caption = 'PROFILE'
+    Font.Charset = OEM_CHARSET
+    Font.Color = clWhite
+    Font.Height = -85
+    Font.Name = 'Terminal'
+    Font.Style = [fsBold, fsUnderline]
+    ParentFont = False
+  end
+  object memProfile: TMemo
+    Left = 528
+    Top = 231
+    Width = 553
+    Height = 521
+    ReadOnly = True
+    TabOrder = 0
+  end
+  object btnEditProfile: TButton
+    Left = 744
+    Top = 824
+    Width = 137
+    Height = 25
+    Caption = 'Edit Profile'
+    TabOrder = 1
+    OnClick = btnEditProfileClick
+  end
+  object btnProfileBack: TButton
+    Left = 32
+    Top = 1008
+    Width = 75
+    Height = 25
+    Caption = 'Back'
+    TabOrder = 2
+    OnClick = btnProfileBackClick
+  end
+end
