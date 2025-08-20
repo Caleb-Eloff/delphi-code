@@ -40,14 +40,14 @@ object frmAdmin: TfrmAdmin
     ParentFont = False
   end
   object lblPricing: TLabel
-    Left = 1336
-    Top = 778
-    Width = 92
-    Height = 16
+    Left = 1592
+    Top = 152
+    Width = 260
+    Height = 48
     Caption = 'Pricing'
     Font.Charset = OEM_CHARSET
     Font.Color = clWhite
-    Font.Height = -16
+    Font.Height = -48
     Font.Name = 'Terminal'
     Font.Style = [fsBold, fsUnderline]
     ParentFont = False
@@ -100,20 +100,27 @@ object frmAdmin: TfrmAdmin
     TabOrder = 4
     OnClick = btnRemoveClick
   end
-  object memPricing: TMemo
-    Left = 1336
-    Top = 800
-    Width = 185
-    Height = 89
-    TabOrder = 5
-  end
   object btnUpdatePrice: TButton
-    Left = 1376
-    Top = 895
+    Left = 1672
+    Top = 551
     Width = 99
     Height = 25
     Caption = 'Update Price'
-    TabOrder = 6
+    TabOrder = 5
     OnClick = btnUpdatePriceClick
+  end
+  object redPricing: TRichEdit
+    Left = 1568
+    Top = 216
+    Width = 305
+    Height = 321
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    ReadOnly = True
+    TabOrder = 6
   end
 end

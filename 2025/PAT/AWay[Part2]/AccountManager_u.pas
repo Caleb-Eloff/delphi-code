@@ -53,22 +53,30 @@ begin
 
   with dmAccounts.tblAccounts do
   begin
+
     First;
+
     while not Eof do
     begin
+
       if LowerCase(FieldByName('Email').AsString) = LowerCase(sEmail) then
       begin
+
         bAccountFound := True;
         Break;
+
       end;
       Next;
+
     end;
   end;
 
   if bAccountFound then
   begin
+
     ShowMessage('An account with this email already exists.');
     Exit;
+
   end;
 
   // Generate a unique UserID using parts of name and email
@@ -79,6 +87,7 @@ begin
   // Insert new account into the database
   with dmAccounts.tblAccounts do
   begin
+
     Insert;
     FieldByName('UserID').AsString := sUserID;
     FieldByName('FirstName').AsString := sFirstName;
@@ -87,6 +96,7 @@ begin
     FieldByName('Password').AsString := sPassword;
     FieldByName('Admin').AsBoolean := bIsAdmin;
     Post;
+
   end;
 
   ShowMessage('New account created successfully! UserID: ' + sUserID);
@@ -106,8 +116,10 @@ begin
   // Ensure there is a selected user to update
   if dmAccounts.tblAccounts.IsEmpty then
   begin
+
     ShowMessage('No users in the database.');
     Exit;
+
   end;
 
   // Prompt for updated user details
@@ -126,14 +138,17 @@ begin
   // Must contain '@' and end with '.com'
   if (Pos('@', sNewEmail) = 0) or (Pos('.com', LowerCase(sNewEmail)) = 0) then
   begin
+
     ShowMessage
       ('Invalid email format. Email must contain "@" and end with ".com".');
     Exit;
+
   end;
 
   // Apply the updates to the selected record
   with dmAccounts.tblAccounts do
   begin
+
     Edit;
     FieldByName('FirstName').AsString := sNewFirstName;
     FieldByName('LastName').AsString := sNewLastName;
@@ -141,6 +156,7 @@ begin
     FieldByName('Password').AsString := sNewPassword;
     FieldByName('Admin').AsBoolean := bIsAdmin;
     Post;
+
   end;
 
   ShowMessage('User updated successfully.');
@@ -159,8 +175,10 @@ begin
   // Ensure there is a user to remove
   if dmAccounts.tblAccounts.IsEmpty then
   begin
+
     ShowMessage('No users in the database.');
     Exit;
+
   end;
 
   // Get the UserID of the selected user
@@ -175,13 +193,17 @@ begin
   // Delete all flights linked to this user
   with dmAccounts.tblFlights do
   begin
+
     First;
+
     while not Eof do
     begin
+
       if FieldByName('UserID').AsString = sSelectedUserID then
         Delete
       else
         Next;
+
     end;
   end;
 
@@ -201,9 +223,11 @@ begin
   // Reload the account query to update the grid
   with dmAccounts.qryAccounts do
   begin
+
     Close;
     SQL.Text := 'SELECT * FROM tblAccounts ORDER BY FirstName, LastName';
     Open;
+
   end;
 
 end;

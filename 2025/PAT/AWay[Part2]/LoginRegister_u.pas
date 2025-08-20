@@ -77,7 +77,9 @@ procedure TfrmLoginRegister.btnLoginClick(Sender: TObject);
 var
   sLoginEmail, sLoginPassword: String;
   bLoginFound: Boolean;
+
 begin
+
   // Validate that required fields are filled
   if (edtLoginEmail.Text = '') OR (edtLoginPassword.Text = '') then
   begin
@@ -148,10 +150,12 @@ procedure TfrmLoginRegister.btnRegisterClick(Sender: TObject);
 var
   sFirstName, sLastName, sEmail, sPassword, sReEnter: String;
   bRegisterFound: Boolean;
+
 begin
   // Check if email already exists
   with dmAccounts do
   begin
+
     bRegisterFound := False;
     tblAccounts.First;
     while (not tblAccounts.Eof) and (not bRegisterFound) do
@@ -161,6 +165,7 @@ begin
       else
         tblAccounts.Next;
     end;
+
   end;
 
   // Validate input fields
@@ -181,6 +186,7 @@ begin
     ShowMessage('Account already exists.')
   else
   begin
+
     // Save user details
     sFirstName := edtRegisterName.Text;
     sLastName := edtRegisterSurname.Text;
@@ -212,6 +218,7 @@ begin
       ('Congratulations! You have successfully registered your account.');
     frmLoginRegister.Hide;
     frmHome.Show;
+
   end;
 end;
 
@@ -271,15 +278,17 @@ begin
     Key := #0;
 end;
 
-{ -------------------- FORM EVENTS -------------------- }
 procedure TfrmLoginRegister.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
+
   Application.Terminate; // Ensure app fully exits when form is closed
+
 end;
 
 procedure TfrmLoginRegister.FormCreate(Sender: TObject);
 begin
+
   // Remove title bar and maximize to full screen
   BorderStyle := bsNone;
   SetBounds(0, 0, Screen.Width, Screen.Height);
@@ -306,10 +315,15 @@ begin
   lblLogin.Left := (pnlLogin.Width - lblLogin.Width) DIV 2;
   btnLogin.Left := (pnlLogin.Width - btnLogin.Width) DIV 2;
   lblRegisterAccount.Left := (pnlLogin.Width - lblRegisterAccount.Width) DIV 2;
+
 end;
 
 procedure TfrmLoginRegister.FormShow(Sender: TObject);
 begin
+
+  // Set Boolean False
+  bAdmin := False;
+
   // Show Register panel first by default
   pnlLogin.Hide;
   pnlRegister.Show;
@@ -331,11 +345,12 @@ begin
   edtLoginPassword.PasswordChar := '*';
   edtLoginEmail.Clear;
   edtLoginPassword.Clear;
+
 end;
 
-{ -------------------- PASSWORD VISIBILITY TOGGLE -------------------- }
 procedure TfrmLoginRegister.imgLoginPasswordClick(Sender: TObject);
 begin
+
   if edtLoginPassword.PasswordChar = '*' then
   begin
     imgLoginPassword.Picture.LoadFromFile('Show.jpg'); // Reveal password
@@ -346,10 +361,12 @@ begin
     imgLoginPassword.Picture.LoadFromFile('Hide.jpg'); // Mask password
     edtLoginPassword.PasswordChar := '*';
   end;
+
 end;
 
 procedure TfrmLoginRegister.imgRegisterPasswordClick(Sender: TObject);
 begin
+
   if edtRegisterPassword.PasswordChar = '*' then
   begin
     imgRegisterPassword.Picture.LoadFromFile('Show.jpg');
@@ -360,31 +377,40 @@ begin
     edtRegisterPassword.PasswordChar := '*';
     imgRegisterPassword.Picture.LoadFromFile('Hide.jpg');
   end;
+
 end;
 
 procedure TfrmLoginRegister.imgRegisterReEnterClick(Sender: TObject);
 begin
+
   if edtRegisterReEnter.PasswordChar = '*' then
   begin
+
     imgRegisterReEnter.Picture.LoadFromFile('Show.jpg');
     edtRegisterReEnter.PasswordChar := #0;
+
   end
   else
   begin
+
     edtRegisterReEnter.PasswordChar := '*';
     imgRegisterReEnter.Picture.LoadFromFile('Hide.jpg');
+
   end;
+
 end;
 
-{ -------------------- SWITCHING PANELS -------------------- }
 procedure TfrmLoginRegister.lblLoginAccountClick(Sender: TObject);
 begin
+
   pnlRegister.Hide;
   pnlLogin.Show;
+
 end;
 
 procedure TfrmLoginRegister.lblRegisterAccountClick(Sender: TObject);
 begin
+
   pnlLogin.Hide;
   pnlRegister.Show;
 end;

@@ -314,6 +314,7 @@ object frmBookFlights: TfrmBookFlights
       Width = 163
       Height = 15
       Caption = 'Democratic Republic of Congo'
+      OnClick = lblDemocraticRepublicCongoClick
     end
     object lblTanzania: TLabel
       Left = 887
@@ -809,8 +810,8 @@ object frmBookFlights: TfrmBookFlights
     end
   end
   object pnlFlightDetails: TPanel
-    Left = 1337
-    Top = 53
+    Left = 1339
+    Top = 37
     Width = 527
     Height = 919
     TabOrder = 9
@@ -820,10 +821,7 @@ object frmBookFlights: TfrmBookFlights
       Width = 525
       Height = 917
       Align = alClient
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 145
-      ExplicitHeight = 186
+      ExplicitTop = -15
     end
     object lblFlightDetailsHeading: TLabel
       Left = 88
@@ -910,12 +908,13 @@ object frmBookFlights: TfrmBookFlights
       Font.Name = 'Segoe UI'
       Font.Style = []
       ParentFont = False
+      ReadOnly = True
       TabOrder = 5
     end
   end
   object pnlDestination: TPanel
-    Left = 1336
-    Top = 52
+    Left = 1338
+    Top = 37
     Width = 529
     Height = 920
     TabOrder = 7

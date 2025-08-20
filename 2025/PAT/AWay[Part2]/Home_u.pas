@@ -41,40 +41,51 @@ uses LoginRegister_u, BookFlights_u, MyFlights_u, Profile_u;
 
 procedure TfrmHome.btnHomeBookFlightsClick(Sender: TObject);
 begin
+
   // Hide home screen and show flight booking form
   frmHome.Hide;
   frmBookFlights.Show;
+
 end;
 
 procedure TfrmHome.btnHomeLogOutClick(Sender: TObject);
 begin
+
   // Hide home screen and return to login/register form
   frmHome.Hide;
   frmLoginRegister.Show;
+
 end;
 
 procedure TfrmHome.btnHomeMyFlightsClick(Sender: TObject);
 begin
+
   // Hide home screen and show user's flights
   frmHome.Hide;
   frmMyFlights.Show;
+
 end;
 
 procedure TfrmHome.btnHomeProfileClick(Sender: TObject);
 begin
+
   // Hide home screen and show user profile
   frmHome.Hide;
   frmProfile.Show;
+
 end;
 
 procedure TfrmHome.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+
   // Ensure the entire application terminates when this form is closed
   Application.Terminate;
+
 end;
 
 procedure TfrmHome.FormCreate(Sender: TObject);
 begin
+
   // Remove form's title bar and borders for a clean fullscreen look
   BorderStyle := bsNone;
 
@@ -92,10 +103,12 @@ begin
 
   // Place logout button near the bottom of the screen
   btnHomeLogOut.Top := (frmHome.Height - btnHomeLogOut.Height) div 100 * 99;
+
 end;
 
 procedure TfrmHome.FormShow(Sender: TObject);
 begin
+
   // Display personalized welcome message using the logged-in username
   lblHomeHeading1.Caption := 'Welcome, ' + frmLoginRegister.sUsername + ' to';
   lblHomeHeading2.Caption := 'A-Way Airlines!';
@@ -103,6 +116,7 @@ begin
   // Center the headings horizontally
   lblHomeHeading1.Left := (frmHome.Width - lblHomeHeading1.Width) div 2;
   lblHomeHeading2.Left := (frmHome.Width - lblHomeHeading2.Width) div 2;
+
 end;
 
 end.

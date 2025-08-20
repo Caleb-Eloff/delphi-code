@@ -1,0 +1,39 @@
+==============================
+Booking for: gemcarcar6942
+FlightID: FLAN5699
+From: South Africa
+To: Mozambique
+Class: First Class
+Seats: 3
+Price per seat: R2281.54
+Departure Date: 1/2/2026
+Booking Date: 8/19/2025
+==============================
+
+
+==============================
+Booking for: gemcarcar6942
+FlightID: FLVK4055
+From: South Africa
+To: Chad
+Class: First Class
+Seats: 21
+Price per seat: R2953.15
+Departure Date: 1/22/2026
+Booking Date: 8/19/2025
+==============================
+
+
+==============================
+Booking for: gemcarcar6942
+FlightID: FLOE8898
+From: Senegal
+To: Guinea
+Class: Economy
+Seats: 35
+Price per seat: R742.05
+Departure Date: 1/27/2026
+Booking Date: 8/19/2025
+==============================
+
+

@@ -1,4 +1,4 @@
-unit Admin_u;
+﻿unit Admin_u;
 
 interface
 
@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, Math,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids,
-  Vcl.ExtCtrls, Vcl.StdCtrls, dmAccounts_u;
+  Vcl.ExtCtrls, Vcl.StdCtrls, dmAccounts_u, Vcl.ComCtrls;
 
 type
   TfrmAdmin = class(TForm)
@@ -17,9 +17,9 @@ type
     btnCreate: TButton;
     btnUpdate: TButton;
     btnRemove: TButton;
-    memPricing: TMemo;
     lblPricing: TLabel;
     btnUpdatePrice: TButton;
+    redPricing: TRichEdit;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure AutoSizeGridColumns(Grid: TDBGrid);
@@ -118,13 +118,39 @@ procedure TfrmAdmin.btnUpdatePriceClick(Sender: TObject);
 begin
 
   // Prompt admin to enter new price per pixel
-  frmBookFlights.pricePerPixel :=
-    StrToFloat(InputBox('Pricing', 'Price per pixel distance: ', ''));
+  frmBookFlights.rPricePerPixel :=
+    StrToFloat(InputBox('Pricing', 'Price per pixel distance:', ''));
 
-  // Display updated pricing in memo
-  memPricing.Lines.Clear;
-  memPricing.Lines.Add('Price per pixel distance:');
-  memPricing.Lines.Add(FloatToStr(frmBookFlights.pricePerPixel));
+  // Display updated pricing in RichEdit
+  redPricing.Clear;
+
+  // Set tab formatting for alignment
+  with redPricing.Paragraph do
+  begin
+
+    TabCount := 1;
+    Tab[0] := 50; // Adjust spacing as needed
+
+  end;
+
+  redPricing.Lines.Add('─────────────────────────────────────────────────');
+  redPricing.Lines.Add('');
+
+  // Pricing detail
+  redPricing.SelAttributes.Style := [fsBold];
+  redPricing.Lines.Add('Current Rate');
+  redPricing.SelAttributes.Style := [];
+
+  redPricing.Lines.Add('');
+  redPricing.Lines.Add('─────────────────────────────────────────────────');
+
+  redPricing.Lines.Add('');
+  redPricing.Lines.Add('Price per pixel:' + #9 + 'R' + FormatFloat('0.00',
+    frmBookFlights.rPricePerPixel));
+  redPricing.Lines.Add('');
+
+  redPricing.Lines.Add('─────────────────────────────────────────────────');
+  redPricing.Lines.Add('');
 
 end;
 
@@ -172,10 +198,36 @@ begin
     qryAccounts.Open;
   end;
 
-  // Display current pricing in memo
-  memPricing.Lines.Clear;
-  memPricing.Lines.Add('Price per pixel distance:');
-  memPricing.Lines.Add(FloatToStr(frmBookFlights.pricePerPixel));
+  // Display current pricing in memo with formatting
+  redPricing.Clear;
+
+  // Set tab formatting for alignment
+  with redPricing.Paragraph do
+  begin
+
+    TabCount := 1;
+    Tab[0] := 50; // Adjust spacing as needed
+
+  end;
+
+  redPricing.Lines.Add('─────────────────────────────────────────────────');
+  redPricing.Lines.Add('');
+
+  // Pricing detail
+  redPricing.SelAttributes.Style := [fsBold];
+  redPricing.Lines.Add('Current Rate');
+  redPricing.SelAttributes.Style := [];
+
+  redPricing.Lines.Add('');
+  redPricing.Lines.Add('─────────────────────────────────────────────────');
+
+  redPricing.Lines.Add('');
+  redPricing.Lines.Add('Price per pixel:' + #9 + 'R' + FormatFloat('0.00',
+    frmBookFlights.rPricePerPixel));
+  redPricing.Lines.Add('');
+
+  redPricing.Lines.Add('─────────────────────────────────────────────────');
+  redPricing.Lines.Add('');
 
 end;
 

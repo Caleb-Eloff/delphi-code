@@ -1,0 +1,1017 @@
+object frmBookFlights: TfrmBookFlights
+  Left = 0
+  Top = 0
+  Caption = 'A-Way Airlines'
+  ClientHeight = 1061
+  ClientWidth = 1919
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnShow = FormShow
+  TextHeight = 15
+  object imgBookFlightsBackground: TImage
+    Left = 0
+    Top = 0
+    Width = 1919
+    Height = 1061
+    Align = alClient
+    Anchors = []
+    Stretch = True
+    ExplicitLeft = 8
+    ExplicitTop = -48
+    ExplicitWidth = 1920
+  end
+  object pnlSouthAmerica: TPanel
+    Left = 33
+    Top = 34
+    Width = 1256
+    Height = 814
+    TabOrder = 2
+    object imgSouthAmerica: TImage
+      Left = 1
+      Top = 1
+      Width = 1254
+      Height = 812
+      Align = alClient
+      Stretch = True
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 1289
+      ExplicitHeight = 848
+    end
+    object lblColombia: TLabel
+      Left = 313
+      Top = 104
+      Width = 52
+      Height = 15
+      Caption = 'Colombia'
+      OnClick = lblColombiaClick
+    end
+    object lblVenezuela: TLabel
+      Left = 487
+      Top = 72
+      Width = 52
+      Height = 15
+      Caption = 'Venezuela'
+      OnClick = lblVenezuelaClick
+    end
+    object lblGuyana: TLabel
+      Left = 662
+      Top = 112
+      Width = 40
+      Height = 15
+      Caption = 'Guyana'
+      OnClick = lblGuyanaClick
+    end
+    object lblSuriname: TLabel
+      Left = 724
+      Top = 104
+      Width = 50
+      Height = 15
+      Caption = 'Suriname'
+      OnClick = lblSurinameClick
+    end
+    object lblGuina: TLabel
+      Left = 796
+      Top = 104
+      Width = 31
+      Height = 15
+      Caption = 'Guina'
+      OnClick = lblGuinaClick
+    end
+    object lblBrazil: TLabel
+      Left = 831
+      Top = 278
+      Width = 28
+      Height = 15
+      Caption = 'Brazil'
+      OnClick = lblBrazilClick
+    end
+    object lblBolivia: TLabel
+      Left = 504
+      Top = 319
+      Width = 35
+      Height = 15
+      Caption = 'Bolivia'
+      OnClick = lblBoliviaClick
+    end
+    object lblArgentina: TLabel
+      Left = 508
+      Top = 478
+      Width = 52
+      Height = 15
+      Caption = 'Argentina'
+      OnClick = lblArgentinaClick
+    end
+    object lblParaguay: TLabel
+      Left = 620
+      Top = 366
+      Width = 49
+      Height = 15
+      Caption = 'Paraguay'
+      OnClick = lblParaguayClick
+    end
+    object lblUruguay: TLabel
+      Left = 695
+      Top = 470
+      Width = 45
+      Height = 15
+      Caption = 'Uruguay'
+      OnClick = lblUruguayClick
+    end
+    object lblChile: TLabel
+      Left = 350
+      Top = 526
+      Width = 27
+      Height = 15
+      Caption = 'Chile'
+      OnClick = lblChileClick
+    end
+    object lblPeru: TLabel
+      Left = 269
+      Top = 246
+      Width = 24
+      Height = 15
+      Caption = 'Peru'
+      OnClick = lblPeruClick
+    end
+    object lblEcuador: TLabel
+      Left = 206
+      Top = 159
+      Width = 43
+      Height = 15
+      Caption = 'Ecuador'
+      OnClick = lblEcuadorClick
+    end
+  end
+  object btnBookFlightsBack: TButton
+    Left = 35
+    Top = 1000
+    Width = 75
+    Height = 25
+    Caption = 'Back'
+    TabOrder = 8
+    OnClick = btnBookFlightsBackClick
+  end
+  object pnlAfrica: TPanel
+    Left = 33
+    Top = 32
+    Width = 1255
+    Height = 817
+    TabOrder = 3
+    object imgAfrica: TImage
+      Left = 1
+      Top = 1
+      Width = 1253
+      Height = 815
+      Align = alClient
+      Stretch = True
+      ExplicitLeft = 87
+      ExplicitTop = -55
+    end
+    object lblAlgeria: TLabel
+      Left = 448
+      Top = 161
+      Width = 37
+      Height = 15
+      Caption = 'Algeria'
+    end
+    object lblMauritania: TLabel
+      Left = 236
+      Top = 219
+      Width = 57
+      Height = 15
+      Caption = 'Mauritania'
+    end
+    object lblSenegal: TLabel
+      Left = 176
+      Top = 272
+      Width = 41
+      Height = 15
+      Caption = 'Senegal'
+      OnClick = lblSenegalClick
+    end
+    object lblGuinea: TLabel
+      Left = 236
+      Top = 304
+      Width = 37
+      Height = 15
+      Caption = 'Guinea'
+      OnClick = lblGuineaClick
+    end
+    object lblMali: TLabel
+      Left = 372
+      Top = 241
+      Width = 23
+      Height = 15
+      Caption = 'Mali'
+      OnClick = lblMaliClick
+    end
+    object lblBurkinaFaso: TLabel
+      Left = 350
+      Top = 301
+      Width = 67
+      Height = 15
+      Caption = 'Burkina Faso'
+      OnClick = lblBurkinaFasoClick
+    end
+    object lblGhana: TLabel
+      Left = 372
+      Top = 342
+      Width = 34
+      Height = 15
+      Caption = 'Ghana'
+      OnClick = lblGhanaClick
+    end
+    object lblNiger: TLabel
+      Left = 508
+      Top = 248
+      Width = 29
+      Height = 15
+      Caption = 'Niger'
+      OnClick = lblNigerClick
+    end
+    object lblLibya: TLabel
+      Left = 637
+      Top = 152
+      Width = 28
+      Height = 15
+      Caption = 'Libya'
+      OnClick = lblLibyaClick
+    end
+    object lblEgypt: TLabel
+      Left = 806
+      Top = 168
+      Width = 30
+      Height = 15
+      Caption = 'Egypt'
+      OnClick = lblEgyptClick
+    end
+    object lblSudan: TLabel
+      Left = 803
+      Top = 301
+      Width = 33
+      Height = 15
+      Caption = 'Sudan'
+      OnClick = lblSudanClick
+    end
+    object lblEthiopia: TLabel
+      Left = 943
+      Top = 329
+      Width = 43
+      Height = 15
+      Caption = 'Ethiopia'
+      OnClick = lblEthiopiaClick
+    end
+    object lblKenya: TLabel
+      Left = 932
+      Top = 401
+      Width = 32
+      Height = 15
+      Caption = 'Kenya'
+      OnClick = lblKenyaClick
+    end
+    object lblChad: TLabel
+      Left = 662
+      Top = 272
+      Width = 28
+      Height = 15
+      Caption = 'Chad'
+      OnClick = lblChadClick
+    end
+    object lblNigeria: TLabel
+      Left = 501
+      Top = 321
+      Width = 38
+      Height = 15
+      Caption = 'Nigeria'
+      OnClick = lblNigeriaClick
+    end
+    object lblCameroon: TLabel
+      Left = 558
+      Top = 368
+      Width = 56
+      Height = 15
+      Caption = 'Cameroon'
+      OnClick = lblCameroonClick
+    end
+    object lblGabon: TLabel
+      Left = 555
+      Top = 416
+      Width = 35
+      Height = 15
+      Caption = 'Gabon'
+      OnClick = lblGabonClick
+    end
+    object lblDemocraticRepublicCongo: TLabel
+      Left = 643
+      Top = 443
+      Width = 163
+      Height = 15
+      Caption = 'Democratic Republic of Congo'
+    end
+    object lblTanzania: TLabel
+      Left = 887
+      Top = 472
+      Width = 46
+      Height = 15
+      Caption = 'Tanzania'
+      OnClick = lblTanzaniaClick
+    end
+    object lblMozambique: TLabel
+      Left = 902
+      Top = 536
+      Width = 70
+      Height = 15
+      Caption = 'Mozambique'
+      OnClick = lblMozambiqueClick
+    end
+    object lblZambia: TLabel
+      Left = 742
+      Top = 557
+      Width = 40
+      Height = 15
+      Caption = 'Zambia'
+      OnClick = lblZambiaClick
+    end
+    object lblAngola: TLabel
+      Left = 631
+      Top = 536
+      Width = 38
+      Height = 15
+      Caption = 'Angola'
+      OnClick = lblAngolaClick
+    end
+    object lblNamibia: TLabel
+      Left = 620
+      Top = 637
+      Width = 45
+      Height = 15
+      Caption = 'Namibia'
+      OnClick = lblNamibiaClick
+    end
+    object lblBotswana: TLabel
+      Left = 723
+      Top = 626
+      Width = 51
+      Height = 15
+      Caption = 'Botswana'
+      OnClick = lblBotswanaClick
+    end
+    object lblZimbabwe: TLabel
+      Left = 803
+      Top = 592
+      Width = 56
+      Height = 15
+      Caption = 'Zimbabwe'
+      OnClick = lblZimbabweClick
+    end
+    object lblSouthAfrica: TLabel
+      Left = 683
+      Top = 709
+      Width = 65
+      Height = 15
+      Caption = 'South Africa'
+      OnClick = lblSouthAfricaClick
+    end
+  end
+  object pnlEurope: TPanel
+    Left = 34
+    Top = 32
+    Width = 1254
+    Height = 817
+    TabOrder = 4
+    object imgEurope: TImage
+      Left = 1
+      Top = 1
+      Width = 1252
+      Height = 815
+      Align = alClient
+      Stretch = True
+      ExplicitLeft = 880
+      ExplicitTop = 600
+      ExplicitWidth = 105
+      ExplicitHeight = 105
+    end
+    object lblIceland: TLabel
+      Left = 268
+      Top = 98
+      Width = 38
+      Height = 15
+      Caption = 'Iceland'
+      OnClick = lblIcelandClick
+    end
+    object lblIreland: TLabel
+      Left = 286
+      Top = 384
+      Width = 36
+      Height = 15
+      Caption = 'Ireland'
+      OnClick = lblIrelandClick
+    end
+    object lblUnitedKingdom: TLabel
+      Left = 347
+      Top = 425
+      Width = 87
+      Height = 15
+      Caption = 'United Kingdom'
+      OnClick = lblUnitedKingdomClick
+    end
+    object lblNorway: TLabel
+      Left = 503
+      Top = 248
+      Width = 41
+      Height = 15
+      Caption = 'Norway'
+      OnClick = lblNorwayClick
+    end
+    object lblSweden: TLabel
+      Left = 557
+      Top = 272
+      Width = 41
+      Height = 15
+      Caption = 'Sweden'
+      OnClick = lblSwedenClick
+    end
+    object lblFinland: TLabel
+      Left = 670
+      Top = 192
+      Width = 39
+      Height = 15
+      Caption = 'Finland'
+      OnClick = lblFinlandClick
+    end
+    object lblRussia: TLabel
+      Left = 968
+      Top = 248
+      Width = 33
+      Height = 15
+      Caption = 'Russia'
+      OnClick = lblRussiaClick
+    end
+    object lblPortugal: TLabel
+      Left = 205
+      Top = 680
+      Width = 45
+      Height = 15
+      Caption = 'Portugal'
+      OnClick = lblPortugalClick
+    end
+    object lblSpain: TLabel
+      Left = 291
+      Top = 686
+      Width = 29
+      Height = 15
+      Caption = 'Spain'
+      OnClick = lblSpainClick
+    end
+    object lblFrance: TLabel
+      Left = 400
+      Top = 549
+      Width = 35
+      Height = 15
+      Caption = 'France'
+      OnClick = lblFranceClick
+    end
+    object lblUkraine: TLabel
+      Left = 805
+      Top = 464
+      Width = 40
+      Height = 15
+      Caption = 'Ukraine'
+      OnClick = lblUkraineClick
+    end
+    object lblGermany: TLabel
+      Left = 507
+      Top = 459
+      Width = 48
+      Height = 15
+      Caption = 'Germany'
+      OnClick = lblGermanyClick
+    end
+    object lblPoland: TLabel
+      Left = 642
+      Top = 425
+      Width = 37
+      Height = 15
+      Caption = 'Poland'
+      OnClick = lblPolandClick
+    end
+    object lblRomania: TLabel
+      Left = 734
+      Top = 549
+      Width = 47
+      Height = 15
+      Caption = 'Romania'
+      OnClick = lblRomaniaClick
+    end
+    object lblLithuania: TLabel
+      Left = 682
+      Top = 342
+      Width = 49
+      Height = 15
+      Caption = 'Lithuania'
+      OnClick = lblLithuaniaClick
+    end
+    object lblBelarus: TLabel
+      Left = 753
+      Top = 368
+      Width = 38
+      Height = 15
+      Caption = 'Belarus'
+      OnClick = lblBelarusClick
+    end
+    object lblTurkey: TLabel
+      Left = 927
+      Top = 665
+      Width = 36
+      Height = 15
+      Caption = 'Turkey'
+      OnClick = lblTurkeyClick
+    end
+    object lblItaly: TLabel
+      Left = 533
+      Top = 602
+      Width = 22
+      Height = 15
+      Caption = 'Italy'
+      OnClick = lblItalyClick
+    end
+    object lblBulgaria: TLabel
+      Left = 753
+      Top = 626
+      Width = 43
+      Height = 15
+      Caption = 'Bulgaria'
+      OnClick = lblBulgariaClick
+    end
+    object lblHungary: TLabel
+      Left = 643
+      Top = 536
+      Width = 46
+      Height = 15
+      Caption = 'Hungary'
+      OnClick = lblHungaryClick
+    end
+    object lblGreece: TLabel
+      Left = 703
+      Top = 704
+      Width = 36
+      Height = 15
+      Caption = 'Greece'
+      OnClick = lblGreeceClick
+    end
+  end
+  object pnlAsia: TPanel
+    Left = 34
+    Top = 33
+    Width = 1255
+    Height = 816
+    TabOrder = 5
+    object imgAsia: TImage
+      Left = 1
+      Top = 1
+      Width = 1253
+      Height = 814
+      Align = alClient
+      Stretch = True
+      ExplicitLeft = -15
+      ExplicitTop = 0
+    end
+    object lblRussia2: TLabel
+      Left = 596
+      Top = 130
+      Width = 33
+      Height = 15
+      Caption = 'Russia'
+      OnClick = lblRussia2Click
+    end
+    object lblJapan: TLabel
+      Left = 995
+      Top = 367
+      Width = 30
+      Height = 15
+      Caption = 'Japan'
+      OnClick = lblJapanClick
+    end
+    object lblChina: TLabel
+      Left = 674
+      Top = 367
+      Width = 31
+      Height = 15
+      Caption = 'China'
+      OnClick = lblChinaClick
+    end
+    object lblIndia: TLabel
+      Left = 572
+      Top = 500
+      Width = 26
+      Height = 15
+      Caption = 'India'
+      OnClick = lblIndiaClick
+    end
+    object lblKazakhstan: TLabel
+      Left = 447
+      Top = 247
+      Width = 59
+      Height = 15
+      Caption = 'Kazakhstan'
+      OnClick = lblKazakhstanClick
+    end
+    object lblPakistan: TLabel
+      Left = 462
+      Top = 437
+      Width = 44
+      Height = 15
+      Caption = 'Pakistan'
+      OnClick = lblPakistanClick
+    end
+    object lblIran: TLabel
+      Left = 374
+      Top = 400
+      Width = 20
+      Height = 15
+      Caption = 'Iran'
+      OnClick = lblIranClick
+    end
+    object lblThailand: TLabel
+      Left = 750
+      Top = 548
+      Width = 46
+      Height = 15
+      Caption = 'Thailand'
+      OnClick = lblThailandClick
+    end
+    object lblSingapore: TLabel
+      Left = 773
+      Top = 708
+      Width = 53
+      Height = 15
+      Caption = 'Singapore'
+      OnClick = lblSingaporeClick
+    end
+    object lblMongolia: TLabel
+      Left = 695
+      Top = 263
+      Width = 51
+      Height = 15
+      Caption = 'Mongolia'
+      OnClick = lblMongoliaClick
+    end
+  end
+  object pnlAustralia: TPanel
+    Left = 32
+    Top = 33
+    Width = 1257
+    Height = 816
+    TabOrder = 6
+    object imgAustralia: TImage
+      Left = 1
+      Top = 1
+      Width = 1255
+      Height = 814
+      Align = alClient
+      Stretch = True
+      ExplicitLeft = 616
+      ExplicitTop = 192
+      ExplicitWidth = 105
+      ExplicitHeight = 105
+    end
+    object lblAustralia2: TLabel
+      Left = 697
+      Top = 324
+      Width = 46
+      Height = 15
+      Caption = 'Australia'
+      OnClick = lblAustralia2Click
+    end
+  end
+  object pnlNorthAmerica: TPanel
+    Left = 32
+    Top = 33
+    Width = 1257
+    Height = 816
+    TabOrder = 1
+    object imgNorthAmerica: TImage
+      Left = 1
+      Top = 1
+      Width = 1255
+      Height = 814
+      Align = alClient
+      Stretch = True
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 105
+      ExplicitHeight = 105
+    end
+    object lblUS: TLabel
+      Left = 224
+      Top = 168
+      Width = 14
+      Height = 15
+      Caption = 'US'
+      OnClick = lblUSClick
+    end
+    object lblCanada: TLabel
+      Left = 488
+      Top = 240
+      Width = 40
+      Height = 15
+      Caption = 'Canada'
+      OnClick = lblCanadaClick
+    end
+    object lblUnitedStates: TLabel
+      Left = 384
+      Top = 456
+      Width = 69
+      Height = 15
+      Caption = 'United States'
+      OnClick = lblUnitedStatesClick
+    end
+    object lblMexico: TLabel
+      Left = 328
+      Top = 664
+      Width = 38
+      Height = 15
+      Caption = 'Mexico'
+      OnClick = lblMexicoClick
+    end
+  end
+  object pnlContinents: TPanel
+    Left = 32
+    Top = 32
+    Width = 1257
+    Height = 817
+    TabOrder = 0
+    object imgContinents: TImage
+      Left = 1
+      Top = 1
+      Width = 1255
+      Height = 815
+      Align = alClient
+      Anchors = []
+      Stretch = True
+      ExplicitLeft = 0
+      ExplicitTop = 2
+    end
+    object lblNorthAmerica: TLabel
+      Left = 256
+      Top = 296
+      Width = 78
+      Height = 15
+      Caption = 'North America'
+      OnClick = lblNorthAmericaClick
+    end
+    object lblSouthAmerica: TLabel
+      Left = 384
+      Top = 528
+      Width = 78
+      Height = 15
+      Caption = 'South America'
+      OnClick = lblSouthAmericaClick
+    end
+    object lblAfrica: TLabel
+      Left = 672
+      Top = 480
+      Width = 31
+      Height = 15
+      Caption = 'Africa'
+      OnClick = lblAfricaClick
+    end
+    object lblAsia: TLabel
+      Left = 880
+      Top = 304
+      Width = 22
+      Height = 15
+      Caption = 'Asia'
+      OnClick = lblAsiaClick
+    end
+    object lblAustralia: TLabel
+      Left = 1024
+      Top = 584
+      Width = 46
+      Height = 15
+      Caption = 'Australia'
+      OnClick = lblAustraliaClick
+    end
+    object lblEurope: TLabel
+      Left = 704
+      Top = 304
+      Width = 37
+      Height = 15
+      Caption = 'Europe'
+      OnClick = lblEuropeClick
+    end
+  end
+  object pnlFlightDetails: TPanel
+    Left = 1337
+    Top = 53
+    Width = 527
+    Height = 919
+    TabOrder = 9
+    object imgFlightDetailsBackground: TImage
+      Left = 1
+      Top = 1
+      Width = 525
+      Height = 917
+      Align = alClient
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 145
+      ExplicitHeight = 186
+    end
+    object lblFlightDetailsHeading: TLabel
+      Left = 88
+      Top = 69
+      Width = 351
+      Height = 32
+      Caption = 'Flight Details'
+      Font.Charset = OEM_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -32
+      Font.Name = 'Terminal'
+      Font.Style = [fsBold, fsUnderline]
+      ParentFont = False
+    end
+    object lblNumberOfSeats: TLabel
+      Left = 288
+      Top = 363
+      Width = 88
+      Height = 15
+      Caption = 'Number of Seats'
+    end
+    object rgClasses: TRadioGroup
+      Left = 80
+      Top = 363
+      Width = 185
+      Height = 105
+      Caption = 'Classes'
+      Items.Strings = (
+        'First Class'
+        'Business'
+        'Economy')
+      TabOrder = 0
+      OnClick = rgClassesClick
+    end
+    object spnSeats: TSpinEdit
+      Left = 288
+      Top = 384
+      Width = 121
+      Height = 24
+      MaxValue = 0
+      MinValue = 0
+      TabOrder = 1
+      Value = 0
+    end
+    object btnFlightDetailsConfirm: TButton
+      Left = 312
+      Top = 418
+      Width = 75
+      Height = 25
+      Caption = 'Confirm'
+      TabOrder = 2
+      OnClick = btnFlightDetailsConfirmClick
+    end
+    object btnFlightDetailsFinalize: TButton
+      Left = 232
+      Top = 735
+      Width = 75
+      Height = 25
+      Caption = 'Finalize'
+      TabOrder = 3
+      OnClick = btnFlightDetailsFinalizeClick
+    end
+    object redFlightDetails: TRichEdit
+      Left = 84
+      Top = 145
+      Width = 365
+      Height = 191
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 4
+    end
+    object redFlightDetailsFinal: TRichEdit
+      Left = 84
+      Top = 489
+      Width = 365
+      Height = 209
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 5
+    end
+  end
+  object pnlDestination: TPanel
+    Left = 1336
+    Top = 52
+    Width = 529
+    Height = 920
+    TabOrder = 7
+    object imgDestinationBackground: TImage
+      Left = 1
+      Top = 1
+      Width = 527
+      Height = 918
+      Align = alClient
+      ExplicitTop = -3
+      ExplicitHeight = 916
+    end
+    object lblDestinationHeading: TLabel
+      Left = 48
+      Top = 48
+      Width = 426
+      Height = 32
+      Caption = 'Book your flight!'
+      Font.Charset = OEM_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -32
+      Font.Name = 'Terminal'
+      Font.Style = [fsBold, fsUnderline]
+      ParentFont = False
+    end
+    object lblDestinationFrom: TLabel
+      Left = 48
+      Top = 143
+      Width = 31
+      Height = 15
+      Caption = 'From:'
+    end
+    object lblDestinationTo: TLabel
+      Left = 328
+      Top = 143
+      Width = 16
+      Height = 15
+      Caption = 'To:'
+    end
+    object lblAvailable: TLabel
+      Left = 48
+      Top = 343
+      Width = 87
+      Height = 15
+      Caption = 'Available flights:'
+    end
+    object cmbDestinationFrom: TComboBox
+      Left = 48
+      Top = 164
+      Width = 145
+      Height = 23
+      TabOrder = 0
+    end
+    object cmbDestinationTo: TComboBox
+      Left = 328
+      Top = 164
+      Width = 145
+      Height = 23
+      TabOrder = 1
+    end
+    object dtpDate: TDateTimePicker
+      Left = 168
+      Top = 218
+      Width = 186
+      Height = 23
+      Date = 45886.000000000000000000
+      Time = 0.965987048613897100
+      TabOrder = 2
+    end
+    object btnDestinationDetailsConfirm: TButton
+      Left = 208
+      Top = 267
+      Width = 105
+      Height = 25
+      Caption = 'Confirm'
+      TabOrder = 3
+      OnClick = btnDestinationDetailsConfirmClick
+    end
+    object btnDestinationChooseFlight: TButton
+      Left = 224
+      Top = 816
+      Width = 97
+      Height = 25
+      Caption = 'Choose Flight'
+      TabOrder = 4
+      OnClick = btnDestinationChooseFlightClick
+    end
+    object sgAvailableFlights: TStringGrid
+      Left = 48
+      Top = 364
+      Width = 433
+      Height = 397
+      ColCount = 3
+      FixedCols = 0
+      RowCount = 2
+      TabOrder = 5
+    end
+  end
+end

@@ -20,36 +20,31 @@ type
     memFlightDetails: TMemo;
     lblMyFlightDetails: TLabel;
     btnMyFlightsBack: TButton;
-
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
-
     procedure btnMyFlightsBackClick(Sender: TObject);
     procedure btnFlightDetailsSaveClick(Sender: TObject);
     procedure btnSearchClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
     procedure btnUndoClick(Sender: TObject);
-
-  private
-    { Helper methods that make code easier to read }
     procedure SetupGridHeaders;
     procedure ClearGridData;
     procedure FormatGridColumns;
-
-    function StartsWith(const S, Prefix: string): Boolean;
+    function StartsWith(const S, sPrefix: String): Boolean;
     function ExtractValueAfterColon(const sLine: string): string;
     function ParsePriceToFloat(const sPriceText: string): Double;
-    function SafeStrToIntDef(const S: string; const Default: Integer): Integer;
-
+    function SafeStrToIntDef(const S: string; const iDefault: Integer): Integer;
     procedure LoadBookingsFromFile(const sFileName: string);
     procedure RemoveBookingFromFile(const sFileName, sTargetFlightID: string);
     procedure RestoreBookingToFile(const sUserID: string);
-
     procedure RefreshSummaryMemo(const sFullName: string);
 
-  public
-    { Public members (available outside the form) }
+  private
+    sFullName: String;
+
+  Public
+
   end;
 
 var
@@ -71,7 +66,8 @@ uses
   Home_u, LoginRegister_u;
 
 const
-  // Column indices for readability
+
+  // Column indexes for readability
   COL_FLIGHTID = 0;
   COL_FROM = 1;
   COL_TO = 2;
@@ -79,29 +75,26 @@ const
   COL_SEATS = 4;
   COL_PRICE_PER = 5;
   COL_DEPARTUREDATE = 6;
-
   GRID_COL_COUNT = 7;
 
-  { ============================ BASIC HELPERS ============================ }
-
-function TfrmMyFlights.StartsWith(const S, Prefix: string): Boolean;
+function TfrmMyFlights.StartsWith(const S, sPrefix: String): Boolean;
 begin
 
   // Simple, case-sensitive "starts with" check
-  Result := Copy(S, 1, Length(Prefix)) = Prefix;
+  Result := Copy(S, 1, Length(sPrefix)) = sPrefix;
 
 end;
 
 function TfrmMyFlights.ExtractValueAfterColon(const sLine: string): string;
 var
-  P: Integer;
+  iPos: Integer;
 
 begin
 
   // Given "Key: Value", returns "Value" (trimmed). If no colon, return whole line trimmed.
-  P := Pos(':', sLine);
-  if P > 0 then
-    Result := Trim(Copy(sLine, P + 1, MaxInt))
+  iPos := Pos(':', sLine);
+  if iPos > 0 then
+    Result := Trim(Copy(sLine, iPos + 1, MaxInt))
   else
     Result := Trim(sLine);
 
@@ -109,45 +102,52 @@ end;
 
 function TfrmMyFlights.ParsePriceToFloat(const sPriceText: string): Double;
 var
-  CleanText: string;
-  FS: TFormatSettings;
+  sCleanText: string;
+  fsFormatSettings: TFormatSettings;
+
 begin
+
   // Remove currency symbols and spaces
-  CleanText := StringReplace(sPriceText, 'R', '', [rfReplaceAll, rfIgnoreCase]);
-  CleanText := StringReplace(CleanText, ' ', '', [rfReplaceAll]);
+  sCleanText := StringReplace(sPriceText, 'R', '',
+    [rfReplaceAll, rfIgnoreCase]);
+  sCleanText := StringReplace(sCleanText, ' ', '', [rfReplaceAll]);
 
   // Detect which decimal separator is used
-  if (Pos(',', CleanText) > 0) and (Pos('.', CleanText) = 0) then
+  if (Pos(',', sCleanText) > 0) and (Pos('.', sCleanText) = 0) then
+
   begin
+
     // Comma used as decimal separator
-    FS := FormatSettings;
-    FS.DecimalSeparator := ',';
+    fsFormatSettings := FormatSettings;
+    fsFormatSettings.DecimalSeparator := ',';
+
   end
   else
   begin
+
     // Default to dot
-    CleanText := StringReplace(CleanText, ',', '', [rfReplaceAll]);
+    sCleanText := StringReplace(sCleanText, ',', '', [rfReplaceAll]);
     // Remove thousand separator
-    FS := FormatSettings;
-    FS.DecimalSeparator := '.';
+    fsFormatSettings := FormatSettings;
+    fsFormatSettings.DecimalSeparator := '.';
+
   end;
 
   // Try to convert
-  if not TryStrToFloat(CleanText, Result, FS) then
+  if not TryStrToFloat(sCleanText, Result, fsFormatSettings) then
     Result := 0.0;
+
 end;
 
-function TfrmMyFlights.SafeStrToIntDef(const S: string;
-  const Default: Integer): Integer;
+function TfrmMyFlights.SafeStrToIntDef(const S: String;
+  const iDefault: Integer): Integer;
 begin
 
   // Converts string to integer safely, returns default if conversion fails
   if not TryStrToInt(Trim(S), Result) then
-    Result := Default;
+    Result := iDefault;
 
 end;
-
-{ ============================ GRID HELPERS ============================ }
 
 procedure TfrmMyFlights.SetupGridHeaders;
 begin
@@ -203,8 +203,6 @@ begin
 
 end;
 
-{ ============================ UI EVENTS ============================ }
-
 procedure TfrmMyFlights.FormCreate(Sender: TObject);
 begin
 
@@ -246,8 +244,7 @@ end;
 
 procedure TfrmMyFlights.btnFlightDetailsSaveClick(Sender: TObject);
 var
-  sBookingFile: string;
-  TSBookingData: TStringList;
+  sBookingFile: String;
 
 begin
 
@@ -263,7 +260,7 @@ end;
 
 procedure TfrmMyFlights.btnSearchClick(Sender: TObject);
 var
-  sSearchID: string;
+  sSearchID: String;
   iRowIndex: Integer;
 
 begin
@@ -293,11 +290,12 @@ end;
 
 procedure TfrmMyFlights.btnRemoveClick(Sender: TObject);
 var
-  sFlightID, sUserID, sFileName: string;
+  sFlightID, sUserID, sFileName: String;
   iSeatCount, i, iSelectedRow: Integer;
   dPricePerSeat, dTotalDeduct: Double;
 
 begin
+
   iSelectedRow := sgBookedFlights.Row;
 
   // Prevent deletion of header or empty rows
@@ -367,6 +365,7 @@ begin
 
   // Refresh screen to reflect changes
   FormShow(Self);
+
 end;
 
 procedure TfrmMyFlights.btnUndoClick(Sender: TObject);
@@ -379,8 +378,10 @@ begin
   // Check if undo is available
   if not gUndoAvailable then
   begin
+
     ShowMessage('No booking to undo.');
     Exit;
+
   end;
 
   // Add a new row to the grid
@@ -433,7 +434,7 @@ begin
 
   // Reload grid and summary from file
   LoadBookingsFromFile(frmLoginRegister.sUserID + '_Booking.txt');
-  RefreshSummaryMemo(frmLoginRegister.sUserID);
+  RefreshSummaryMemo(sFullName);
 
   // Reset undo state
   gUndoAvailable := False;
@@ -443,12 +444,7 @@ begin
 
 end;
 
-{ ============================ SCREEN POPULATION ============================ }
-
 procedure TfrmMyFlights.FormShow(Sender: TObject);
-var
-  sFullName: string;
-
 begin
 
   // Prepare grid for fresh data
@@ -503,15 +499,33 @@ begin
     if not qryFlights.Eof then
     begin
 
+      memFlightDetails.Lines.Add('');
       memFlightDetails.Lines.Add('Flight Summary for: ' + sFullName);
-      memFlightDetails.Lines.Add('------------------------------');
+      memFlightDetails.Lines.Add('');
+      memFlightDetails.Lines.Add
+        ('===============================================================');
+
+      memFlightDetails.Lines.Add('');
+
       memFlightDetails.Lines.Add('Total Flights: ' + qryFlights.FieldByName
         ('NOFlights').AsString);
+
+      memFlightDetails.Lines.Add('');
+
       memFlightDetails.Lines.Add('Total Seats: ' + qryFlights.FieldByName
         ('NOSeats').AsString);
+
+      memFlightDetails.Lines.Add('');
+
       memFlightDetails.Lines.Add('Total Price: R' + FormatFloat('0.00',
         qryFlights.FieldByName('TotalPrice').AsFloat));
-      memFlightDetails.Lines.Add('------------------------------');
+
+      memFlightDetails.Lines.Add('');
+
+      memFlightDetails.Lines.Add('');
+
+      memFlightDetails.Lines.Add
+        ('===============================================================');
 
     end
     else
@@ -525,27 +539,28 @@ end;
 
 procedure TfrmMyFlights.LoadBookingsFromFile(const sFileName: string);
 var
-  slLines: TStringList;
+  TSLines: TStringList;
   iLine, iRow: Integer;
-  sLine: string;
-  sTemp: array [0 .. 6] of string; // Only 7 fields used
+  sLine: String;
+  arrTemp: array [0 .. 6] of string; // Only 7 fields used
   bHasData: Boolean;
+
 begin
   if not FileExists(sFileName) then
     Exit;
 
-  slLines := TStringList.Create;
+  TSLines := TStringList.Create;
   try
-    slLines.LoadFromFile(sFileName);
+    TSLines.LoadFromFile(sFileName);
 
     sgBookedFlights.RowCount := 1;
     iRow := 0;
-    FillChar(sTemp, SizeOf(sTemp), 0);
+    FillChar(arrTemp, SizeOf(arrTemp), 0);
     bHasData := False;
 
-    for iLine := 0 to slLines.Count - 1 do
+    for iLine := 0 to TSLines.Count - 1 do
     begin
-      sLine := Trim(slLines[iLine]);
+      sLine := Trim(TSLines[iLine]);
 
       // Skip non-grid fields
       if StartsWith(sLine, 'Booking for:') or StartsWith(sLine, 'Booking Date:')
@@ -558,45 +573,51 @@ begin
         begin
           Inc(iRow);
           sgBookedFlights.RowCount := iRow + 1;
-          sgBookedFlights.Cells[COL_FLIGHTID, iRow] := sTemp[COL_FLIGHTID];
-          sgBookedFlights.Cells[COL_FROM, iRow] := sTemp[COL_FROM];
-          sgBookedFlights.Cells[COL_TO, iRow] := sTemp[COL_TO];
-          sgBookedFlights.Cells[COL_CLASS, iRow] := sTemp[COL_CLASS];
-          sgBookedFlights.Cells[COL_SEATS, iRow] := sTemp[COL_SEATS];
-          sgBookedFlights.Cells[COL_PRICE_PER, iRow] := sTemp[COL_PRICE_PER];
+          sgBookedFlights.Cells[COL_FLIGHTID, iRow] := arrTemp[COL_FLIGHTID];
+          sgBookedFlights.Cells[COL_FROM, iRow] := arrTemp[COL_FROM];
+          sgBookedFlights.Cells[COL_TO, iRow] := arrTemp[COL_TO];
+          sgBookedFlights.Cells[COL_CLASS, iRow] := arrTemp[COL_CLASS];
+          sgBookedFlights.Cells[COL_SEATS, iRow] := arrTemp[COL_SEATS];
+          sgBookedFlights.Cells[COL_PRICE_PER, iRow] := arrTemp[COL_PRICE_PER];
           sgBookedFlights.Cells[COL_DEPARTUREDATE, iRow] :=
-            sTemp[COL_DEPARTUREDATE];
-          FillChar(sTemp, SizeOf(sTemp), 0);
+            arrTemp[COL_DEPARTUREDATE];
+          FillChar(arrTemp, SizeOf(arrTemp), 0);
         end;
 
-        sTemp[COL_FLIGHTID] := ExtractValueAfterColon(sLine);
+        arrTemp[COL_FLIGHTID] := ExtractValueAfterColon(sLine);
         bHasData := True;
+
       end
       else if StartsWith(sLine, 'From:') then
-        sTemp[COL_FROM] := ExtractValueAfterColon(sLine)
+        arrTemp[COL_FROM] := ExtractValueAfterColon(sLine)
+
       else if StartsWith(sLine, 'To:') then
-        sTemp[COL_TO] := ExtractValueAfterColon(sLine)
+        arrTemp[COL_TO] := ExtractValueAfterColon(sLine)
+
       else if StartsWith(sLine, 'Class:') then
-        sTemp[COL_CLASS] := ExtractValueAfterColon(sLine)
+        arrTemp[COL_CLASS] := ExtractValueAfterColon(sLine)
+
       else if StartsWith(sLine, 'Seats:') then
-        sTemp[COL_SEATS] := ExtractValueAfterColon(sLine)
+        arrTemp[COL_SEATS] := ExtractValueAfterColon(sLine)
+
       else if StartsWith(sLine, 'Price per seat:') then
-        sTemp[COL_PRICE_PER] := ExtractValueAfterColon(sLine)
+        arrTemp[COL_PRICE_PER] := ExtractValueAfterColon(sLine)
+
       else if StartsWith(sLine, 'Departure Date:') then
       begin
 
-        sTemp[COL_DEPARTUREDATE] := ExtractValueAfterColon(sLine);
+        arrTemp[COL_DEPARTUREDATE] := ExtractValueAfterColon(sLine);
         Inc(iRow);
         sgBookedFlights.RowCount := iRow + 1;
-        sgBookedFlights.Cells[COL_FLIGHTID, iRow] := sTemp[COL_FLIGHTID];
-        sgBookedFlights.Cells[COL_FROM, iRow] := sTemp[COL_FROM];
-        sgBookedFlights.Cells[COL_TO, iRow] := sTemp[COL_TO];
-        sgBookedFlights.Cells[COL_CLASS, iRow] := sTemp[COL_CLASS];
-        sgBookedFlights.Cells[COL_SEATS, iRow] := sTemp[COL_SEATS];
-        sgBookedFlights.Cells[COL_PRICE_PER, iRow] := sTemp[COL_PRICE_PER];
+        sgBookedFlights.Cells[COL_FLIGHTID, iRow] := arrTemp[COL_FLIGHTID];
+        sgBookedFlights.Cells[COL_FROM, iRow] := arrTemp[COL_FROM];
+        sgBookedFlights.Cells[COL_TO, iRow] := arrTemp[COL_TO];
+        sgBookedFlights.Cells[COL_CLASS, iRow] := arrTemp[COL_CLASS];
+        sgBookedFlights.Cells[COL_SEATS, iRow] := arrTemp[COL_SEATS];
+        sgBookedFlights.Cells[COL_PRICE_PER, iRow] := arrTemp[COL_PRICE_PER];
         sgBookedFlights.Cells[COL_DEPARTUREDATE, iRow] :=
-          sTemp[COL_DEPARTUREDATE];
-        FillChar(sTemp, SizeOf(sTemp), 0);
+          arrTemp[COL_DEPARTUREDATE];
+        FillChar(arrTemp, SizeOf(arrTemp), 0);
         bHasData := False;
 
       end;
@@ -607,14 +628,14 @@ begin
 
       Inc(iRow);
       sgBookedFlights.RowCount := iRow + 1;
-      sgBookedFlights.Cells[COL_FLIGHTID, iRow] := sTemp[COL_FLIGHTID];
-      sgBookedFlights.Cells[COL_FROM, iRow] := sTemp[COL_FROM];
-      sgBookedFlights.Cells[COL_TO, iRow] := sTemp[COL_TO];
-      sgBookedFlights.Cells[COL_CLASS, iRow] := sTemp[COL_CLASS];
-      sgBookedFlights.Cells[COL_SEATS, iRow] := sTemp[COL_SEATS];
-      sgBookedFlights.Cells[COL_PRICE_PER, iRow] := sTemp[COL_PRICE_PER];
+      sgBookedFlights.Cells[COL_FLIGHTID, iRow] := arrTemp[COL_FLIGHTID];
+      sgBookedFlights.Cells[COL_FROM, iRow] := arrTemp[COL_FROM];
+      sgBookedFlights.Cells[COL_TO, iRow] := arrTemp[COL_TO];
+      sgBookedFlights.Cells[COL_CLASS, iRow] := arrTemp[COL_CLASS];
+      sgBookedFlights.Cells[COL_SEATS, iRow] := arrTemp[COL_SEATS];
+      sgBookedFlights.Cells[COL_PRICE_PER, iRow] := arrTemp[COL_PRICE_PER];
       sgBookedFlights.Cells[COL_DEPARTUREDATE, iRow] :=
-        sTemp[COL_DEPARTUREDATE];
+        arrTemp[COL_DEPARTUREDATE];
 
     end;
 
@@ -629,7 +650,8 @@ begin
       sgBookedFlights.RowCount := sgBookedFlights.RowCount - 1;
 
   finally
-    slLines.Free;
+
+    TSLines.Free;
 
   end;
 end;
@@ -644,15 +666,18 @@ procedure TfrmMyFlights.RemoveBookingFromFile(const sFileName,
 var
   TSLines: TStringList;
   i: Integer;
-  sLine: string;
+  sLine: String;
 
 begin
+
   // Exit if file doesn't exist
   if not FileExists(sFileName) then
     Exit;
 
   TSLines := TStringList.Create;
+
   try
+
     TSLines.LoadFromFile(sFileName);
 
     i := 0;
@@ -715,34 +740,34 @@ end;
 
 procedure TfrmMyFlights.RestoreBookingToFile(const sUserID: string);
 var
-  Lines: TStringList;
-  FileName: string;
+  TSLines: TStringList;
+  sFileName: String;
 
 begin
 
-  FileName := sUserID + '_Booking.txt';
+  sFileName := sUserID + '_Booking.txt';
 
-  Lines := TStringList.Create;
+  TSLines := TStringList.Create;
 
   try
 
     // Load existing file if present
-    if FileExists(FileName) then
-      Lines.LoadFromFile(FileName);
+    if FileExists(sFileName) then
+      TSLines.LoadFromFile(sFileName);
 
     // Append restored booking block
-    Lines.Add('FlightID: ' + gLastDeletedRowData[COL_FLIGHTID]);
-    Lines.Add('From: ' + gLastDeletedRowData[COL_FROM]);
-    Lines.Add('To: ' + gLastDeletedRowData[COL_TO]);
-    Lines.Add('Class: ' + gLastDeletedRowData[COL_CLASS]);
-    Lines.Add('Seats: ' + gLastDeletedRowData[COL_SEATS]);
-    Lines.Add('Price per seat: ' + gLastDeletedRowData[COL_PRICE_PER]);
-    Lines.Add('Departure Date: ' + gLastDeletedRowData[COL_DEPARTUREDATE]);
+    TSLines.Add('FlightID: ' + gLastDeletedRowData[COL_FLIGHTID]);
+    TSLines.Add('From: ' + gLastDeletedRowData[COL_FROM]);
+    TSLines.Add('To: ' + gLastDeletedRowData[COL_TO]);
+    TSLines.Add('Class: ' + gLastDeletedRowData[COL_CLASS]);
+    TSLines.Add('Seats: ' + gLastDeletedRowData[COL_SEATS]);
+    TSLines.Add('Price per seat: ' + gLastDeletedRowData[COL_PRICE_PER]);
+    TSLines.Add('Departure Date: ' + gLastDeletedRowData[COL_DEPARTUREDATE]);
 
-    Lines.SaveToFile(FileName);
+    TSLines.SaveToFile(sFileName);
 
   finally
-    Lines.Free;
+    TSLines.Free;
 
   end;
 end;
