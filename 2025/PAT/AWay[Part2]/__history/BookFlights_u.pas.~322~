@@ -229,10 +229,11 @@ type
   private
     dBasePrice, dMultiplier: Double;
     bBookingConfirmed: Boolean;
-    sGridFlightNum: String;
 
   public { Public declarations }
     rPricePerPixel: Real;
+    sGridFlightNum: String;
+
   end;
 
 var
@@ -569,8 +570,9 @@ begin
   with dmAccounts do
   begin
     qryFlights.Close;
-    qryFlights.SQL.Text := 'SELECT * FROM tblFlights WHERE UserID = :UserID';
-    qryFlights.Parameters.ParamByName('UserID').Value := sUserName;
+    qryFlights.SQL.Text :=
+      'SELECT * FROM tblFlights WHERE FlightID = :FlightID';
+    qryFlights.Parameters.ParamByName('iFlight').Value := sGridFlightNum;
     qryFlights.Open;
     if not qryFlights.Eof then
     begin
@@ -592,12 +594,14 @@ begin
       // Add a new record for this user
       qryFlights.Close;
       qryFlights.SQL.Text :=
-        'INSERT INTO tblFlights (UserID, NOFlights, NOSeats, TotalPrice) ' +
-        'VALUES (:UserID, :NOFlights, :NOSeats, :TotalPrice)';
-      qryFlights.Parameters.ParamByName('UserID').Value := sUserName;
+        'INSERT INTO tblFlights (FlightID, NOFlights, NOSeats, UserID, TotalPrice) '
+        + 'VALUES (:FlightID, :UserID, :NOFlights, :NOSeats, :TotalPrice)';
+
+      qryFlights.Parameters.ParamByName('FlightID').Value := sGridFlightNum;
       qryFlights.Parameters.ParamByName('NOFlights').Value := 1;
       qryFlights.Parameters.ParamByName('NOSeats').Value := iNumberOfSeats;
       qryFlights.Parameters.ParamByName('TotalPrice').Value := dTotalCost;
+      qryFlights.Parameters.ParamByName('UserID').Value := sUserName;
       qryFlights.ExecSQL;
 
     end;
@@ -753,14 +757,17 @@ end;
 
 function GenerateUniqueFlightCode(existing: TStringList): string;
 var
-  code: string;
+  sCode: string;
+
 begin
+
   repeat
-    code := 'FL' + Chr(65 + Random(26)) + Chr(65 + Random(26)) +
+    sCode := 'FL' + Chr(65 + Random(26)) + Chr(65 + Random(26)) +
       IntToStr(1000 + Random(9000));
-  until existing.IndexOf(code) = -1;
-  existing.Add(code);
-  Result := code;
+  until existing.IndexOf(sCode) = -1;
+  existing.Add(sCode);
+  Result := sCode;
+
 end;
 
 procedure TfrmBookFlights.GenerateFlightOptions(basePrice: Double);
@@ -775,56 +782,56 @@ var
   TempFile: TextFile;
   i: Integer;
   dVariedPrice: Double;
-  tempFileName, line, flightCode: string;
-  usedCodes: TStringList;
+  sTempFileName, sLine, sFlightCode: string;
+  TSUsedCodes: TStringList;
 
 begin
 
   Randomize;
-  tempFileName := 'tempFlights.txt';
-  AssignFile(TempFile, tempFileName);
+  sTempFileName := 'tempFlights.txt';
+  AssignFile(TempFile, sTempFileName);
   Rewrite(TempFile);
-  usedCodes := TStringList.Create;
+  TSUsedCodes := TStringList.Create;
 
   try
 
     for i := 0 to High(AirplaneNames) do
     begin
 
-      flightCode := GenerateUniqueFlightCode(usedCodes);
+      sFlightCode := GenerateUniqueFlightCode(TSUsedCodes);
       dVariedPrice := basePrice * (1 + ((Random(31) - 15) / 100)); // ±15%
-      line := Format('%s %s%%%.2f', [AirplaneNames[i], flightCode,
+      sLine := Format('%s %s%%%.2f', [AirplaneNames[i], sFlightCode,
         dVariedPrice]);
-      WriteLn(TempFile, line);
+      WriteLn(TempFile, sLine);
 
     end;
 
   finally
-    usedCodes.Free;
+
+    TSUsedCodes.Free;
     CloseFile(TempFile);
 
   end;
 end;
 
 function TfrmBookFlights.GenerateUnqiueFlightNumber(existingList
-  : TStringList): string;
+  : TStringList): String;
 var
-  airlineCode: string;
-  flightNum: string;
+  sAirlineCode, sFlightNum: String;
 
 begin
 
   repeat // Random 3-letter airline code
 
-    airlineCode := Chr(65 + Random(26)) + Chr(65 + Random(26)) +
+    sAirlineCode := Chr(65 + Random(26)) + Chr(65 + Random(26)) +
       Chr(65 + Random(26));
     // Random 4-digit number
-    flightNum := Format('%s%d', [airlineCode, 1000 + Random(9000)]);
+    sFlightNum := Format('%s%d', [sAirlineCode, 1000 + Random(9000)]);
 
-  until existingList.IndexOf(flightNum) = -1;
+  until existingList.IndexOf(sFlightNum) = -1;
 
   // Ensure uniqueness
-  Result := flightNum;
+  Result := sFlightNum;
 
 end;
 
@@ -832,19 +839,21 @@ function TfrmBookFlights.GetLabelByDestination(const destination
   : string): TLabel;
 var
   i: Integer;
-  ctrlName: string;
+  sLblName: string;
 
 begin
 
-  ctrlName := 'lbl' + StringReplace(destination, ' ', '', [rfReplaceAll]);
+  sLblName := 'lbl' + StringReplace(destination, ' ', '', [rfReplaceAll]);
   for i := 0 to ComponentCount - 1 do
   begin
 
     if (Components[i] is TLabel) and
-      (CompareText(Components[i].Name, ctrlName) = 0) then
+      (CompareText(Components[i].Name, sLblName) = 0) then
     begin
+
       Result := TLabel(Components[i]);
       Exit;
+
     end;
 
   end;
@@ -1436,6 +1445,7 @@ procedure TfrmBookFlights.rgClassesClick(Sender: TObject);
 begin
 
   case rgClasses.ItemIndex of
+
     0:
       dMultiplier := 1.0;
     1:
@@ -1443,7 +1453,9 @@ begin
     2:
       dMultiplier := 1.5;
   else
+
     dMultiplier := 1.0;
+
   end;
 
 end;
@@ -1461,15 +1473,19 @@ begin
 
   if sDecision = 'from' then
   begin
+
     iIndex := cmbDestinationFrom.Items.IndexOf(sInput);
     if iIndex <> -1 then
       cmbDestinationFrom.ItemIndex := iIndex;
+
   end
   else if sDecision = 'to' then
   begin
+
     iIndex := cmbDestinationTo.Items.IndexOf(sInput);
     if iIndex <> -1 then
       cmbDestinationTo.ItemIndex := iIndex;
+
   end;
 
 end;

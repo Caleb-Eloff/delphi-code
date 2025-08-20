@@ -229,10 +229,11 @@ type
   private
     dBasePrice, dMultiplier: Double;
     bBookingConfirmed: Boolean;
-    sGridFlightNum: String;
 
   public { Public declarations }
     rPricePerPixel: Real;
+    sGridFlightNum: String;
+
   end;
 
 var
@@ -568,10 +569,14 @@ begin
 
   with dmAccounts do
   begin
+
     qryFlights.Close;
-    qryFlights.SQL.Text := 'SELECT * FROM tblFlights WHERE UserID = :UserID';
-    qryFlights.Parameters.ParamByName('UserID').Value := sUserName;
+    qryFlights.SQL.Text :=
+      'SELECT * FROM tblFlights WHERE FlightID = :FlightID';
+    ShowMessage(sGridFlightNum);
+    qryFlights.Parameters.ParamByName('FlightID').Value := sGridFlightNum;
     qryFlights.Open;
+
     if not qryFlights.Eof then
     begin
 
@@ -592,12 +597,14 @@ begin
       // Add a new record for this user
       qryFlights.Close;
       qryFlights.SQL.Text :=
-        'INSERT INTO tblFlights (UserID, NOFlights, NOSeats, TotalPrice) ' +
-        'VALUES (:UserID, :NOFlights, :NOSeats, :TotalPrice)';
-      qryFlights.Parameters.ParamByName('UserID').Value := sUserName;
+        'INSERT INTO tblFlights (FlightID, NOFlights, NOSeats, UserID, TotalPrice) '
+        + 'VALUES (:FlightID, :UserID, :NOFlights, :NOSeats, :TotalPrice)';
+
+      qryFlights.Parameters.ParamByName('FlightID').Value := sGridFlightNum;
       qryFlights.Parameters.ParamByName('NOFlights').Value := 1;
       qryFlights.Parameters.ParamByName('NOSeats').Value := iNumberOfSeats;
       qryFlights.Parameters.ParamByName('TotalPrice').Value := dTotalCost;
+      qryFlights.Parameters.ParamByName('UserID').Value := sUserName;
       qryFlights.ExecSQL;
 
     end;
@@ -835,16 +842,16 @@ function TfrmBookFlights.GetLabelByDestination(const destination
   : string): TLabel;
 var
   i: Integer;
-  sCtrlName: string;
+  sLblName: string;
 
 begin
 
-  sCtrlName := 'lbl' + StringReplace(destination, ' ', '', [rfReplaceAll]);
+  sLblName := 'lbl' + StringReplace(destination, ' ', '', [rfReplaceAll]);
   for i := 0 to ComponentCount - 1 do
   begin
 
     if (Components[i] is TLabel) and
-      (CompareText(Components[i].Name, sCtrlName) = 0) then
+      (CompareText(Components[i].Name, sLblName) = 0) then
     begin
 
       Result := TLabel(Components[i]);

@@ -314,6 +314,7 @@ object frmBookFlights: TfrmBookFlights
       Width = 163
       Height = 15
       Caption = 'Democratic Republic of Congo'
+      OnClick = lblDemocraticRepublicCongoClick
     end
     object lblTanzania: TLabel
       Left = 887
@@ -691,202 +692,6 @@ object frmBookFlights: TfrmBookFlights
       OnClick = lblAustralia2Click
     end
   end
-  object pnlFlightDetails: TPanel
-    Left = 1337
-    Top = 53
-    Width = 527
-    Height = 919
-    TabOrder = 9
-    object imgFlightDetailsBackground: TImage
-      Left = 1
-      Top = 1
-      Width = 525
-      Height = 917
-      Align = alClient
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 145
-      ExplicitHeight = 186
-    end
-    object lblFlightDetailsHeading: TLabel
-      Left = 88
-      Top = 69
-      Width = 351
-      Height = 32
-      Caption = 'Flight Details'
-      Font.Charset = OEM_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -32
-      Font.Name = 'Terminal'
-      Font.Style = [fsBold, fsUnderline]
-      ParentFont = False
-    end
-    object lblNumberOfSeats: TLabel
-      Left = 288
-      Top = 363
-      Width = 88
-      Height = 15
-      Caption = 'Number of Seats'
-    end
-    object memFlightDetails: TMemo
-      Left = 84
-      Top = 148
-      Width = 365
-      Height = 188
-      ReadOnly = True
-      TabOrder = 0
-    end
-    object rgClasses: TRadioGroup
-      Left = 80
-      Top = 363
-      Width = 185
-      Height = 105
-      Caption = 'Classes'
-      Items.Strings = (
-        'First Class'
-        'Business'
-        'Economy')
-      TabOrder = 1
-      OnClick = rgClassesClick
-    end
-    object spnSeats: TSpinEdit
-      Left = 288
-      Top = 384
-      Width = 121
-      Height = 24
-      MaxValue = 0
-      MinValue = 0
-      TabOrder = 2
-      Value = 0
-    end
-    object btnFlightDetailsConfirm: TButton
-      Left = 312
-      Top = 418
-      Width = 75
-      Height = 25
-      Caption = 'Confirm'
-      TabOrder = 3
-      OnClick = btnFlightDetailsConfirmClick
-    end
-    object memFlightDetailsFinal: TMemo
-      Left = 88
-      Top = 489
-      Width = 361
-      Height = 209
-      ReadOnly = True
-      TabOrder = 4
-    end
-    object btnFlightDetailsFinalize: TButton
-      Left = 232
-      Top = 735
-      Width = 75
-      Height = 25
-      Caption = 'Finalize'
-      TabOrder = 5
-      OnClick = btnFlightDetailsFinalizeClick
-    end
-  end
-  object pnlDestination: TPanel
-    Left = 1336
-    Top = 52
-    Width = 529
-    Height = 920
-    TabOrder = 7
-    object imgDestinationBackground: TImage
-      Left = 1
-      Top = 1
-      Width = 527
-      Height = 918
-      Align = alClient
-      ExplicitTop = -3
-      ExplicitHeight = 916
-    end
-    object lblDestinationHeading: TLabel
-      Left = 48
-      Top = 48
-      Width = 426
-      Height = 32
-      Caption = 'Book your flight!'
-      Font.Charset = OEM_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -32
-      Font.Name = 'Terminal'
-      Font.Style = [fsBold, fsUnderline]
-      ParentFont = False
-    end
-    object lblDestinationFrom: TLabel
-      Left = 48
-      Top = 143
-      Width = 31
-      Height = 15
-      Caption = 'From:'
-    end
-    object lblDestinationTo: TLabel
-      Left = 328
-      Top = 143
-      Width = 16
-      Height = 15
-      Caption = 'To:'
-    end
-    object lblAvailable: TLabel
-      Left = 48
-      Top = 343
-      Width = 87
-      Height = 15
-      Caption = 'Available flights:'
-    end
-    object cmbDestinationFrom: TComboBox
-      Left = 48
-      Top = 164
-      Width = 145
-      Height = 23
-      TabOrder = 0
-    end
-    object cmbDestinationTo: TComboBox
-      Left = 328
-      Top = 164
-      Width = 145
-      Height = 23
-      TabOrder = 1
-    end
-    object dtpDate: TDateTimePicker
-      Left = 168
-      Top = 218
-      Width = 186
-      Height = 23
-      Date = 45886.000000000000000000
-      Time = 0.965987048613897100
-      TabOrder = 2
-    end
-    object btnDestinationDetailsConfirm: TButton
-      Left = 208
-      Top = 267
-      Width = 105
-      Height = 25
-      Caption = 'Confirm'
-      TabOrder = 3
-      OnClick = btnDestinationDetailsConfirmClick
-    end
-    object btnDestinationChooseFlight: TButton
-      Left = 224
-      Top = 816
-      Width = 97
-      Height = 25
-      Caption = 'Choose Flight'
-      TabOrder = 4
-      OnClick = btnDestinationChooseFlightClick
-    end
-    object sgAvailableFlights: TStringGrid
-      Left = 48
-      Top = 364
-      Width = 433
-      Height = 397
-      ColCount = 3
-      FixedCols = 0
-      RowCount = 2
-      TabOrder = 5
-    end
-  end
   object pnlNorthAmerica: TPanel
     Left = 32
     Top = 33
@@ -1002,6 +807,210 @@ object frmBookFlights: TfrmBookFlights
       Height = 15
       Caption = 'Europe'
       OnClick = lblEuropeClick
+    end
+  end
+  object pnlFlightDetails: TPanel
+    Left = 1339
+    Top = 37
+    Width = 527
+    Height = 919
+    TabOrder = 9
+    object imgFlightDetailsBackground: TImage
+      Left = 1
+      Top = 1
+      Width = 525
+      Height = 917
+      Align = alClient
+      ExplicitTop = -15
+    end
+    object lblFlightDetailsHeading: TLabel
+      Left = 88
+      Top = 69
+      Width = 351
+      Height = 32
+      Caption = 'Flight Details'
+      Font.Charset = OEM_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -32
+      Font.Name = 'Terminal'
+      Font.Style = [fsBold, fsUnderline]
+      ParentFont = False
+    end
+    object lblNumberOfSeats: TLabel
+      Left = 288
+      Top = 363
+      Width = 88
+      Height = 15
+      Caption = 'Number of Seats'
+    end
+    object rgClasses: TRadioGroup
+      Left = 80
+      Top = 363
+      Width = 185
+      Height = 105
+      Caption = 'Classes'
+      Items.Strings = (
+        'First Class'
+        'Business'
+        'Economy')
+      TabOrder = 0
+      OnClick = rgClassesClick
+    end
+    object spnSeats: TSpinEdit
+      Left = 288
+      Top = 384
+      Width = 121
+      Height = 24
+      MaxValue = 0
+      MinValue = 0
+      TabOrder = 1
+      Value = 0
+    end
+    object btnFlightDetailsConfirm: TButton
+      Left = 312
+      Top = 418
+      Width = 75
+      Height = 25
+      Caption = 'Confirm'
+      TabOrder = 2
+      OnClick = btnFlightDetailsConfirmClick
+    end
+    object btnFlightDetailsFinalize: TButton
+      Left = 232
+      Top = 735
+      Width = 75
+      Height = 25
+      Caption = 'Finalize'
+      TabOrder = 3
+      OnClick = btnFlightDetailsFinalizeClick
+    end
+    object redFlightDetails: TRichEdit
+      Left = 84
+      Top = 145
+      Width = 365
+      Height = 191
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 4
+    end
+    object redFlightDetailsFinal: TRichEdit
+      Left = 84
+      Top = 489
+      Width = 365
+      Height = 209
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      ReadOnly = True
+      TabOrder = 5
+    end
+  end
+  object pnlDestination: TPanel
+    Left = 1338
+    Top = 37
+    Width = 529
+    Height = 920
+    TabOrder = 7
+    object imgDestinationBackground: TImage
+      Left = 1
+      Top = 1
+      Width = 527
+      Height = 918
+      Align = alClient
+      ExplicitTop = -3
+      ExplicitHeight = 916
+    end
+    object lblDestinationHeading: TLabel
+      Left = 48
+      Top = 48
+      Width = 426
+      Height = 32
+      Caption = 'Book your flight!'
+      Font.Charset = OEM_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -32
+      Font.Name = 'Terminal'
+      Font.Style = [fsBold, fsUnderline]
+      ParentFont = False
+    end
+    object lblDestinationFrom: TLabel
+      Left = 48
+      Top = 143
+      Width = 31
+      Height = 15
+      Caption = 'From:'
+    end
+    object lblDestinationTo: TLabel
+      Left = 328
+      Top = 143
+      Width = 16
+      Height = 15
+      Caption = 'To:'
+    end
+    object lblAvailable: TLabel
+      Left = 48
+      Top = 343
+      Width = 87
+      Height = 15
+      Caption = 'Available flights:'
+    end
+    object cmbDestinationFrom: TComboBox
+      Left = 48
+      Top = 164
+      Width = 145
+      Height = 23
+      TabOrder = 0
+    end
+    object cmbDestinationTo: TComboBox
+      Left = 328
+      Top = 164
+      Width = 145
+      Height = 23
+      TabOrder = 1
+    end
+    object dtpDate: TDateTimePicker
+      Left = 168
+      Top = 218
+      Width = 186
+      Height = 23
+      Date = 45886.000000000000000000
+      Time = 0.965987048613897100
+      TabOrder = 2
+    end
+    object btnDestinationDetailsConfirm: TButton
+      Left = 208
+      Top = 267
+      Width = 105
+      Height = 25
+      Caption = 'Confirm'
+      TabOrder = 3
+      OnClick = btnDestinationDetailsConfirmClick
+    end
+    object btnDestinationChooseFlight: TButton
+      Left = 224
+      Top = 816
+      Width = 97
+      Height = 25
+      Caption = 'Choose Flight'
+      TabOrder = 4
+      OnClick = btnDestinationChooseFlightClick
+    end
+    object sgAvailableFlights: TStringGrid
+      Left = 48
+      Top = 364
+      Width = 433
+      Height = 397
+      ColCount = 3
+      FixedCols = 0
+      RowCount = 2
+      TabOrder = 5
     end
   end
 end

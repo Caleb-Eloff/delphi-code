@@ -225,13 +225,15 @@ type
     procedure btnFlightDetailsFinalizeClick(Sender: TObject);
     function GenerateUnqiueFlightNumber(existingList: TStringList): string;
     procedure ClearFields;
+
   private
-    dBasePrice: Double;
-    dMultiplier: Double;
+    dBasePrice, dMultiplier: Double;
     bBookingConfirmed: Boolean;
-    gridFlightNum: String;
+
   public { Public declarations }
-    pricePerPixel: Real;
+    rPricePerPixel: Real;
+    sGridFlightNum: String;
+
   end;
 
 var
@@ -298,9 +300,9 @@ begin
   for iRow := 1 to sgAvailableFlights.RowCount - 1 do
   begin
 
-    gridFlightNum := sgAvailableFlights.Cells[1, iRow]; // Column 1 = FlightNo
+    sGridFlightNum := sgAvailableFlights.Cells[1, iRow]; // Column 1 = FlightNo
 
-    if SameText(gridFlightNum, sFlightNumInput) then
+    if SameText(sGridFlightNum, sFlightNumInput) then
     begin
 
       sAirline := sgAvailableFlights.Cells[0, iRow];
@@ -322,7 +324,7 @@ begin
       redFlightDetails.Lines.Add('        FLIGHT DETAILS        ');
       redFlightDetails.Lines.Add('==============================');
       redFlightDetails.Lines.Add('Airline:' + #9 + sAirline);
-      redFlightDetails.Lines.Add('Flight Number:' + #9 + gridFlightNum);
+      redFlightDetails.Lines.Add('Flight Number:' + #9 + sGridFlightNum);
       redFlightDetails.Lines.Add('Price:' + #9 + sPrice);
       redFlightDetails.Lines.Add('==============================');
 
@@ -390,7 +392,7 @@ begin
   // Calculate price
 
   dDistance := CalculateDistance(lblFrom, lblTo);
-  dTotalPrice := dDistance * pricePerPixel;
+  dTotalPrice := dDistance * rPricePerPixel;
   ShowMessage(Format('Estimated flight cost from %s to %s is R%.2f',
     [cmbDestinationFrom.Text, cmbDestinationTo.Text, dTotalPrice]));
 
@@ -465,7 +467,7 @@ begin
 
   // Validate seat count
   iSeatCount := spnSeats.Value;
-  if seatCount < 1 then
+  if iSeatCount < 1 then
   begin
     ShowMessage('Please select at least one seat.');
     Exit;
@@ -479,7 +481,7 @@ begin
   end;
 
   // Calculate final price
-  dFinalPrice := dBasePrice * dMultiplier * seatCount;
+  dFinalPrice := dBasePrice * dMultiplier * iSeatCount;
   sSelectedClass := rgClasses.Items[rgClasses.ItemIndex];
 
   // Configure tab stops for memo formatting
@@ -498,7 +500,7 @@ begin
   redFlightDetailsFinal.Lines.Add('From:' + #9 + cmbDestinationFrom.Text);
   redFlightDetailsFinal.Lines.Add('To:' + #9 + cmbDestinationTo.Text);
   redFlightDetailsFinal.Lines.Add('Class:' + #9 + sSelectedClass);
-  redFlightDetailsFinal.Lines.Add('Seats:' + #9 + IntToStr(seatCount));
+  redFlightDetailsFinal.Lines.Add('Seats:' + #9 + IntToStr(iSeatCount));
   redFlightDetailsFinal.Lines.Add('Total Price:' + #9 + 'R' +
     FormatFloat('0.00', dFinalPrice));
   redFlightDetailsFinal.Lines.Add('==============================');
@@ -567,10 +569,15 @@ begin
 
   with dmAccounts do
   begin
+
     qryFlights.Close;
-    qryFlights.SQL.Text := 'SELECT * FROM tblFlights WHERE UserID = :UserID';
-    qryFlights.Parameters.ParamByName('UserID').Value := sUserName;
+    qryFlights.SQL.Text :=
+      'SELECT * FROM tblFlights WHERE FlightID = :FlightID';
+    ShowMessage(sGridFlightNum);
+
+    qryFlights.Parameters.ParamByName('FlightID').Value := sGridFlightNum;
     qryFlights.Open;
+
     if not qryFlights.Eof then
     begin
 
@@ -591,12 +598,14 @@ begin
       // Add a new record for this user
       qryFlights.Close;
       qryFlights.SQL.Text :=
-        'INSERT INTO tblFlights (UserID, NOFlights, NOSeats, TotalPrice) ' +
-        'VALUES (:UserID, :NOFlights, :NOSeats, :TotalPrice)';
-      qryFlights.Parameters.ParamByName('UserID').Value := sUserName;
+        'INSERT INTO tblFlights (FlightID, NOFlights, NOSeats, UserID, TotalPrice) '
+        + 'VALUES (:FlightID, :UserID, :NOFlights, :NOSeats, :TotalPrice)';
+
+      qryFlights.Parameters.ParamByName('FlightID').Value := sGridFlightNum;
       qryFlights.Parameters.ParamByName('NOFlights').Value := 1;
       qryFlights.Parameters.ParamByName('NOSeats').Value := iNumberOfSeats;
       qryFlights.Parameters.ParamByName('TotalPrice').Value := dTotalCost;
+      qryFlights.Parameters.ParamByName('UserID').Value := sUserName;
       qryFlights.ExecSQL;
 
     end;
@@ -606,7 +615,7 @@ begin
 
   sFileName := sUserName + '_Booking.txt';
   sBookingInfo := '==============================' + sLineBreak +
-    'Booking for: ' + sUserName + sLineBreak + 'FlightID: ' + gridFlightNum +
+    'Booking for: ' + sUserName + sLineBreak + 'FlightID: ' + sGridFlightNum +
     sLineBreak + 'From: ' + cmbDestinationFrom.Text + sLineBreak + 'To: ' +
     cmbDestinationTo.Text + sLineBreak + 'Class: ' + sFlightClass + sLineBreak +
     'Seats: ' + IntToStr(iNumberOfSeats) + sLineBreak + 'Price per seat: R' +
@@ -682,7 +691,7 @@ var
 
 begin
 
-  pricePerPixel := 7.5;
+  rPricePerPixel := 7.5;
 
   // Remove title bar and borders
 
@@ -717,8 +726,10 @@ begin
   AssignFile(CountriesFile, 'Countries.txt');
   if FileExists('Countries.txt') then
   begin
+
     cmbDestinationFrom.Items.LoadFromFile('Countries.txt');
     cmbDestinationTo.Items.LoadFromFile('Countries.txt');
+
   end
   else
     ShowMessage('Countries.txt not found.');
@@ -750,14 +761,17 @@ end;
 
 function GenerateUniqueFlightCode(existing: TStringList): string;
 var
-  code: string;
+  sCode: string;
+
 begin
+
   repeat
-    code := 'FL' + Chr(65 + Random(26)) + Chr(65 + Random(26)) +
+    sCode := 'FL' + Chr(65 + Random(26)) + Chr(65 + Random(26)) +
       IntToStr(1000 + Random(9000));
-  until existing.IndexOf(code) = -1;
-  existing.Add(code);
-  Result := code;
+  until existing.IndexOf(sCode) = -1;
+  existing.Add(sCode);
+  Result := sCode;
+
 end;
 
 procedure TfrmBookFlights.GenerateFlightOptions(basePrice: Double);
@@ -772,56 +786,56 @@ var
   TempFile: TextFile;
   i: Integer;
   dVariedPrice: Double;
-  tempFileName, line, flightCode: string;
-  usedCodes: TStringList;
+  sTempFileName, sLine, sFlightCode: string;
+  TSUsedCodes: TStringList;
 
 begin
 
   Randomize;
-  tempFileName := 'tempFlights.txt';
-  AssignFile(TempFile, tempFileName);
+  sTempFileName := 'tempFlights.txt';
+  AssignFile(TempFile, sTempFileName);
   Rewrite(TempFile);
-  usedCodes := TStringList.Create;
+  TSUsedCodes := TStringList.Create;
 
   try
 
     for i := 0 to High(AirplaneNames) do
     begin
 
-      flightCode := GenerateUniqueFlightCode(usedCodes);
+      sFlightCode := GenerateUniqueFlightCode(TSUsedCodes);
       dVariedPrice := basePrice * (1 + ((Random(31) - 15) / 100)); // ±15%
-      line := Format('%s %s%%%.2f', [AirplaneNames[i], flightCode,
+      sLine := Format('%s %s%%%.2f', [AirplaneNames[i], sFlightCode,
         dVariedPrice]);
-      WriteLn(TempFile, line);
+      WriteLn(TempFile, sLine);
 
     end;
 
   finally
-    usedCodes.Free;
+
+    TSUsedCodes.Free;
     CloseFile(TempFile);
 
   end;
 end;
 
 function TfrmBookFlights.GenerateUnqiueFlightNumber(existingList
-  : TStringList): string;
+  : TStringList): String;
 var
-  airlineCode: string;
-  flightNum: string;
+  sAirlineCode, sFlightNum: String;
 
 begin
 
   repeat // Random 3-letter airline code
 
-    airlineCode := Chr(65 + Random(26)) + Chr(65 + Random(26)) +
+    sAirlineCode := Chr(65 + Random(26)) + Chr(65 + Random(26)) +
       Chr(65 + Random(26));
     // Random 4-digit number
-    flightNum := Format('%s%d', [airlineCode, 1000 + Random(9000)]);
+    sFlightNum := Format('%s%d', [sAirlineCode, 1000 + Random(9000)]);
 
-  until existingList.IndexOf(flightNum) = -1;
+  until existingList.IndexOf(sFlightNum) = -1;
 
   // Ensure uniqueness
-  Result := flightNum;
+  Result := sFlightNum;
 
 end;
 
@@ -829,19 +843,21 @@ function TfrmBookFlights.GetLabelByDestination(const destination
   : string): TLabel;
 var
   i: Integer;
-  ctrlName: string;
+  sLblName: string;
 
 begin
 
-  ctrlName := 'lbl' + StringReplace(destination, ' ', '', [rfReplaceAll]);
+  sLblName := 'lbl' + StringReplace(destination, ' ', '', [rfReplaceAll]);
   for i := 0 to ComponentCount - 1 do
   begin
 
     if (Components[i] is TLabel) and
-      (CompareText(Components[i].Name, ctrlName) = 0) then
+      (CompareText(Components[i].Name, sLblName) = 0) then
     begin
+
       Result := TLabel(Components[i]);
       Exit;
+
     end;
 
   end;
@@ -1433,6 +1449,7 @@ procedure TfrmBookFlights.rgClassesClick(Sender: TObject);
 begin
 
   case rgClasses.ItemIndex of
+
     0:
       dMultiplier := 1.0;
     1:
@@ -1440,7 +1457,9 @@ begin
     2:
       dMultiplier := 1.5;
   else
+
     dMultiplier := 1.0;
+
   end;
 
 end;
@@ -1458,15 +1477,19 @@ begin
 
   if sDecision = 'from' then
   begin
+
     iIndex := cmbDestinationFrom.Items.IndexOf(sInput);
     if iIndex <> -1 then
       cmbDestinationFrom.ItemIndex := iIndex;
+
   end
   else if sDecision = 'to' then
   begin
+
     iIndex := cmbDestinationTo.Items.IndexOf(sInput);
     if iIndex <> -1 then
       cmbDestinationTo.ItemIndex := iIndex;
+
   end;
 
 end;

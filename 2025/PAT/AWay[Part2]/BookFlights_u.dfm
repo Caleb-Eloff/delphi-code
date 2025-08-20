@@ -2,8 +2,8 @@ object frmBookFlights: TfrmBookFlights
   Left = 0
   Top = 0
   Caption = 'A-Way Airlines'
-  ClientHeight = 1061
-  ClientWidth = 1919
+  ClientHeight = 881
+  ClientWidth = 1604
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,14 +17,15 @@ object frmBookFlights: TfrmBookFlights
   object imgBookFlightsBackground: TImage
     Left = 0
     Top = 0
-    Width = 1919
-    Height = 1061
+    Width = 1604
+    Height = 881
     Align = alClient
     Anchors = []
     Stretch = True
     ExplicitLeft = 8
     ExplicitTop = -48
     ExplicitWidth = 1920
+    ExplicitHeight = 1061
   end
   object pnlSouthAmerica: TPanel
     Left = 33
@@ -319,7 +320,7 @@ object frmBookFlights: TfrmBookFlights
     object lblTanzania: TLabel
       Left = 887
       Top = 472
-      Width = 46
+      Width = 45
       Height = 15
       Caption = 'Tanzania'
       OnClick = lblTanzaniaClick
@@ -530,7 +531,7 @@ object frmBookFlights: TfrmBookFlights
     object lblTurkey: TLabel
       Left = 927
       Top = 665
-      Width = 36
+      Width = 35
       Height = 15
       Caption = 'Turkey'
       OnClick = lblTurkeyClick
@@ -643,7 +644,7 @@ object frmBookFlights: TfrmBookFlights
     object lblThailand: TLabel
       Left = 750
       Top = 548
-      Width = 46
+      Width = 45
       Height = 15
       Caption = 'Thailand'
       OnClick = lblThailandClick
@@ -737,7 +738,7 @@ object frmBookFlights: TfrmBookFlights
     object lblMexico: TLabel
       Left = 328
       Top = 664
-      Width = 38
+      Width = 39
       Height = 15
       Caption = 'Mexico'
       OnClick = lblMexicoClick
@@ -950,7 +951,7 @@ object frmBookFlights: TfrmBookFlights
     object lblDestinationTo: TLabel
       Left = 328
       Top = 143
-      Width = 16
+      Width = 15
       Height = 15
       Caption = 'To:'
     end
