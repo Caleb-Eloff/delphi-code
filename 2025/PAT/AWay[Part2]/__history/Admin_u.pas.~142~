@@ -1,0 +1,290 @@
+﻿unit Admin_u;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics, Math,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids,
+  Vcl.ExtCtrls, Vcl.StdCtrls, dmAccounts_u, Vcl.ComCtrls;
+
+type
+  TfrmAdmin = class(TForm)
+    imgAdminBackground: TImage;
+    dbgAccounts: TDBGrid;
+    dbgFlights: TDBGrid;
+    btnAdminLogOut: TButton;
+    lblPricing: TLabel;
+    btnUpdatePrice: TButton;
+    redPricing: TRichEdit;
+    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure AutoSizeGridColumns(Grid: TDBGrid);
+    procedure btnAdminLogOutClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btnAccountRemoveClick(Sender: TObject);
+    procedure btnAccountUpdateClick(Sender: TObject);
+    procedure btnUpdatePriceClick(Sender: TObject);
+    procedure btnAccountCreateClick(Sender: TObject);
+    procedure btnDetailsRemoveClick(Sender: TObject);
+    procedure dbgAccountsCellClick(Column: TColumn);
+  private
+    { Private declarations }
+
+  public
+    { Public declarations }
+  end;
+
+var
+  frmAdmin: TfrmAdmin;
+
+implementation
+
+{$R *.dfm}
+
+uses LoginRegister_u, BookFlights_u, AccountManager_u;
+
+procedure TfrmAdmin.AutoSizeGridColumns(Grid: TDBGrid);
+var
+  i, iVisibleCols, iColWidth: Integer;
+
+begin
+
+  iVisibleCols := 0;
+
+  // Count how many columns are visible
+  for i := 0 to Grid.Columns.Count - 1 do
+    if Grid.Columns[i].Visible then
+      Inc(iVisibleCols);
+
+  // Exit if no visible columns
+  if iVisibleCols = 0 then
+    Exit;
+
+  // Calculate equal width for each visible column
+  iColWidth := Grid.ClientWidth div iVisibleCols;
+
+  // Apply calculated width to each visible column
+  for i := 0 to Grid.Columns.Count - 1 do
+    if Grid.Columns[i].Visible then
+      Grid.Columns[i].Width := iColWidth;
+
+end;
+
+procedure TfrmAdmin.btnAccountCreateClick(Sender: TObject);
+begin
+
+  // Call external class to create account
+  TAccountManager.CreateAccount;
+
+  // Resize grid columns after update
+  AutoSizeGridColumns(dbgAccounts);
+  AutoSizeGridColumns(dbgFlights);
+
+end;
+
+procedure TfrmAdmin.btnAdminLogOutClick(Sender: TObject);
+begin
+
+  // Hide admin form and show login/register form
+  frmAdmin.Hide;
+  frmLoginRegister.Show;
+
+end;
+
+procedure TfrmAdmin.btnDetailsRemoveClick(Sender: TObject);
+var
+  sSelectedUserID: string;
+
+begin
+
+  // Ensure there is a user to remove
+  if dmAccounts.tblFlights.IsEmpty then
+  begin
+
+    ShowMessage('No users in the database.');
+    Exit;
+
+  end;
+
+  // Get the UserID of the selected user
+  sSelectedUserID := dmAccounts.tblAccounts.FieldByName('FlightID').AsString;
+
+  // Confirm deletion
+  if MessageDlg('Are you sure you want to the following flight?',
+    mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
+    Exit;
+
+  // Delete the user account
+  dmAccounts.tblFlights.Delete;
+
+  ShowMessage('Flights successfully removed.');
+
+  // Refresh the grid to reflect removal
+  TAccountManager.RefreshAccountGrid;
+
+end;
+
+procedure TfrmAdmin.btnAccountRemoveClick(Sender: TObject);
+begin
+
+  // Call external class to remove account
+  TAccountManager.RemoveAccount;
+
+  // Resize grid columns after update
+  AutoSizeGridColumns(dbgAccounts);
+  AutoSizeGridColumns(dbgFlights);
+
+end;
+
+procedure TfrmAdmin.btnAccountUpdateClick(Sender: TObject);
+begin
+
+  // Call external class to update account
+  TAccountManager.UpdateAccount;
+
+  // Resize grid columns after update
+  AutoSizeGridColumns(dbgAccounts);
+  AutoSizeGridColumns(dbgFlights);
+
+end;
+
+procedure TfrmAdmin.btnUpdatePriceClick(Sender: TObject);
+begin
+
+  // Prompt admin to enter new price per pixel
+  frmBookFlights.rPricePerPixel :=
+    StrToFloat(InputBox('Pricing', 'Price per pixel distance:', ''));
+
+  // Display updated pricing in RichEdit
+  redPricing.Clear;
+
+  // Set tab formatting for alignment
+  with redPricing.Paragraph do
+  begin
+
+    TabCount := 1;
+    Tab[0] := 50; // Adjust spacing as needed
+
+  end;
+
+  redPricing.Lines.Add('─────────────────────────────────────────────────');
+  redPricing.Lines.Add('');
+
+  // Pricing detail
+  redPricing.SelAttributes.Style := [fsBold];
+  redPricing.Lines.Add('Current Rate');
+  redPricing.SelAttributes.Style := [];
+
+  redPricing.Lines.Add('');
+  redPricing.Lines.Add('─────────────────────────────────────────────────');
+
+  redPricing.Lines.Add('');
+  redPricing.Lines.Add('Price per pixel:' + #9 + 'R' + FormatFloat('0.00',
+    frmBookFlights.rPricePerPixel));
+  redPricing.Lines.Add('');
+
+  redPricing.Lines.Add('─────────────────────────────────────────────────');
+  redPricing.Lines.Add('');
+
+end;
+
+procedure TfrmAdmin.dbgAccountsCellClick(Column: TColumn);
+var
+  sUserID: string;
+
+begin
+
+  // Get selected UserID from the accounts grid
+  sUserID := dmAccounts.tblAccounts.FieldByName('UserID').AsString;
+
+  dmAccounts.tblFlights.Sort := 'UserID DESC WHERE UserID = ' + sUserID;
+
+  // Resize columns for visual clarity
+  TAccountManager.RefreshAccountGrid;
+  AutoSizeGridColumns(dbgFlights);
+
+end;
+
+procedure TfrmAdmin.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+
+  // Terminate application when admin form closes
+  Application.Terminate;
+
+end;
+
+procedure TfrmAdmin.FormCreate(Sender: TObject);
+begin
+
+  // Link grid to account data source
+  dbgAccounts.DataSource := dmAccounts.dscAccounts;
+  dbgFlights.DataSource := dmAccounts.dscFlights;
+
+  // Remove window borders and title bar
+  BorderStyle := bsNone;
+
+  // Maximize form to full screen
+  SetBounds(0, 0, Screen.Width, Screen.Height);
+  WindowState := wsMaximized;
+
+  // Load background image
+  imgAdminBackground.Picture.LoadFromFile('Background.png');
+
+  // Resize grid columns
+  AutoSizeGridColumns(dbgAccounts);
+  AutoSizeGridColumns(dbgFlights);
+
+end;
+
+procedure TfrmAdmin.FormShow(Sender: TObject);
+begin
+
+  // Load account data into grid
+  with dmAccounts do
+  begin
+
+    qryAccounts.Close;
+    qryAccounts.SQL.Text := 'SELECT * FROM tblAccounts';
+    qryAccounts.Open;
+
+    qryFlights.Close;
+    qryFlights.SQL.Text := 'SELECT * FROM tblFlights';
+    qryFlights.Open;
+
+  end;
+
+  // Display current pricing in memo with formatting
+  redPricing.Clear;
+
+  // Set tab formatting for alignment
+  with redPricing.Paragraph do
+  begin
+
+    TabCount := 1;
+    Tab[0] := 50; // Adjust spacing as needed
+
+  end;
+
+  redPricing.Lines.Add('─────────────────────────────────────────────────');
+  redPricing.Lines.Add('');
+
+  // Pricing detail
+  redPricing.SelAttributes.Style := [fsBold];
+  redPricing.Lines.Add('Current Rate');
+  redPricing.SelAttributes.Style := [];
+
+  redPricing.Lines.Add('');
+  redPricing.Lines.Add('─────────────────────────────────────────────────');
+
+  redPricing.Lines.Add('');
+  redPricing.Lines.Add('Price per pixel:' + #9 + 'R' + FormatFloat('0.00',
+    frmBookFlights.rPricePerPixel));
+  redPricing.Lines.Add('');
+
+  redPricing.Lines.Add('─────────────────────────────────────────────────');
+  redPricing.Lines.Add('');
+
+end;
+
+end.

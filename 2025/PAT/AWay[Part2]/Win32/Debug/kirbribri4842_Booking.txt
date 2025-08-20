@@ -1,0 +1,52 @@
+==============================
+Booking for: kirbribri4842
+Booking Date: 8/20/2025
+==============================
+
+
+FlightID: FLNQ8056
+From: Canada
+To: Ecuador
+Class: First Class
+Seats: 5
+Price per seat: R2266.53
+Departure Date: 9/24/2025
+==============================
+Booking for: kirbribri4842
+FlightID: FLBI4427
+From: Kazakhstan
+To: Pakistan
+Class: Business
+Seats: 13
+Price per seat: R1965.48
+Departure Date: 9/24/2025
+Booking Date: 8/20/2025
+==============================
+
+
+==============================
+Booking for: kirbribri4842
+FlightID: FLDP5816
+From: Bulgaria
+To: Turkey
+Class: First Class
+Seats: 56
+Price per seat: R1150.15
+Departure Date: 9/24/2025
+Booking Date: 8/20/2025
+==============================
+
+
+==============================
+Booking for: kirbribri4842
+FlightID: FLVT6999
+From: United States
+To: Lithuania
+Class: Business
+Seats: 6
+Price per seat: R3350.14
+Departure Date: 9/24/2025
+Booking Date: 8/20/2025
+==============================
+
+

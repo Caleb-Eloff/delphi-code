@@ -2,14 +2,15 @@ object frmAdmin: TfrmAdmin
   Left = 0
   Top = 0
   Caption = 'A-Way Airlines'
-  ClientHeight = 881
-  ClientWidth = 1604
+  ClientHeight = 977
+  ClientWidth = 1920
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  Position = poDesigned
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
@@ -17,8 +18,8 @@ object frmAdmin: TfrmAdmin
   object imgAdminBackground: TImage
     Left = 0
     Top = 0
-    Width = 1604
-    Height = 881
+    Width = 1920
+    Height = 977
     Align = alClient
     Stretch = True
     ExplicitLeft = 560
@@ -26,12 +27,12 @@ object frmAdmin: TfrmAdmin
     ExplicitWidth = 105
     ExplicitHeight = 105
   end
-  object lblAdminPanel: TLabel
-    Left = 800
-    Top = 64
-    Width = 408
+  object lblAccounts: TLabel
+    Left = 24
+    Top = 88
+    Width = 556
     Height = 48
-    Caption = 'Admin Panel'
+    Caption = 'Account Manager'
     Font.Charset = OEM_CHARSET
     Font.Color = clWhite
     Font.Height = -48
@@ -40,8 +41,8 @@ object frmAdmin: TfrmAdmin
     ParentFont = False
   end
   object lblPricing: TLabel
-    Left = 1592
-    Top = 152
+    Left = 1616
+    Top = 226
     Width = 260
     Height = 48
     Caption = 'Pricing'
@@ -52,17 +53,32 @@ object frmAdmin: TfrmAdmin
     Font.Style = [fsBold, fsUnderline]
     ParentFont = False
   end
-  object dbgProfiles: TDBGrid
-    Left = 552
+  object lblFlights: TLabel
+    Left = 760
+    Top = 88
+    Width = 556
+    Height = 48
+    Caption = 'Flights Manager'
+    Font.Charset = OEM_CHARSET
+    Font.Color = clWhite
+    Font.Height = -48
+    Font.Name = 'Terminal'
+    Font.Style = [fsBold, fsUnderline]
+    ParentFont = False
+  end
+  object dbgAccounts: TDBGrid
+    Left = 24
     Top = 152
-    Width = 969
+    Width = 713
     Height = 601
+    ReadOnly = True
     TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -12
     TitleFont.Name = 'Segoe UI'
     TitleFont.Style = []
+    OnCellClick = dbgAccountsCellClick
   end
   object btnAdminLogOut: TButton
     Left = 24
@@ -73,36 +89,36 @@ object frmAdmin: TfrmAdmin
     TabOrder = 1
     OnClick = btnAdminLogOutClick
   end
-  object btnCreate: TButton
-    Left = 584
+  object btnAccountCreate: TButton
+    Left = 96
     Top = 784
     Width = 75
     Height = 25
     Caption = 'Create'
     TabOrder = 2
-    OnClick = btnCreateClick
+    OnClick = btnAccountCreateClick
   end
-  object btnUpdate: TButton
-    Left = 824
+  object btnAccountUpdate: TButton
+    Left = 384
     Top = 784
     Width = 75
     Height = 25
     Caption = 'Update'
     TabOrder = 3
-    OnClick = btnUpdateClick
+    OnClick = btnAccountUpdateClick
   end
-  object btnRemove: TButton
-    Left = 704
+  object btnAccountRemove: TButton
+    Left = 240
     Top = 784
     Width = 75
     Height = 25
     Caption = 'Remove'
     TabOrder = 4
-    OnClick = btnRemoveClick
+    OnClick = btnAccountRemoveClick
   end
   object btnUpdatePrice: TButton
-    Left = 1672
-    Top = 551
+    Left = 1688
+    Top = 631
     Width = 99
     Height = 25
     Caption = 'Update Price'
@@ -110,8 +126,8 @@ object frmAdmin: TfrmAdmin
     OnClick = btnUpdatePriceClick
   end
   object redPricing: TRichEdit
-    Left = 1568
-    Top = 216
+    Left = 1592
+    Top = 288
     Width = 305
     Height = 321
     Font.Charset = ANSI_CHARSET
@@ -122,5 +138,35 @@ object frmAdmin: TfrmAdmin
     ParentFont = False
     ReadOnly = True
     TabOrder = 6
+  end
+  object dbgFlights: TDBGrid
+    Left = 760
+    Top = 152
+    Width = 809
+    Height = 601
+    TabOrder = 7
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -12
+    TitleFont.Name = 'Segoe UI'
+    TitleFont.Style = []
+  end
+  object btnDetailsRemove: TButton
+    Left = 824
+    Top = 784
+    Width = 75
+    Height = 25
+    Caption = 'Remove'
+    TabOrder = 8
+    OnClick = btnDetailsRemoveClick
+  end
+  object btnAccountsShowAll: TButton
+    Left = 528
+    Top = 784
+    Width = 75
+    Height = 25
+    Caption = 'Show All'
+    TabOrder = 9
+    OnClick = btnAccountsShowAllClick
   end
 end

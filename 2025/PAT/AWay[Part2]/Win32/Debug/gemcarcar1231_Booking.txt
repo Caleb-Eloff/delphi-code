@@ -1,0 +1,65 @@
+==============================
+Booking for: gemcarcar1231
+FlightID: FLGS1389
+From: Canada
+To: Mexico
+Class: First Class
+Seats: 56
+Price per seat: R3194.95
+Departure Date: 10/8/2025
+Booking Date: 8/20/2025
+==============================
+
+
+==============================
+Booking for: gemcarcar1231
+FlightID: FLTM4843
+From: Russia
+To: Singapore
+Class: Business
+Seats: 19
+Price per seat: R3981.39
+Departure Date: 10/8/2025
+Booking Date: 8/20/2025
+==============================
+
+
+==============================
+Booking for: gemcarcar1231
+FlightID: FLRC5776
+From: Japan
+To: Iran
+Class: First Class
+Seats: 81
+Price per seat: R4803.99
+Departure Date: 10/8/2025
+Booking Date: 8/20/2025
+==============================
+
+
+==============================
+Booking for: gemcarcar1231
+FlightID: FLGY1302
+From: Canada
+To: Germany
+Class: Business
+Seats: 32
+Price per seat: R2287.53
+Departure Date: 10/8/2025
+Booking Date: 8/20/2025
+==============================
+
+
+==============================
+Booking for: gemcarcar1231
+FlightID: FLZN1526
+From: South Africa
+To: Guinea
+Class: First Class
+Seats: 91
+Price per seat: R5112.01
+Departure Date: 2/19/2026
+Booking Date: 8/20/2025
+==============================
+
+

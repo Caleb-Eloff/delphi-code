@@ -1,0 +1,19 @@
+==============================
+Booking for: kirbribri1911
+FlightID: FLVL6007
+From: Lithuania
+To: Ecuador
+Class: First Class
+Seats: 2
+Price per seat: R3633.51
+Departure Date: 8/29/2025
+Booking Date: 8/20/2025
+==============================
+
+
+==============================
+Booking for: kirbribri1911
+Booking Date: 8/20/2025
+==============================
+
+

@@ -94,6 +94,7 @@ class procedure TProfileManager.EditProfile(UserID: string;
   RichEdit: TRichEdit);
 var
   sNewFirstName, sNewLastName, sNewEmail, sNewPassword: string;
+  i: Integer;
 
 begin
 
@@ -103,12 +104,56 @@ begin
   sNewEmail := InputBox('Edit Email', 'Enter new email address:', '');
   sNewPassword := InputBox('Edit Password', 'Enter new password:', '');
 
-  // Validate email format — must contain '@' and end with '.com'
+  // Validate first name
+  if Trim(sNewFirstName) = '' then
+  begin
+
+    ShowMessage('First name cannot be empty or just spaces.');
+    Exit;
+
+  end;
+
+  for i := 1 to Length(sNewFirstName) do
+    if not(sNewFirstName[i] in ['A' .. 'Z', 'a' .. 'z']) then
+    begin
+
+      ShowMessage('First name must contain only letters.');
+      Exit;
+
+    end;
+
+  // Validate last name
+  if Trim(sNewLastName) = '' then
+  begin
+
+    ShowMessage('Last name cannot be empty or just spaces.');
+    Exit;
+
+  end;
+
+  for i := 1 to Length(sNewLastName) do
+    if not(sNewLastName[i] in ['A' .. 'Z', 'a' .. 'z']) then
+    begin
+
+      ShowMessage('Last name must contain only letters.');
+      Exit;
+
+    end;
+
+  // Validate email format
   if (Pos('@', sNewEmail) = 0) or (Pos('.com', LowerCase(sNewEmail)) = 0) then
   begin
 
-    ShowMessage
-      ('Invalid email format. Email must contain "@" and end with ".com".');
+    ShowMessage('Invalid email format. Must contain "@" and end with ".com".');
+    Exit;
+
+  end;
+
+  // Validate password
+  if Trim(sNewPassword) = '' then
+  begin
+
+    ShowMessage('Password cannot be empty or just spaces.');
     Exit;
 
   end;

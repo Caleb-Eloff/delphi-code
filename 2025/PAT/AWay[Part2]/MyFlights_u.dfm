@@ -2,8 +2,8 @@ object frmMyFlights: TfrmMyFlights
   Left = 0
   Top = 0
   Caption = 'A-Way Airlines'
-  ClientHeight = 881
-  ClientWidth = 1604
+  ClientHeight = 929
+  ClientWidth = 1676
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,8 +17,8 @@ object frmMyFlights: TfrmMyFlights
   object imgMyFlightsBackground: TImage
     Left = 0
     Top = 0
-    Width = 1604
-    Height = 881
+    Width = 1676
+    Height = 929
     Align = alClient
     Stretch = True
     ExplicitLeft = 344
@@ -58,6 +58,7 @@ object frmMyFlights: TfrmMyFlights
     Width = 873
     Height = 585
     TabOrder = 0
+    OnClick = sgBookedFlightsClick
   end
   object btnRemove: TButton
     Left = 352
@@ -86,21 +87,36 @@ object frmMyFlights: TfrmMyFlights
     TabOrder = 3
     OnClick = btnSearchClick
   end
-  object memFlightDetails: TMemo
-    Left = 1128
-    Top = 232
-    Width = 521
-    Height = 585
-    ReadOnly = True
-    TabOrder = 4
-  end
   object btnMyFlightsBack: TButton
     Left = 40
     Top = 992
     Width = 75
     Height = 25
     Caption = 'Back'
-    TabOrder = 5
+    TabOrder = 4
     OnClick = btnMyFlightsBackClick
+  end
+  object btnTotal: TButton
+    Left = 1352
+    Top = 840
+    Width = 75
+    Height = 25
+    Caption = 'Total'
+    TabOrder = 5
+    OnClick = btnTotalClick
+  end
+  object redFlightDetails: TRichEdit
+    Left = 1128
+    Top = 232
+    Width = 521
+    Height = 585
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    ReadOnly = True
+    TabOrder = 6
   end
 end

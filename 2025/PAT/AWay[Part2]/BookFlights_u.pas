@@ -573,11 +573,10 @@ begin
     qryFlights.Close;
     qryFlights.SQL.Text :=
       'SELECT * FROM tblFlights WHERE FlightID = :FlightID';
-    ShowMessage(sGridFlightNum);
     qryFlights.Parameters.ParamByName('FlightID').Value := sGridFlightNum;
     qryFlights.Open;
 
-    if not qryFlights.Eof then
+   { if not qryFlights.Eof then
     begin
 
       // Add to the user's totals
@@ -592,22 +591,22 @@ begin
 
     end
     else
-    begin
+    begin }
 
       // Add a new record for this user
       qryFlights.Close;
       qryFlights.SQL.Text :=
-        'INSERT INTO tblFlights (FlightID, NOFlights, NOSeats, UserID, TotalPrice) '
-        + 'VALUES (:FlightID, :UserID, :NOFlights, :NOSeats, :TotalPrice)';
+        'INSERT INTO tblFlights (FlightID, NOSeats, DepartureDate, TotalPrice, UserID) '
+        + 'VALUES (:FlightID, :NOSeats, :DepartureDate, :TotalPrice, :UserID)';
 
       qryFlights.Parameters.ParamByName('FlightID').Value := sGridFlightNum;
-      qryFlights.Parameters.ParamByName('NOFlights').Value := 1;
       qryFlights.Parameters.ParamByName('NOSeats').Value := iNumberOfSeats;
+      qryFlights.Parameters.ParamByName('DepartureDate').Value := dtFlightDate;
       qryFlights.Parameters.ParamByName('TotalPrice').Value := dTotalCost;
       qryFlights.Parameters.ParamByName('UserID').Value := sUserName;
       qryFlights.ExecSQL;
 
-    end;
+  //  end;
   end;
 
   // Prepare the booking info

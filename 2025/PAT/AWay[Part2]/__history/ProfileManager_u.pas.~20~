@@ -1,0 +1,168 @@
+﻿unit ProfileManager_u;
+
+interface
+
+uses
+  Vcl.Dialogs, System.SysUtils, System.Classes, Vcl.Controls, Vcl.StdCtrls,
+  Vcl.ComCtrls,
+  dmAccounts_u;
+
+type
+  TProfileManager = class
+  public
+    class procedure LoadProfile(UserID: string; RichEdit: TRichEdit);
+    class procedure EditProfile(UserID: string; RichEdit: TRichEdit);
+  end;
+
+implementation
+
+{ TProfileManager }
+
+class procedure TProfileManager.LoadProfile(UserID: string;
+  RichEdit: TRichEdit);
+var
+  sFirstName, sLastName, sEmail, sPassword: string;
+
+begin
+
+  with dmAccounts do
+  begin
+
+    qryAccounts.Close;
+    qryAccounts.SQL.Text :=
+      'SELECT Firstname, Lastname, Email, Password FROM tblAccounts WHERE UserID = :UserID';
+    qryAccounts.Parameters.ParamByName('UserID').Value := UserID;
+    qryAccounts.Open;
+
+    RichEdit.Clear;
+
+    if not qryAccounts.Eof then
+    begin
+
+      sFirstName := qryAccounts.FieldByName('Firstname').AsString;
+      sLastName := qryAccounts.FieldByName('Lastname').AsString;
+      sEmail := qryAccounts.FieldByName('Email').AsString;
+      sPassword := qryAccounts.FieldByName('Password').AsString;
+
+      // Set tab spacing for alignment
+      with RichEdit.Paragraph do
+      begin
+        TabCount := 1;
+        Tab[0] := 200;
+      end;
+
+      RichEdit.Lines.Add('');
+
+      RichEdit.SelAttributes.Size := 13;
+      RichEdit.Lines.Add('USER PROFILE REPORT');
+      RichEdit.SelAttributes.Size := 10;
+
+      RichEdit.Lines.Add('');
+      RichEdit.Lines.Add
+        ('─────────────────────────────────────────────────────────────────────────────');
+      RichEdit.Lines.Add('');
+
+      RichEdit.Lines.Add('Account Information');
+      RichEdit.Lines.Add('');
+
+      RichEdit.Lines.Add
+        ('──────────────────────────────────────────────────────────────────────────────────────────');
+
+      RichEdit.Lines.Add('');
+      RichEdit.Lines.Add('First Name:' + #9 + sFirstName);
+      RichEdit.Lines.Add('Last Name:' + #9 + sLastName);
+      RichEdit.Lines.Add('Email:' + #9 + sEmail);
+      RichEdit.Lines.Add('Password:' + #9 + sPassword);
+
+      RichEdit.Lines.Add('');
+      RichEdit.Lines.Add
+        ('──────────────────────────────────────────────────────────────────────────────────────────');
+      RichEdit.Lines.Add('');
+
+    end
+    else
+    begin
+
+      RichEdit.SelAttributes.Size := 12;
+      RichEdit.Text := 'No account details found for this user.';
+
+    end;
+  end;
+end;
+
+class procedure TProfileManager.EditProfile(UserID: string;
+  RichEdit: TRichEdit);
+var
+  sNewFirstName, sNewLastName, sNewEmail, sNewPassword: string;
+  i: Integer;
+begin
+  // Ask user for new profile details
+  sNewFirstName := InputBox('Edit First Name', 'Enter new first name:', '');
+  sNewLastName := InputBox('Edit Last Name', 'Enter new last name:', '');
+  sNewEmail := InputBox('Edit Email', 'Enter new email address:', '');
+  sNewPassword := InputBox('Edit Password', 'Enter new password:', '');
+
+  // Validate first name
+  if Trim(sNewFirstName) = '' then
+  begin
+    ShowMessage('First name cannot be empty or just spaces.');
+    Exit;
+  end;
+
+  for i := 1 to Length(sNewFirstName) do
+    if not(sNewFirstName[i] in ['A' .. 'Z', 'a' .. 'z']) then
+    begin
+      ShowMessage('First name must contain only letters.');
+      Exit;
+    end;
+
+  // Validate last name
+  if Trim(sNewLastName) = '' then
+  begin
+    ShowMessage('Last name cannot be empty or just spaces.');
+    Exit;
+  end;
+
+  for i := 1 to Length(sNewLastName) do
+    if not(sNewLastName[i] in ['A' .. 'Z', 'a' .. 'z']) then
+    begin
+      ShowMessage('Last name must contain only letters.');
+      Exit;
+    end;
+
+  // Validate email format
+  if (Pos('@', sNewEmail) = 0) or (Pos('.com', LowerCase(sNewEmail)) = 0) then
+  begin
+    ShowMessage('Invalid email format. Must contain "@" and end with ".com".');
+    Exit;
+  end;
+
+  // Validate password
+  if Trim(sNewPassword) = '' then
+  begin
+    ShowMessage('Password cannot be empty or just spaces.');
+    Exit;
+  end;
+
+  // Update profile in database using parameterized query
+  with dmAccounts do
+  begin
+    qryAccounts.Close;
+    qryAccounts.SQL.Text := 'UPDATE tblAccounts SET ' +
+      '[Firstname] = :fn, [Lastname] = :ln, [Email] = :em, [Password] = :pw ' +
+      'WHERE [UserID] = :uid';
+
+    qryAccounts.Parameters.ParamByName('fn').Value := sNewFirstName;
+    qryAccounts.Parameters.ParamByName('ln').Value := sNewLastName;
+    qryAccounts.Parameters.ParamByName('em').Value := sNewEmail;
+    qryAccounts.Parameters.ParamByName('pw').Value := sNewPassword;
+    qryAccounts.Parameters.ParamByName('uid').Value := UserID;
+
+    qryAccounts.ExecSQL;
+  end;
+
+  // Reload updated profile into memo
+  LoadProfile(UserID, RichEdit);
+end;
+
+end.

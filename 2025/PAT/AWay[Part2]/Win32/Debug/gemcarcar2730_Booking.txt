@@ -1,0 +1,45 @@
+==============================
+Booking for: gemcarcar2730
+Booking Date: 8/20/2025
+==============================
+
+
+==============================
+Booking for: gemcarcar2730
+Booking Date: 8/20/2025
+==============================
+
+
+==============================
+Booking for: gemcarcar2730
+Booking Date: 8/20/2025
+==============================
+
+
+FlightID: FLOF8697
+From: Finland
+To: France
+Class: First Class
+Seats: 3
+Price per seat: R3592.02
+Departure Date: 8/28/2025
+==============================
+Booking for: gemcarcar2730
+FlightID: FLCB8117
+From: Finland
+To: France
+Class: First Class
+Seats: 3
+Price per seat: R3189.18
+Departure Date: 8/28/2025
+Booking Date: 8/20/2025
+==============================
+
+
+FlightID: FLMW2917
+From: Canada
+To: Russia
+Class: First Class
+Seats: 3
+Price per seat: R3780.52
+Departure Date: 8/29/2025

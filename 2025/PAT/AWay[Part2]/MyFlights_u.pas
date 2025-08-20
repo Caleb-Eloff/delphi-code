@@ -1,4 +1,4 @@
-unit MyFlights_u;
+﻿unit MyFlights_u;
 
 interface
 
@@ -7,7 +7,7 @@ uses
   System.SysUtils, System.Variants, System.Classes, System.Math,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls,
   Vcl.StdCtrls, Vcl.Grids,
-  dmAccounts_u;
+  dmAccounts_u, Vcl.ComCtrls;
 
 type
   TfrmMyFlights = class(TForm)
@@ -17,9 +17,10 @@ type
     btnRemove: TButton;
     btnUndo: TButton;
     btnSearch: TButton;
-    memFlightDetails: TMemo;
     lblMyFlightDetails: TLabel;
     btnMyFlightsBack: TButton;
+    btnTotal: TButton;
+    redFlightDetails: TRichEdit;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -39,6 +40,8 @@ type
     procedure RemoveBookingFromFile(const sFileName, sTargetFlightID: string);
     procedure RestoreBookingToFile(const sUserID: string);
     procedure RefreshSummaryMemo(const sFullName: string);
+    procedure btnTotalClick(Sender: TObject);
+    procedure sgBookedFlightsClick(Sender: TObject);
 
   private
     sFullName: String;
@@ -54,9 +57,9 @@ var
   // Index mapping (columns):
   // 0=FlightID, 1=From, 2=To, 3=Class, 4=Seats, 5=Price/Seat, 6=Departure Date
 
-  gLastDeletedRowData: array [0 .. 6] of string;
-  gLastDeletedRowIndex: Integer = -1;
-  gUndoAvailable: Boolean = False;
+  arrLastDeletedRowData: Array [0 .. 6] of string;
+  iLastDeletedRowIndex: Integer = -1;
+  bUndoAvailable: Boolean = False;
 
 implementation
 
@@ -171,6 +174,67 @@ begin
 
 end;
 
+procedure TfrmMyFlights.sgBookedFlightsClick(Sender: TObject);
+var
+  sFlightID: string;
+
+begin
+
+  sFlightID := sgBookedFlights.Cells[0, sgBookedFlights.Row];
+
+  with dmAccounts do
+  begin
+
+    qryFlights.Close;
+    qryFlights.SQL.Text :=
+      'SELECT * FROM tblFlights WHERE FlightID = :FlightID';
+    qryFlights.Parameters.ParamByName('FlightID').Value := sFlightID;
+    qryFlights.Open;
+
+    redFlightDetails.Clear;
+
+    with redFlightDetails.Paragraph do
+    begin
+
+      TabCount := 1;
+      Tab[0] := 200; // Adjust spacing to suit your memo width
+
+    end;
+
+    if not qryFlights.Eof then
+    begin
+
+      redFlightDetails.Lines.Add
+        ('===============================================================');
+      redFlightDetails.Lines.Add('');
+      redFlightDetails.Lines.Add('FLIGHT DETAILS');
+      redFlightDetails.Lines.Add('');
+      redFlightDetails.Lines.Add
+        ('===============================================================');
+      redFlightDetails.Lines.Add('');
+      redFlightDetails.Lines.Add('Flight ID:' + #9 + qryFlights.FieldByName
+        ('FlightID').AsString);
+      redFlightDetails.Lines.Add('Seats:' + #9 + qryFlights.FieldByName
+        ('NOSeats').AsString);
+      redFlightDetails.Lines.Add('Departure Date:' + #9 + qryFlights.FieldByName
+        ('DepartureDate').AsString);
+      redFlightDetails.Lines.Add('Price:' + #9 + 'R' + FormatFloat('0.00',
+        qryFlights.FieldByName('TotalPrice').AsFloat));
+      redFlightDetails.Lines.Add('');
+      redFlightDetails.Lines.Add
+        ('===============================================================');
+
+    end
+    else
+    begin
+
+      redFlightDetails.Lines.Add('No flight details found for FlightID: ' +
+        sFlightID);
+
+    end;
+  end;
+end;
+
 procedure TfrmMyFlights.ClearGridData;
 var
   iRows, iCol: Integer;
@@ -220,8 +284,8 @@ begin
   ClearGridData;
 
   // Reset undo state
-  gUndoAvailable := False;
-  gLastDeletedRowIndex := -1;
+  bUndoAvailable := False;
+  iLastDeletedRowIndex := -1;
 
 end;
 
@@ -288,6 +352,13 @@ begin
 
 end;
 
+procedure TfrmMyFlights.btnTotalClick(Sender: TObject);
+begin
+
+  RefreshSummaryMemo(sFullName);
+
+end;
+
 procedure TfrmMyFlights.btnRemoveClick(Sender: TObject);
 var
   sFlightID, sUserID, sFileName: String;
@@ -302,18 +373,20 @@ begin
   if (iSelectedRow = 0) or
     (Trim(sgBookedFlights.Cells[COL_FLIGHTID, iSelectedRow]) = '') then
   begin
+
     ShowMessage('Please select a valid booking row to remove.');
     Exit;
+
   end;
 
   // Store deleted row for undo functionality BEFORE removing
   for i := 0 to 6 do
-    gLastDeletedRowData[i] := sgBookedFlights.Cells[i, iSelectedRow];
+    arrLastDeletedRowData[i] := sgBookedFlights.Cells[i, iSelectedRow];
 
-  gLastDeletedRowIndex := iSelectedRow;
-  gUndoAvailable := True;
+  iLastDeletedRowIndex := iSelectedRow;
+  bUndoAvailable := True;
 
-  // Gather values for database update
+  // Gather values for deletion
   sFlightID := sgBookedFlights.Cells[COL_FLIGHTID, iSelectedRow];
   iSeatCount := SafeStrToIntDef(sgBookedFlights.Cells[COL_SEATS,
     iSelectedRow], 0);
@@ -342,25 +415,15 @@ begin
   if FileExists(sFileName) then
     RemoveBookingFromFile(sFileName, sFlightID);
 
-  // Update user's totals in database
+  // DELETE the flight record directly from tblFlights
   with dmAccounts do
   begin
-    qryFlights.Close;
-    qryFlights.SQL.Text := 'SELECT * FROM tblFlights WHERE UserID = :UserID';
-    qryFlights.Parameters.ParamByName('UserID').Value := sUserID;
-    qryFlights.Open;
 
-    if not qryFlights.Eof then
-    begin
-      qryFlights.Edit;
-      qryFlights.FieldByName('NOFlights').AsInteger :=
-        Max(0, qryFlights.FieldByName('NOFlights').AsInteger - 1);
-      qryFlights.FieldByName('NOSeats').AsInteger :=
-        Max(0, qryFlights.FieldByName('NOSeats').AsInteger - iSeatCount);
-      qryFlights.FieldByName('TotalPrice').AsFloat :=
-        qryFlights.FieldByName('TotalPrice').AsFloat - dTotalDeduct;
-      qryFlights.Post;
-    end;
+    qryFlights.Close;
+    qryFlights.SQL.Text := 'DELETE FROM tblFlights WHERE FlightID = :FlightID';
+    qryFlights.Parameters.ParamByName('FlightID').Value := sFlightID;
+    qryFlights.ExecSQL;
+
   end;
 
   // Refresh screen to reflect changes
@@ -371,12 +434,12 @@ end;
 procedure TfrmMyFlights.btnUndoClick(Sender: TObject);
 var
   iCol, i, iSeatCount: Integer;
-  dPricePerSeat: Double;
+  dPricePerSeat, dTotalPrice: Double;
 
 begin
 
   // Check if undo is available
-  if not gUndoAvailable then
+  if not bUndoAvailable then
   begin
 
     ShowMessage('No booking to undo.');
@@ -388,45 +451,42 @@ begin
   sgBookedFlights.RowCount := sgBookedFlights.RowCount + 1;
 
   // Shift rows down to make space for restored row
-  for i := sgBookedFlights.RowCount - 1 downto gLastDeletedRowIndex + 1 do
+  for i := sgBookedFlights.RowCount - 1 downto iLastDeletedRowIndex + 1 do
     for iCol := 0 to sgBookedFlights.ColCount - 1 do
       sgBookedFlights.Cells[iCol, i] := sgBookedFlights.Cells[iCol, i - 1];
 
   // Restore deleted row values
-  for iCol := 0 to 6 do
-    sgBookedFlights.Cells[iCol, gLastDeletedRowIndex] :=
-      gLastDeletedRowData[iCol];
+  for iCol := 0 to GRID_COL_COUNT - 1 do
+    sgBookedFlights.Cells[iCol, iLastDeletedRowIndex] :=
+      arrLastDeletedRowData[iCol];
 
-  // Update database totals to reflect restored booking
-  iSeatCount := SafeStrToIntDef(gLastDeletedRowData[COL_SEATS], 0);
-  dPricePerSeat := ParsePriceToFloat(gLastDeletedRowData[COL_PRICE_PER]);
+  // Calculate total price from seat count and price per seat
+  iSeatCount := SafeStrToIntDef(arrLastDeletedRowData[COL_SEATS], 0);
+  dPricePerSeat := ParsePriceToFloat
+    (StringReplace(arrLastDeletedRowData[COL_PRICE_PER], 'R', '',
+    [rfReplaceAll]));
+  dTotalPrice := iSeatCount * dPricePerSeat;
 
+  // Reinsert deleted booking into tblFlights
   with dmAccounts do
   begin
 
     qryFlights.Close;
-    qryFlights.SQL.Text := 'SELECT * FROM tblFlights WHERE UserID = :UserID';
+    qryFlights.SQL.Text :=
+      'INSERT INTO tblFlights (FlightID, DepartureDate, NOSeats, TotalPrice, UserID) '
+      + 'VALUES (:FlightID, :DepartureDate, :NOSeats, :TotalPrice, :UserID)';
+
+    qryFlights.Parameters.ParamByName('FlightID').Value := arrLastDeletedRowData
+      [COL_FLIGHTID];
+    qryFlights.Parameters.ParamByName('DepartureDate').Value :=
+      arrLastDeletedRowData[COL_DEPARTUREDATE];
+    qryFlights.Parameters.ParamByName('NOSeats').Value := iSeatCount;
+    qryFlights.Parameters.ParamByName('TotalPrice').Value := dTotalPrice;
     qryFlights.Parameters.ParamByName('UserID').Value :=
       frmLoginRegister.sUserID;
-    qryFlights.Open;
 
-    if not qryFlights.Eof then
-    begin
+    qryFlights.ExecSQL;
 
-      qryFlights.Edit;
-      qryFlights.FieldByName('NOFlights').AsInteger :=
-        qryFlights.FieldByName('NOFlights').AsInteger + 1;
-
-      qryFlights.FieldByName('NOSeats').AsInteger :=
-        qryFlights.FieldByName('NOSeats').AsInteger + iSeatCount;
-
-      qryFlights.FieldByName('TotalPrice').AsFloat :=
-        qryFlights.FieldByName('TotalPrice').AsFloat +
-        (iSeatCount * dPricePerSeat);
-
-      qryFlights.Post;
-
-    end;
   end;
 
   // Restore booking to file in expected format
@@ -437,8 +497,8 @@ begin
   RefreshSummaryMemo(sFullName);
 
   // Reset undo state
-  gUndoAvailable := False;
-  gLastDeletedRowIndex := -1;
+  bUndoAvailable := False;
+  iLastDeletedRowIndex := -1;
 
   ShowMessage('Undo complete.');
 
@@ -482,9 +542,17 @@ begin
 end;
 
 procedure TfrmMyFlights.RefreshSummaryMemo(const sFullName: string);
+var
+  iTotalFlights, iTotalSeats: Integer;
+  rTotalPrice: Real;
+
 begin
 
-  // Load and display flight summary for the given user
+  // Initialize integer counters
+  iTotalFlights := 0;
+  iTotalSeats := 0;
+  rTotalPrice := 0;
+
   with dmAccounts do
   begin
 
@@ -494,44 +562,63 @@ begin
       frmLoginRegister.sUserID;
     qryFlights.Open;
 
-    memFlightDetails.Clear;
+    redFlightDetails.Clear;
 
     if not qryFlights.Eof then
     begin
 
-      memFlightDetails.Lines.Add('');
-      memFlightDetails.Lines.Add('Flight Summary for: ' + sFullName);
-      memFlightDetails.Lines.Add('');
-      memFlightDetails.Lines.Add
+      while not qryFlights.Eof do
+      begin
+
+        Inc(iTotalFlights);
+        iTotalSeats := iTotalSeats + qryFlights.FieldByName('NOSeats')
+          .AsInteger;
+        rTotalPrice := rTotalPrice + qryFlights.FieldByName
+          ('TotalPrice').AsFloat;
+        qryFlights.Next;
+
+      end;
+
+      // Format memo output
+      redFlightDetails.Lines.Add
         ('===============================================================');
+      redFlightDetails.Lines.Add('');
+      redFlightDetails.Lines.Add('FLIGHT SUMMARY REPORT');
+      redFlightDetails.Lines.Add('');
+      redFlightDetails.Lines.Add
+        ('===============================================================');
+      redFlightDetails.Lines.Add('');
+      redFlightDetails.Lines.Add('Passenger: ' + sFullName);
+      redFlightDetails.Lines.Add('');
 
-      memFlightDetails.Lines.Add('');
+      redFlightDetails.Lines.Add('Total Flights:' + #9 +
+        IntToStr(iTotalFlights));
+      redFlightDetails.Lines.Add('Total Seats:' + #9 + IntToStr(iTotalSeats));
+      redFlightDetails.Lines.Add('Total Price:' + #9 + 'R' + FormatFloat('0.00',
+        rTotalPrice));
 
-      memFlightDetails.Lines.Add('Total Flights: ' + qryFlights.FieldByName
-        ('NOFlights').AsString);
-
-      memFlightDetails.Lines.Add('');
-
-      memFlightDetails.Lines.Add('Total Seats: ' + qryFlights.FieldByName
-        ('NOSeats').AsString);
-
-      memFlightDetails.Lines.Add('');
-
-      memFlightDetails.Lines.Add('Total Price: R' + FormatFloat('0.00',
-        qryFlights.FieldByName('TotalPrice').AsFloat));
-
-      memFlightDetails.Lines.Add('');
-
-      memFlightDetails.Lines.Add('');
-
-      memFlightDetails.Lines.Add
+      redFlightDetails.Lines.Add('');
+      redFlightDetails.Lines.Add
         ('===============================================================');
 
     end
     else
     begin
 
-      memFlightDetails.Lines.Add('No summary data found for ' + sFullName);
+      redFlightDetails.Lines.Add
+        ('===============================================================');
+      redFlightDetails.Lines.Add('');
+      redFlightDetails.Lines.Add('FLIGHT SUMMARY REPORT');
+      redFlightDetails.Lines.Add('');
+      redFlightDetails.Lines.Add
+        ('===============================================================');
+      redFlightDetails.Lines.Add('');
+      redFlightDetails.Lines.Add('Passenger: ' + sFullName);
+      redFlightDetails.Lines.Add('');
+      redFlightDetails.Lines.Add('No flight records found for this user.');
+      redFlightDetails.Lines.Add('');
+      redFlightDetails.Lines.Add
+        ('===============================================================');
 
     end;
   end;
@@ -685,7 +772,7 @@ begin
     begin
       sLine := Trim(TSLines[i]);
 
-      // Match found � begin deletion
+      // Match found — begin deletion
       if StartsWith(sLine, 'FlightID:') and
         (ExtractValueAfterColon(sLine) = sTargetFlightID) then
 
@@ -713,7 +800,8 @@ begin
             (not StartsWith(Trim(TSLines[i]), 'FlightID:')) do
             TSLines.Delete(i);
           if (i < TSLines.Count) then
-            TSLines.Delete(i); // remove partial FlightID line
+            TSLines.Delete(i);
+          // remove partial FlightID line
 
         end;
 
@@ -756,13 +844,13 @@ begin
       TSLines.LoadFromFile(sFileName);
 
     // Append restored booking block
-    TSLines.Add('FlightID: ' + gLastDeletedRowData[COL_FLIGHTID]);
-    TSLines.Add('From: ' + gLastDeletedRowData[COL_FROM]);
-    TSLines.Add('To: ' + gLastDeletedRowData[COL_TO]);
-    TSLines.Add('Class: ' + gLastDeletedRowData[COL_CLASS]);
-    TSLines.Add('Seats: ' + gLastDeletedRowData[COL_SEATS]);
-    TSLines.Add('Price per seat: ' + gLastDeletedRowData[COL_PRICE_PER]);
-    TSLines.Add('Departure Date: ' + gLastDeletedRowData[COL_DEPARTUREDATE]);
+    TSLines.Add('FlightID: ' + arrLastDeletedRowData[COL_FLIGHTID]);
+    TSLines.Add('From: ' + arrLastDeletedRowData[COL_FROM]);
+    TSLines.Add('To: ' + arrLastDeletedRowData[COL_TO]);
+    TSLines.Add('Class: ' + arrLastDeletedRowData[COL_CLASS]);
+    TSLines.Add('Seats: ' + arrLastDeletedRowData[COL_SEATS]);
+    TSLines.Add('Price per seat: ' + arrLastDeletedRowData[COL_PRICE_PER]);
+    TSLines.Add('Departure Date: ' + arrLastDeletedRowData[COL_DEPARTUREDATE]);
 
     TSLines.SaveToFile(sFileName);
 
