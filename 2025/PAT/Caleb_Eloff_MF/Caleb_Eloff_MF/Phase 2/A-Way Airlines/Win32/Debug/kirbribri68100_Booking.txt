@@ -1,0 +1,39 @@
+==============================
+Booking for: kirbribri68100
+FlightID: FLHE3945
+From: Japan
+To: China
+Class: First Class
+Seats: 5
+Price per seat: R2166.75
+Departure Date: 1/28/2026
+Booking Date: 8/19/2025
+==============================
+
+
+==============================
+Booking for: kirbribri68100
+FlightID: FLEN2034
+From: Namibia
+To: Mozambique
+Class: First Class
+Seats: 2
+Price per seat: R2516.15
+Departure Date: 1/28/2026
+Booking Date: 8/19/2025
+==============================
+
+
+==============================
+Booking for: kirbribri68100
+FlightID: FLZX1214
+From: United States
+To: Australia
+Class: First Class
+Seats: 26
+Price per seat: R4944.01
+Departure Date: 1/28/2026
+Booking Date: 8/19/2025
+==============================
+
+

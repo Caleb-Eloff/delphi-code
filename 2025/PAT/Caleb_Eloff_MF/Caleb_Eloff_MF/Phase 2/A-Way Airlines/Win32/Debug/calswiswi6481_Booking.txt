@@ -1,0 +1,26 @@
+==============================
+Booking for: calswiswi6481
+FlightID: FLIL5197
+From: Lithuania
+To: Hungary
+Class: First Class
+Seats: 20
+Price per seat: R1365.38
+Departure Date: 12/4/2025
+Booking Date: 8/19/2025
+==============================
+
+
+==============================
+Booking for: calswiswi6481
+FlightID: FLND3300
+From: Japan
+To: Suriname
+Class: First Class
+Seats: 10
+Price per seat: R2634.02
+Departure Date: 12/18/2025
+Booking Date: 8/19/2025
+==============================
+
+

@@ -1,0 +1,166 @@
+unit BookFlights_u;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
+  Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Math, Vcl.Grids, Vcl.Samples.Spin,
+  dmAccounts_u;
+
+type
+  // Helper class for booking operations
+  TFlightBookingHelper = class
+  public
+    class function CalculateTotalPrice(BasePrice, Multiplier: Double;
+      Seats: Integer): Double;
+    class procedure AddMemoLine(Memo: TMemo; const LabelText, Value: string);
+    class procedure SaveBookingToFile(const UserName, FlightNum, FromDest,
+      ToDest, ClassType: string; Seats: Integer; BasePrice, Multiplier: Double;
+      FlightDate: TDateTime);
+    class function GenerateUniqueFlightNumber(existingList
+      : TStringList): string;
+    class procedure GenerateFlightOptions(Grid: TStringGrid; BasePrice: Double;
+      Airlines: TArray<string>);
+    class function CalculateDistance(lbl1, lbl2: TLabel;
+      pricePerPixel: Double): Double;
+  end;
+
+  // Helper class for country selection from labels
+  TCountrySelectorHelper = class
+  public
+    class procedure SelectCountry(Sender: TObject; cmbFrom, cmbTo: TComboBox);
+  end;
+
+implementation
+
+{ TFlightBookingHelper }
+
+class function TFlightBookingHelper.CalculateTotalPrice(BasePrice,
+  Multiplier: Double; Seats: Integer): Double;
+begin
+  Result := BasePrice * Multiplier * Seats;
+end;
+
+class procedure TFlightBookingHelper.AddMemoLine(Memo: TMemo;
+  const LabelText, Value: string);
+begin
+  Memo.Lines.Add(Format('%-15s %s', [LabelText, Value]));
+end;
+
+class procedure TFlightBookingHelper.SaveBookingToFile(const UserName,
+  FlightNum, FromDest, ToDest, ClassType: string; Seats: Integer;
+  BasePrice, Multiplier: Double; FlightDate: TDateTime);
+var
+  BookingFile: TextFile;
+  TotalPrice: Double;
+  TodayDate: TDateTime;
+  FileName: string;
+begin
+  TotalPrice := CalculateTotalPrice(BasePrice, Multiplier, Seats);
+  TodayDate := Now;
+  FileName := UserName + '_Booking.txt';
+
+  AssignFile(BookingFile, FileName);
+  if FileExists(FileName) then
+    Append(BookingFile)
+  else
+    Rewrite(BookingFile);
+
+  try
+    Writeln(BookingFile, '==============================');
+    Writeln(BookingFile, 'Booking for: ' + UserName);
+    Writeln(BookingFile, 'FlightID: ' + FlightNum);
+    Writeln(BookingFile, 'From: ' + FromDest);
+    Writeln(BookingFile, 'To: ' + ToDest);
+    Writeln(BookingFile, 'Class: ' + ClassType);
+    Writeln(BookingFile, 'Seats: ' + IntToStr(Seats));
+    Writeln(BookingFile, 'Price per seat: R' + FormatFloat('0.00',
+      BasePrice * Multiplier));
+    Writeln(BookingFile, 'Departure Date: ' + DateToStr(FlightDate));
+    Writeln(BookingFile, 'Booking Date: ' + DateToStr(TodayDate));
+    Writeln(BookingFile, '==============================');
+  finally
+    CloseFile(BookingFile);
+  end;
+end;
+
+class function TFlightBookingHelper.GenerateUniqueFlightNumber
+  (existingList: TStringList): string;
+var
+  FlightNum: string;
+begin
+  repeat
+    FlightNum := Format('AW%03d', [Random(1000)]); // e.g., AW123
+  until existingList.IndexOf(FlightNum) = -1;
+  Result := FlightNum;
+end;
+
+class procedure TFlightBookingHelper.GenerateFlightOptions(Grid: TStringGrid;
+  BasePrice: Double; Airlines: TArray<string>);
+var
+  i: Integer;
+  FlightNum: string;
+  Price: Double;
+  FlightNumbers: TStringList;
+begin
+  Grid.RowCount := Length(Airlines) + 1; // +1 for header
+  FlightNumbers := TStringList.Create;
+  try
+    Grid.Cells[0, 0] := 'Airline';
+    Grid.Cells[1, 0] := 'FlightNo';
+    Grid.Cells[2, 0] := 'Price';
+
+    for i := 0 to High(Airlines) do
+    begin
+      FlightNum := GenerateUniqueFlightNumber(FlightNumbers);
+      FlightNumbers.Add(FlightNum);
+
+      Price := BasePrice * (1 + Random); // Random multiplier for demo
+
+      Grid.Cells[0, i + 1] := Airlines[i];
+      Grid.Cells[1, i + 1] := FlightNum;
+      Grid.Cells[2, i + 1] := 'R' + FormatFloat('0.00', Price);
+    end;
+  finally
+    FlightNumbers.Free;
+  end;
+end;
+
+class function TFlightBookingHelper.CalculateDistance(lbl1, lbl2: TLabel;
+  pricePerPixel: Double): Double;
+var
+  dx, dy: Double;
+begin
+  dx := lbl2.Left - lbl1.Left;
+  dy := lbl2.Top - lbl1.Top;
+  Result := Sqrt(Sqr(dx) + Sqr(dy)) * pricePerPixel;
+end;
+
+{ TCountrySelectorHelper }
+
+class procedure TCountrySelectorHelper.SelectCountry(Sender: TObject;
+  cmbFrom, cmbTo: TComboBox);
+var
+  SelectedCountry, Decision: string;
+  iIndex: Integer;
+begin
+  SelectedCountry := TLabel(Sender).Caption;
+  Decision := LowerCase(InputBox('A-Way Airlines',
+    'Please enter "From" or "To":', ''));
+
+  if Decision = 'from' then
+  begin
+    iIndex := cmbFrom.Items.IndexOf(SelectedCountry);
+    if iIndex <> -1 then
+      cmbFrom.ItemIndex := iIndex;
+  end
+  else if Decision = 'to' then
+  begin
+    iIndex := cmbTo.Items.IndexOf(SelectedCountry);
+    if iIndex <> -1 then
+      cmbTo.ItemIndex := iIndex;
+  end;
+end;
+
+end.

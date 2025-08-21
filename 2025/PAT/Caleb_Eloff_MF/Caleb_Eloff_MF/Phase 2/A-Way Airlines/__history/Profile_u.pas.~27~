@@ -1,0 +1,92 @@
+unit Profile_u;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls,
+  dmAccounts_u, Vcl.ComCtrls;
+
+type
+  TfrmProfile = class(TForm)
+    imgProfileBackground: TImage;
+    lblProfileHeading: TLabel;
+    btnEditProfile: TButton;
+    btnProfileBack: TButton;
+    redProfile: TRichEdit;
+    procedure FormCreate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btnProfileBackClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure btnEditProfileClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmProfile: TfrmProfile;
+
+implementation
+
+{$R *.dfm}
+
+uses Home_u, LoginRegister_u, ProfileManager_u;
+
+procedure TfrmProfile.btnEditProfileClick(Sender: TObject);
+begin
+
+  // Call external class to edit profile details
+  TProfileManager.EditProfile(frmLoginRegister.sUserID, redProfile);
+
+end;
+
+procedure TfrmProfile.btnProfileBackClick(Sender: TObject);
+begin
+
+  // Hide profile form and return to home screen
+  frmProfile.Hide;
+  frmHome.Show;
+
+end;
+
+procedure TfrmProfile.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+
+  // Terminate application when profile form closes
+  Application.Terminate;
+
+end;
+
+procedure TfrmProfile.FormCreate(Sender: TObject);
+begin
+
+  // Remove title bar and borders
+  BorderStyle := bsNone;
+
+  // Maximize form to full screen
+  SetBounds(0, 0, Screen.Width, Screen.Height);
+  WindowState := wsMaximized;
+
+  // Load background image
+  imgProfileBackground.Picture.LoadFromFile('Background.png');
+
+  // Center memo and controls on screen
+  redProfile.Left := (ClientWidth - redProfile.Width) DIV 2;
+  redProfile.Top := (ClientHeight - redProfile.Height) DIV 2;
+  lblProfileHeading.Left := (ClientWidth - lblProfileHeading.Width) DIV 2;
+  btnEditProfile.Left := (ClientWidth - btnEditProfile.Width) DIV 2;
+
+end;
+
+procedure TfrmProfile.FormShow(Sender: TObject);
+begin
+
+  // Load current user's profile into memo
+  TProfileManager.LoadProfile(frmLoginRegister.sUserID, redProfile);
+
+end;
+
+end.

@@ -1,0 +1,70 @@
+==============================
+Booking for: caleloelo3272
+Booking Date: 8/20/2025
+==============================
+
+
+==============================
+Booking for: caleloelo3272
+Booking Date: 8/20/2025
+==============================
+
+
+==============================
+Booking for: caleloelo3272
+FlightID: FLBP1860
+From: France
+To: Italy
+Class: First Class
+Seats: 4
+Price per seat: R977.14
+Departure Date: 8/27/2025
+Booking Date: 8/20/2025
+==============================
+
+
+FlightID: FLCO6602
+From: Australia
+To: Russia
+Class: Business
+Seats: 3
+Price per seat: R3608.60
+Departure Date: 8/22/2025
+==============================
+Booking for: caleloelo3272
+Booking Date: 8/20/2025
+==============================
+
+
+==============================
+Booking for: caleloelo3272
+Booking Date: 8/20/2025
+==============================
+
+
+==============================
+Booking for: caleloelo3272
+Booking Date: 8/20/2025
+==============================
+
+
+==============================
+Booking for: caleloelo3272
+Booking Date: 8/20/2025
+==============================
+
+
+FlightID: FLAT8755
+From: Colombia
+To: United States
+Class: First Class
+Seats: 3
+Price per seat: R2369.99
+Departure Date: 9/3/2025
+FlightID: FLDM8889
+From: Finland
+To: France
+Class: First Class
+Seats: 3
+Price per seat: R3558.45
+Departure Date: 8/22/2025
